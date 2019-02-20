@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 hello hi
+=======
+hello this is mike
+>>>>>>> master
