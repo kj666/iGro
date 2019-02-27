@@ -12,11 +12,14 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     private Button temperature;
+    private Button number;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         temperature=(Button) findViewById(R.id.temp_button);
+        number=(Button) findViewById(R.id.number_button);
         temperature.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -24,6 +27,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        number.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTemperature();
+            }
+        });
     }
     public void openTemperature(){
         Intent intent=new Intent(this,TemperatureActivity.class);
