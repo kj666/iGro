@@ -9,19 +9,20 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="165dp"
-        android:layout_height="121dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardView9"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_height="0dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="192dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3">
 
         <Button
             android:id="@+id/textView18"
             android:layout_width="60dp"
             android:layout_height="35dp"
             android:layout_marginLeft="105dp"
-            android:layout_marginTop="71dp"
+            android:layout_marginTop="80dp"
             android:text="index"
             android:textAlignment="center"
             android:textSize="9sp" />
@@ -31,17 +32,17 @@
             android:layout_width="60dp"
             android:layout_height="35dp"
             android:layout_marginLeft="105dp"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="45dp"
             android:text="nm"
             android:textAlignment="center"
             android:textSize="8sp" />
 
-        <EditText
+        <TextView
             android:id="@+id/editText6"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="45dp"
             android:layout_marginBottom="20dp"
             android:background="@null"
             android:ems="10"
@@ -50,10 +51,10 @@
             android:textAlignment="center"
             android:textSize="45sp" />
 
-        <TextView
+        <Button
             android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="112dp"
+            android:layout_height="38dp"
             android:layout_marginLeft="50dp"
             android:text="UV INDEX"
             android:textColor="@color/colorPrimaryDark" />
@@ -62,7 +63,9 @@
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="156dp"
-        android:layout_height="109dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="171dp"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,44 +75,43 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="200dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_height="23dp"
+        android:layout_marginBottom="7dp"
         android:text="Welcome, MIKE!"
         android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView2"
-        android:layout_width="165dp"
+        android:layout_width="0dp"
         android:layout_height="140dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="56dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_marginTop="97dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="308dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cardView3"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <Button
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_marginLeft="50dp"
             android:text="HUMIDITY"
             android:textAlignment="center"
-            android:textColor="@color/colorPrimaryDark" />
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp" />
 
-        <EditText
+        <TextView
             android:id="@+id/editText2"
             android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="45dp"
             android:background="@null"
             android:ems="50"
             android:inputType="number"
@@ -120,38 +122,42 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView3"
-        android:layout_width="165dp"
+        android:layout_width="0dp"
         android:layout_height="140dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginBottom="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginRight="33dp"
+        android:layout_marginBottom="52dp"
         app:layout_constraintBottom_toTopOf="@+id/cardView4"
+        app:layout_constraintEnd_toStartOf="@+id/cardView2"
         app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/textView2"
+        <Button
+            android:id="@+id/temp_button"
             android:layout_width="112dp"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_marginLeft="25dp"
             android:text="TEMPERATURE"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/colorPrimaryDark" />
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp" />
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <EditText
+        <TextView
             android:id="@+id/editText"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginLeft="25dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="45dp"
             android:layout_marginBottom="20dp"
+            android:background="@null"
             android:ems="10"
             android:inputType="number"
-            android:background="@null"
             android:text="24"
             android:textAlignment="center"
             android:textSize="45sp" />
@@ -159,18 +165,18 @@
         <Button
             android:id="@+id/textView4"
             android:layout_width="40dp"
-            android:layout_height="35dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="120dp"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="40dp"
             android:text="ͦC"
             android:textAlignment="center" />
 
         <Button
             android:id="@+id/textView8"
-            android:layout_width="40dp"
-            android:layout_height="35dp"
+            android:layout_width="39dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="120dp"
-            android:layout_marginTop="71dp"
+            android:layout_marginTop="90dp"
             android:text="F"
             android:textAlignment="center" />
 
@@ -186,12 +192,12 @@
         app:layout_constraintBottom_toTopOf="@+id/cardView5"
         app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
+        <TextView
             android:id="@+id/editText5"
             android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="40dp"
             android:background="@null"
             android:ems="50"
             android:inputType="number"
@@ -199,14 +205,15 @@
             android:textAlignment="center"
             android:textSize="50sp" />
 
-        <TextView
+        <Button
             android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="112dp"
+            android:layout_height="38dp"
             android:layout_marginLeft="30dp"
             android:text="SOIL MOISTURE"
             android:textAlignment="center"
-            android:textColor="@color/colorPrimaryDark" />
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp" />
 
 
     </android.support.v7.widget.CardView>
@@ -238,14 +245,14 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cardView9"
         android:layout_width="226dp"
-        android:layout_height="39dp"
+        android:layout_height="34dp"
         android:layout_marginVertical="110dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="109dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.692"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/cardView5">
 
         <TextView
@@ -258,20 +265,19 @@
             android:textColor="@color/colorPrimaryDark" />
     </android.support.v7.widget.CardView>
 
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="wrap_content"
-        android:layout_height="47dp"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="122dp"
+        android:layout_height="0dp"
         android:layout_marginStart="144dp"
         android:layout_marginLeft="144dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Powered by TeamQ"
-        android:textAlignment="center"
+        android:layout_marginEnd="145dp"
+        android:layout_marginRight="145dp"
+        android:layout_marginBottom="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView2"
+        app:srcCompat="@drawable/igro_justleaf" />
 
 </android.support.constraint.ConstraintLayout>
