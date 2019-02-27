@@ -4,9 +4,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/*
+* This class represents the registration section of the application. Every new user is
+* required to enter their valid info and this data is then stored onto the database
+ */
 public class RegistrationActivity extends AppCompatActivity {
     // TODO: 2019-02-27
     // add dependency in android manifest file to login activity
@@ -20,24 +25,79 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Creating a link to widgets on user interface
         userName = findViewById(R.id.userNameText);
         userEmail = findViewById(R.id.userEmailText);
         userPassword = findViewById(R.id.userPasswordText);
         userPasswordConfirmation = findViewById(R.id.confirmUserPasswordText);
         signUpButton = findViewById(R.id.singUpButton);
         cancelButton = findViewById(R.id.cancelButton);
+        //Allowing entry fields to be modified
+        userName.setFocusable(true);
+        userEmail.setFocusable(true);
+        userPassword.setFocusable(true);
+        userPasswordConfirmation.setFocusable(true);
+        //Providing functionality
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO 2019-02-27
+                // Return to parent activity (i.e. MainActivity)
+            }
+        });
         setContentView(R.layout.activity_registration);
     }
 
     /*
-    * This function will determine if the email entered is valid
+     * This function will register the user into a database if the inputted information is valid
      */
-    final static boolean validEmail(CharSequence email) {
+
+    boolean registerUser() {
+        if (isValidUser() == false) {
+            return false;
+        } else {
+            // TODO 2019-02-27
+            // Store the data into the database
+            return true;
+        }
+    }
+
+    /*
+     * This function will determine if all inputted information is correct by calling the validifier
+     * functions for each entry type (e.g. email, password)
+     */
+    boolean isValidUser() {
+        if (isValidEmail(userEmail.getText().toString()) && isValidPassword()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /*
+     * This function will determine if the email entered is valid
+     */
+    boolean isValidEmail(CharSequence email) {
         if (TextUtils.isEmpty(email)) {
             return false;
         } else {
             return Patterns.EMAIL_ADDRESS.matcher(email).matches();
         }
     }
+
+    /*
+    * This function checks to see if the initial password and the confirmation password are the
+    * same.
+     */
+    boolean isValidPassword() {
+        return userPassword.getText().toString()
+                .equals(userPasswordConfirmation.getText().toString());
+    }
+
 }
