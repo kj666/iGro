@@ -18,7 +18,7 @@ public class MoistureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
-       // setContentView(android.R.layout.activity_humidity);
+        setContentView(android.R.layout.);
 
 
         double y,x;
