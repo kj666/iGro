@@ -1,5 +1,6 @@
 package com.example.igro;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -7,6 +8,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /*
 * This class represents the registration section of the application. Every new user is
@@ -25,6 +27,7 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_registration);
         //Creating a link to widgets on user interface
         userName = findViewById(R.id.userNameText);
         userEmail = findViewById(R.id.userEmailText);
@@ -39,9 +42,21 @@ public class RegistrationActivity extends AppCompatActivity {
         userPasswordConfirmation.setFocusable(true);
         //Providing functionality
         signUpButton.setOnClickListener(new View.OnClickListener() {
+            // TODO 2019-02-27
+            // Return to login activity after signUpButton is clicked AND registration is
+            // successful. For now, its set to main activity
             @Override
             public void onClick(View v) {
-
+                if (registerUser()) { //registration successful
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Registration Successful", Toast.LENGTH_LONG);
+                    toast.show();
+                    finish(); //returns to the activity that called it (should be login activity)
+                } else { //registration unsuccessful
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Registration Failed", Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -51,19 +66,23 @@ public class RegistrationActivity extends AppCompatActivity {
                 // Return to parent activity (i.e. MainActivity)
             }
         });
-        setContentView(R.layout.activity_registration);
+
     }
 
     /*
      * This function will register the user into a database if the inputted information is valid
      */
-
     boolean registerUser() {
         if (isValidUser() == false) {
             return false;
         } else {
             // TODO 2019-02-27
             // Store the data into the database
+            // Confirm if logic to set to false makes sense
+            userName.setFocusable(false);
+            userEmail.setFocusable(false);
+            userPassword.setFocusable(false);
+            userPasswordConfirmation.setFocusable(false);
             return true;
         }
     }
