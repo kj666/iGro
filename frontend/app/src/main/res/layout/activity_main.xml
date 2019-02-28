@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/humiditybutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="HUMIDITY ACTIVITY"
@@ -16,7 +16,7 @@
         tools:layout_editor_absoluteY="72dp" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/moisturebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MOISTURE ACTIVITY"

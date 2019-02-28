@@ -1,7 +1,9 @@
 package com.example.igro;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.R;
 
@@ -13,8 +15,35 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.
+        setContentView(R.layout.activity_main);
 
-        humidityButton = (Button) findViewById(R.id.)
+        humidityButton = (Button) findViewById(R.id.humiditybutton);
+        moistureButton = (Button) findViewById(R.id.moisturebutton);
+        
+        humidityButton.setOnClickListener( new View.OnClickListener(){
+            @Override
+                    public void onClick (View v){
+                openHumidityActivity();
+            }
+        });
+
+        moistureButton.setOnClickListener( new View.OnClickListener(){
+            @Override
+            public void onClick (View v){
+                openMoistureActivity();
+            }
+        });
+
+
+    }
+
+    public void openHumidityActivity(){
+        Intent intent = new Intent(this,HumidityActivity.class);
+        startActivity(intent);
+    }
+
+    public void openMoistureActivity(){
+        Intent intent = new Intent(this,MoistureActivity.class);
+        startActivity(intent);
     }
 }
