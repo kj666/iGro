@@ -62,8 +62,7 @@ public class RegistrationActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO 2019-02-27
-                // Return to parent activity (i.e. MainActivity)
+                finish();
             }
         });
 
