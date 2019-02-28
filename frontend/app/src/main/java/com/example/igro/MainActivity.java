@@ -13,6 +13,8 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     private Button temperature;
+    private Button uv;
+    private Button uvNumber;
     private Button number;
     private Button celcius;
     private Button fahrenheit;
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
         number=(Button) findViewById(R.id.tempNumberView);
         celcius=(Button) findViewById(R.id.celciusOutButton);
         fahrenheit=(Button) findViewById(R.id.fahrenheitOutButton);
+        uv=(Button) findViewById(R.id.uvButton);
+        uvNumber=(Button)findViewById(R.id.uvNumberButton);
 
 
         //from fahrenheit to celcius
@@ -69,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
                 openTemperature();
             }
         });
+        //opening the Uv index view  when the uv text is clicked
+        uv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openUv();
+            }
+        });
 
         //opening the Temperature view when the temperature number is clicked
         number.setOnClickListener(new View.OnClickListener() {
@@ -77,13 +88,22 @@ public class MainActivity extends AppCompatActivity {
                 openTemperature();
             }
         });
-
+        ////opening the uv view when the uv number is clicked
+        uvNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openUv();
+            }
+        });
     }
     public void openTemperature(){
         Intent intent=new Intent(this,TemperatureActivity.class);
         startActivity(intent);
     }
-
+    public void openUv(){
+        Intent intent=new Intent(this,UvIndexActivity.class);
+        startActivity(intent);
+    }
 
 
 

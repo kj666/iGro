@@ -37,8 +37,8 @@
             android:textAlignment="center"
             android:textSize="8sp" />
 
-        <TextView
-            android:id="@+id/uvNumberView"
+        <Button
+            android:id="@+id/uvNumberButton"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginLeft="15dp"
@@ -110,7 +110,7 @@
             android:textColor="@color/colorPrimaryDark"
             android:textSize="14sp" />
 
-        <TextView
+        <Button
             android:id="@+id/humidityPercentView"
             android:layout_width="100dp"
             android:layout_height="80dp"
@@ -200,7 +200,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/temperatureView">
 
-        <TextView
+        <Button
             android:id="@+id/moisturePercentView"
             android:layout_width="100dp"
             android:layout_height="70dp"
