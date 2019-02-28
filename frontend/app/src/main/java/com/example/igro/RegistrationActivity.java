@@ -1,14 +1,27 @@
 package com.example.igro;
 
 import android.content.Intent;
+import android.nfc.Tag;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 /*
 * This class represents the registration section of the application. Every new user is
@@ -17,6 +30,12 @@ import android.widget.Toast;
 public class RegistrationActivity extends AppCompatActivity {
     // TODO: 2019-02-27
     // add dependency in android manifest file to login activity
+    // When initializing your Activity, check to see if the user is currently signed in.
+    // |||||WHERE DO I CHECK THE ABOVE|||||||
+    // |||||MAYBE ON EVERY ACTIVITY?|||||||||
+    private FirebaseAuth mAuth;
+    private StorageReference mStorageRef; // Don't think that this is necessary
+    private String TAG = "RegistrationActivity"; //Used for debugging purposes
     protected EditText userName;
     protected EditText userEmail;
     protected EditText userPassword;
@@ -28,6 +47,9 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        FirebaseApp.initializeApp(this); // This will probably be needed to move to main activity
+        mAuth = FirebaseAuth.getInstance();
+        //mStorageRef = FirebaseStorage.getInstance().getReference();
         //Creating a link to widgets on user interface
         userName = findViewById(R.id.userNameText);
         userEmail = findViewById(R.id.userEmailText);
@@ -47,16 +69,7 @@ public class RegistrationActivity extends AppCompatActivity {
             // successful. For now, its set to main activity
             @Override
             public void onClick(View v) {
-                if (registerUser()) { //registration successful
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            "Registration Successful", Toast.LENGTH_LONG);
-                    toast.show();
-                    finish(); //returns to the activity that called it (should be login activity)
-                } else { //registration unsuccessful
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            "Registration Failed", Toast.LENGTH_LONG);
-                    toast.show();
-                }
+                registerUser();
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -71,19 +84,38 @@ public class RegistrationActivity extends AppCompatActivity {
     /*
      * This function will register the user into a database if the inputted information is valid
      */
-    boolean registerUser() {
-        if (isValidUser() == false) {
-            return false;
+    void registerUser() {
+        // TODO 2019-02-28
+        // Decide on what mods are needed for isValidUser()
+        if (isValidUser()) {
+
         } else {
-            // TODO 2019-02-27
-            // Store the data into the database
-            // Confirm if logic to set to false makes sense
-            userName.setFocusable(false);
-            userEmail.setFocusable(false);
-            userPassword.setFocusable(false);
-            userPasswordConfirmation.setFocusable(false);
-            return true;
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Registration Failed", Toast.LENGTH_LONG);
+            toast.show();
+            return;
         }
+        String email = userEmail.getText().toString();
+        String password = userPassword.getText().toString();
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // TODO 2019-02-28
+                                // Store user info into the database if valid
+                                Toast toast = Toast.makeText(getApplicationContext(),
+                                        "Registration Successful", Toast.LENGTH_LONG);
+                                toast.show();
+                                finish();
+                            } else {
+                                // sign in fails
+                                Toast toast = Toast.makeText(getApplicationContext(),
+                                        task.getException().toString(), Toast.LENGTH_LONG);
+                                toast.show();
+                            }
+                        }
+                    });
     }
 
     /*

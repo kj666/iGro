@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "549074537326",
+    "firebase_url": "https://greenhouseapp-5d7af.firebaseio.com",
+    "project_id": "greenhouseapp-5d7af",
+    "storage_bucket": "greenhouseapp-5d7af.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:549074537326:android:df8a6f9ab81cfd4d",
+        "android_client_info": {
+          "package_name": "com.example.igro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "549074537326-7tvh53lfvflq54k7rb4m8g3e8fbh0vql.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.igro",
+            "certificate_hash": "f9c0cc5467cebbb628a6c2b5a293e032d71b593f"
+          }
+        },
+        {
+          "client_id": "549074537326-jh6ieg4umd1jopbg7odadn1kj5e27bhd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNQ0w0wxjzfJs0ICNDVWwApsfvp4FMLHY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "549074537326-jh6ieg4umd1jopbg7odadn1kj5e27bhd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
