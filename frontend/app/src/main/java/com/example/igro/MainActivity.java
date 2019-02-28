@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
         humidityButton = (Button) findViewById(R.id.humiditybutton);
         moistureButton = (Button) findViewById(R.id.moisturebutton);
-        
+
         humidityButton.setOnClickListener( new View.OnClickListener(){
             @Override
                     public void onClick (View v){
