@@ -162,7 +162,7 @@
             android:background="@null"
             android:ems="10"
             android:inputType="number"
-            android:text="24"
+            android:text="20"
             android:textAlignment="center"
             android:textSize="45sp" />
 
