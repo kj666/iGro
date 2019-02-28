@@ -9,5 +9,4 @@ assignees: ''
 
 Task Description
 
-Parent Issue:
-- [ ] [UI-1](https://github.com/kj666/iGro/issues/3)
+Parent Issue:[UI-1](https://github.com/kj666/iGro/issues/3)
