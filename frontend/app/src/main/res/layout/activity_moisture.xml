@@ -5,205 +5,230 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    tools:context=".HumidityActivity"
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView7"
-        android:layout_width="193dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/moisturehigh"
-        app:layout_constraintBottom_toTopOf="@+id/textView24"
-        app:layout_constraintStart_toEndOf="@+id/cardView6" />
 
     <TextView
-        android:id="@+id/textView22"
-        android:layout_width="82dp"
-        android:layout_height="27dp"
+        android:id="@+id/range0to25"
+        android:layout_width="110dp"
+        android:layout_height="19dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="LOW(10-30%)"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Holo.Small"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView24"
+        app:layout_constraintEnd_toStartOf="@+id/range25to50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView6"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/range25to50"
+        android:layout_width="110dp"
+        android:layout_height="19dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="40dp"
         android:layout_marginRight="40dp"
-        android:layout_marginBottom="9dp"
-        android:text="HIGH"
+        android:layout_marginBottom="12dp"
+        android:text="OPTIMAL (30-50%)"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView7"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textAppearance="@android:style/TextAppearance.Holo.Small"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView24"
+        app:layout_constraintEnd_toStartOf="@+id/range50to75"
+        app:layout_constraintStart_toEndOf="@+id/range0to25"
+        app:layout_constraintTop_toBottomOf="@+id/cardView7"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textView20"
-        android:layout_width="82dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="7dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginBottom="9dp"
-        android:text="LOW"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView6"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/editText4"
-        android:layout_width="96dp"
-        android:layout_height="62dp"
-        android:layout_marginStart="156dp"
-        android:layout_marginLeft="156dp"
-        android:layout_marginTop="10dp"
-        android:background="@null"
-        android:ems="10"
-        android:inputType="number"
-        android:text="30%"
-        android:textAlignment="center"
-        android:textSize="45sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView14" />
-
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="wrap_content"
-        android:layout_height="43dp"
-        android:layout_marginTop="100dp"
-        android:text="MOISTURE"
-        android:textColor="@android:color/holo_green_dark"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
-
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="10dp"
+        android:id="@+id/range50to75"
+        android:layout_width="110dp"
+        android:layout_height="19dp"
+        android:layout_marginStart="224dp"
+        android:layout_marginLeft="224dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="GREENHOUSE"
-        android:textSize="24sp"
+        android:text="HIGH (50-100%)"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Holo.Small"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/range25to50"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.78"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView8"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="113dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="148dp"
-        android:layout_marginRight="148dp"
+        android:layout_width="132dp"
+        android:layout_height="81dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="612dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/igro_logo" />
-
-    <TextView
-        android:id="@+id/textView16"
-        android:layout_width="173dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:text="TEMPERATURE CONTROL"
-        android:textAlignment="center"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="265dp" />
-
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="wrap_content"
-        android:layout_height="31dp"
-        android:layout_marginEnd="54dp"
-        android:layout_marginRight="54dp"
-        android:text="ON/OF"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="265dp" />
+        app:srcCompat="@drawable/igro_logo" />
 
     <TextView
         android:id="@+id/textView19"
         android:layout_width="171dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginBottom="9dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="MOISTURE RANGE"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView7"
-        app:layout_constraintStart_toEndOf="@+id/textView20" />
-
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="78dp"
-        android:layout_height="62dp"
-        android:layout_marginEnd="224dp"
-        android:layout_marginRight="224dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAppearance="@android:style/TextAppearance.Holo"
+        app:layout_constraintBottom_toTopOf="@+id/imageView6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/igro_justleaf" />
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView23"
+        app:layout_constraintVertical_bias="0.005" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView6"
-        android:layout_width="182dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/lowvalue"
-        app:layout_constraintBottom_toTopOf="@+id/textView23"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="110dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@color/moisturelow"
+        app:layout_constraintBottom_toTopOf="@+id/textView24"
+        app:layout_constraintEnd_toStartOf="@+id/cardView7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView19"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView7"
+        android:layout_width="110dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="@color/moisturemedium"
+        app:layout_constraintBottom_toTopOf="@+id/textView24"
+        app:layout_constraintEnd_toStartOf="@+id/range50to75"
+        app:layout_constraintHorizontal_bias="0.156"
+        app:layout_constraintStart_toEndOf="@+id/cardView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView19"
+        app:layout_constraintVertical_bias="0.052" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView32"
+        android:layout_width="110dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:cardBackgroundColor="@color/moisturehigh"
+        app:layout_constraintBottom_toTopOf="@+id/textView24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
+        app:layout_constraintStart_toEndOf="@+id/cardView7"
+        app:layout_constraintTop_toBottomOf="@+id/textView19"
+        app:layout_constraintVertical_bias="0.0" />
+
 
     <TextView
         android:id="@+id/textView23"
-        android:layout_width="wrap_content"
-        android:layout_height="27dp"
-        android:layout_marginStart="58dp"
-        android:layout_marginLeft="58dp"
-        android:layout_marginBottom="2dp"
+        android:layout_width="100dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="188dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:text="GRAPH"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView8"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textAppearance="@android:style/TextAppearance.Holo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
     <TextView
         android:id="@+id/textView24"
-        android:layout_width="85dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="144dp"
-        android:layout_marginLeft="144dp"
-        android:layout_marginBottom="11dp"
-        android:text="TABLE"
+        android:layout_width="203dp"
+        android:layout_height="19dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="MOISTURE HISTORY"
         android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Holo"
         app:layout_constraintBottom_toTopOf="@+id/cardView10"
-        app:layout_constraintStart_toEndOf="@+id/textView23" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView19"
+        app:layout_constraintVertical_bias="1.0" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView8"
-        android:layout_width="180dp"
-        android:layout_height="124dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView5"
-        app:layout_constraintStart_toStartOf="parent" >
+        android:layout_width="398dp"
+        android:layout_height="82dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView19"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView23"
+        app:layout_constraintVertical_bias="1.0">
+
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph"
-            android:layout_width="180dp"
-            android:layout_height="124dp"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView10"
-        android:layout_width="210dp"
-        android:layout_height="124dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView5"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_width="394dp"
+        android:layout_height="108dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent">
 
 
         <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="400dp"
+            android:layout_height="200dp">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -212,73 +237,239 @@
                 <TextView
                     android:layout_gravity="left"
                     android:text="Date"
-                    android:textSize="20dp"
+                    android:textSize="17dp"
 
                     />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="Time"
+                    android:textSize="17dp" />
 
                 <TextView
                     android:layout_marginLeft="50dp"
                     android:text="%"
-                    android:textSize="20dp" />
+                    android:textSize="17dp" />
 
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <TextView
                     android:layout_gravity="left"
                     android:text="25/02/2019"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
 
                     />
 
                 <TextView
                     android:layout_marginLeft="50dp"
-                    android:text="20 %"
-                    android:textSize="20dp" />
+                    android:text="1:00 pm"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="40%"
+                    android:textSize="15dp" />
 
 
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <TextView
                     android:layout_gravity="left"
-                    android:text="26/02/2019"
-                    android:textSize="20dp"
+                    android:text="25/02/2019"
+                    android:textSize="15dp"
 
                     />
 
                 <TextView
                     android:layout_marginLeft="50dp"
-                    android:text="31 %"
-                    android:textSize="20dp" />
+                    android:text="2:00 pm"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="50dp"
+                    android:text="39 %"
+                    android:textSize="15dp" />
 
             </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <TextView
                     android:layout_gravity="left"
-                    android:text="27/02/2019"
-                    android:textSize="20dp"
+                    android:text="25/02/2019"
+                    android:textSize="15dp"
 
                     />
 
                 <TextView
                     android:layout_marginLeft="50dp"
-                    android:text="25 %"
-                    android:textSize="20dp" />
+                    android:text="3:00 pm"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="39 %"
+                    android:textSize="15dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_gravity="left"
+                    android:text="25/02/2019"
+                    android:textSize="15dp"
+
+                    />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="4:00 pm"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="38%"
+                    android:textSize="15dp" />
+
+
             </TableRow>
 
 
         </TableLayout>
     </android.support.v7.widget.CardView>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="160dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="MOISTURE"
+        android:textAppearance="@android:style/TextAppearance.Holo.Large"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.591"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
+        android:layout_marginLeft="96dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Greenhouse"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="98dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="24 %"
+        android:textSize="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="82dp"
+        android:layout_height="94dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginRight="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:srcCompat="@drawable/igro_moisture_low" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="138dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Dehumidifier"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        app:layout_constraintBottom_toTopOf="@+id/textView23"
+        app:layout_constraintEnd_toStartOf="@+id/switch2"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Switch
+        android:id="@+id/switch2"
+        android:layout_width="73dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="108dp"
+        android:layout_marginRight="108dp"
+        android:layout_marginBottom="24dp"
+        android:text="OFF"
+        app:layout_constraintBottom_toTopOf="@+id/textView23"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.172" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="44dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/igro_justleaf" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="47dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/igro_logo" />
+
 
 </android.support.constraint.ConstraintLayout>

@@ -5,6 +5,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    tools:context=".HumidityActivity"
 
 
     <TextView
@@ -15,7 +16,7 @@
         android:layout_marginLeft="36dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="LOW(<20%)"
+        android:text="LOW(10-20%)"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Holo.Small"
         android:textSize="12sp"
@@ -53,7 +54,7 @@
         android:layout_marginLeft="224dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="HIGH (>30%)"
+        android:text="HIGH (30-40%)"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Holo.Small"
         android:textSize="12sp"
@@ -135,7 +136,7 @@
         app:layout_constraintVertical_bias="0.052" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView8"
+        android:id="@+id/cardView32"
         android:layout_width="110dp"
         android:layout_height="18dp"
         android:layout_marginStart="8dp"
@@ -411,7 +412,7 @@
         android:layout_marginRight="100dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/iGro_humidity1_medium" />
+        app:srcCompat="@drawable/igro_humidity_optimal" />
 
     <TextView
         android:id="@+id/textView4"
