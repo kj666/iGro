@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         temperature=(Button) findViewById(R.id.temp_button);
-        number=(Button) findViewById(R.id.number_button);
+        number=(Button) findViewById(R.id.tempNumberView);
         temperature.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

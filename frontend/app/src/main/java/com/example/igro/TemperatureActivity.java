@@ -23,7 +23,7 @@ public class TemperatureActivity extends AppCompatActivity {
         double y,x;
         x=-5;
 
-        GraphView graph =findViewById(R.id.graph);
+        GraphView graph =findViewById(R.id.graphTempCardView);
         series=new LineGraphSeries<>();
         for(int i=0; i<500; i++){
             x=x+0.1;
