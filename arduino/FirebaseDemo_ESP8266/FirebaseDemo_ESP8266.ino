@@ -16,6 +16,9 @@
 
 BME280 mySensor;
 
+int t = 0;
+int poll = 0;
+
 void setup() {
   Serial.begin(9600);
 
@@ -42,32 +45,35 @@ void setup() {
     Serial.println("The sensor did not respond. Please check wiring.");
     while(1); //Freeze
   }
-  
 }
 
-int n = 0;
-int t = 0;
+
 void loop() {
-  t = Firebase.getInt("lastID");
+  poll = Firebase.getInt("config/poll");
+  delay(100);
+  t = Firebase.getInt("config/lastID");
+ 
   //BME Sensor
   //Temperature
-  Firebase.setFloat("temperatures/"+String(t++), mySensor.readTempC());
+  t++;
+  
+  //Send temperature data to firebase
+  Firebase.setFloat("data/"+String(t)+"/temperature", mySensor.readTempC());
   if (Firebase.failed()) {
       Serial.print("temperature/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
-  delay(1000);
-  //Humidity
-  Firebase.setFloat("humidity/"+String(t), mySensor.readFloatHumidity());
+  
+  //Send humidity data to firebase
+  Firebase.setFloat("data/"+String(t)+"/humidity", mySensor.readFloatHumidity());
   if (Firebase.failed()) {
       Serial.print("humidity/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
-  delay(1000);
-  
-  Firebase.setInt("lastID",t);
+ //keep track of time ID
+  Firebase.setInt("config/lastID",t);
   if (Firebase.failed()) {
       Serial.print("lastId failed:");
       Serial.println(Firebase.error());  
@@ -86,70 +92,10 @@ void loop() {
   Serial.print(" Temp: ");
   //Serial.print(mySensor.readTempC(), 2);
   Serial.print(mySensor.readTempF(), 2);
-
+  Serial.print("poll: ");
+  Serial.print(poll);
   Serial.println();
 
+  delay(poll);
   
-  
-  //set value
-  Firebase.setFloat("number", 42.0);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /number failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
-  
-  // update value
-  Firebase.setFloat("number", 43.0);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /number failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
-
-  // get value 
-  Serial.print("number: ");
-  Serial.println(Firebase.getFloat("number"));
-  delay(1000);
-
-  // remove value
-  Firebase.remove("number");
-  delay(1000);
-
-  // set string value
-  Firebase.setString("message", "hello world");
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /message failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
-  
-  // set bool value
-  Firebase.setBool("truth", false);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("setting /truth failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  delay(1000);
-
-  // append a new value to /logs
-  String name = Firebase.pushInt("logs", n++);
-  // handle error
-  if (Firebase.failed()) {
-      Serial.print("pushing /logs failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-  Serial.print("pushed: /logs/");
-  Serial.println(name);
-  delay(1000);
-
 }
