@@ -57,10 +57,17 @@ void loop() {
   //Temperature
   t++;
   
-  //Send temperature data to firebase
-  Firebase.setFloat("data/"+String(t)+"/temperature", mySensor.readTempC());
+  //Send temperature data to firebase Celcius
+  Firebase.setFloat("data/"+String(t)+"/temperatureC", mySensor.readTempC());
   if (Firebase.failed()) {
-      Serial.print("temperature/ failed:");
+      Serial.print("temperatureC/ failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
+  //Send temperature data to firebase
+  Firebase.setFloat("data/"+String(t)+"/temperatureF", mySensor.readTempF());
+  if (Firebase.failed()) {
+      Serial.print("temperatureF/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
@@ -72,6 +79,15 @@ void loop() {
       Serial.println(Firebase.error());  
       return;
   }
+
+  //Send Prssure data to firebase
+  Firebase.setFloat("data/"+String(t)+"/pressure", mySensor.readFloatPressure());
+  if (Firebase.failed()) {
+      Serial.print("pressure/ failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
+  
  //keep track of time ID
   Firebase.setInt("config/lastID",t);
   if (Firebase.failed()) {
@@ -79,19 +95,8 @@ void loop() {
       Serial.println(Firebase.error());  
       return;
   }
-  Serial.print("Humidity: ");
-  Serial.print(mySensor.readFloatHumidity(), 0);
 
-  Serial.print(" Pressure: ");
-  Serial.print(mySensor.readFloatPressure(), 0);
 
-  Serial.print(" Alt: ");
-  //Serial.print(mySensor.readFloatAltitudeMeters(), 1);
-  Serial.print(mySensor.readFloatAltitudeFeet(), 1);
-
-  Serial.print(" Temp: ");
-  //Serial.print(mySensor.readTempC(), 2);
-  Serial.print(mySensor.readTempF(), 2);
   Serial.print("poll: ");
   Serial.print(poll);
   Serial.println();
