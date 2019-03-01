@@ -50,6 +50,7 @@ int t = 0;
 void loop() {
   t = Firebase.getInt("lastID");
   //BME Sensor
+  //Temperature
   Firebase.setFloat("temperatures/"+String(t++), mySensor.readTempC());
   if (Firebase.failed()) {
       Serial.print("temperature/ failed:");
@@ -57,6 +58,15 @@ void loop() {
       return;
   }
   delay(1000);
+  //Humidity
+  Firebase.setFloat("humidity/"+String(t), mySensor.readFloatHumidity());
+  if (Firebase.failed()) {
+      Serial.print("humidity/ failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
+  delay(1000);
+  
   Firebase.setInt("lastID",t);
   if (Firebase.failed()) {
       Serial.print("lastId failed:");
