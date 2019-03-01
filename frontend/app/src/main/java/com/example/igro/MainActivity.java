@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if(fahrenheit_pressed) {
                     for(int i=0;i<1;i++) {
-                        Integer degrees = Integer.parseInt(number.getText().toString());
-                         Integer a = (Integer)Math.round((degrees - 32) * 5 / 9);
-                        number.setText(Integer.toString(a));
+                        Double degrees = Double.parseDouble(number.getText().toString());
+                         Double a = (degrees - 32) * 5 / 9;
+                        number.setText(Double.toString(a));
                     }
                     celcius_pressed = true;
                     fahrenheit_pressed=false;
@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if(celcius_pressed) {
                     for(int i=0;i<1;i++) {
-                        Integer degrees = Integer.parseInt(number.getText().toString());
-                        Integer a = degrees * 9 / 5 + 32;
-                        number.setText(Integer.toString(a));
+                        Double degrees = Double.parseDouble(number.getText().toString());
+                        Double a = degrees * 9 / 5 + 32;
+                        number.setText(Double.toString(a));
                     }
                     fahrenheit_pressed = true;
                     celcius_pressed=false;

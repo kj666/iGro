@@ -64,7 +64,7 @@
 
     <TextView
         android:id="@+id/indoorTempView"
-        android:layout_width="67dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
@@ -80,7 +80,7 @@
 
     <TextView
         android:id="@+id/outTempView"
-        android:layout_width="67dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
         android:layout_marginEnd="20dp"
@@ -88,7 +88,7 @@
         android:background="@null"
         android:ems="10"
         android:inputType="number"
-        android:text="18"
+        android:text="32"
         android:textAlignment="center"
         android:textSize="45sp"
         app:layout_constraintEnd_toStartOf="@+id/celciusOutButton"

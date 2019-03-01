@@ -41,7 +41,7 @@ public class TemperatureActivity extends AppCompatActivity {
         fahrenheitOut =(Button) findViewById(R.id.fahrenheitOutButton);
 
 
-        //from fahrenheitGreen to celciusGreen
+        //from fahrenheit to celcius in the greenhouse
         celciusGreen.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -49,25 +49,25 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 if(fahrenheit_pressedGreen) {
                     for(int i=0;i<1;i++) {
-                        Integer degrees = Integer.parseInt(numberGreen.getText().toString());
-                        Integer a = (Integer)Math.round((degrees - 32) * 5 / 9);
-                        numberGreen.setText(Integer.toString(a));
+                        Double degrees = Double.parseDouble(numberGreen.getText().toString());
+                        Double a = (Double)(degrees - 32) * 5 / 9;
+                        numberGreen.setText(Double.toString(a));
                     }
                     celcius_pressedGreen = true;
                     fahrenheit_pressedGreen =false;
                 }
             }
         });
-        // from celcius to fahrenheit
+        // from celcius to fahrenheit in the greenhouse
         fahrenheitGreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if(celcius_pressedGreen) {
                     for(int i=0;i<1;i++) {
-                        Integer degrees = Integer.parseInt(numberGreen.getText().toString());
-                        Integer a = degrees * 9 / 5 + 32;
-                        numberGreen.setText(Integer.toString(a));
+                        Double degrees = Double.parseDouble(numberGreen.getText().toString());
+                        Double a = degrees * 9 / 5 + 32;
+                        numberGreen.setText(Double.toString(a));
                     }
                     fahrenheit_pressedGreen = true;
                     celcius_pressedGreen =false;
@@ -75,7 +75,7 @@ public class TemperatureActivity extends AppCompatActivity {
             }
         });
 
-        //from fahrenheit to celcius
+        //from fahrenheit to celcius outdoors
         celciusOut.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -83,25 +83,25 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 if(fahrenheit_pressedOut) {
                     for(int i=0;i<1;i++) {
-                        Integer degrees = Integer.parseInt(numberOut.getText().toString());
-                        Integer a = (Integer)Math.round((degrees - 32) * 5 / 9);
-                        numberOut.setText(Integer.toString(a));
+                        Double degrees = Double.parseDouble(numberOut.getText().toString());
+                        Double a = (degrees - 32) * 5 / 9;
+                        numberOut.setText(Double.toString(a));
                     }
                     celcius_pressedOut = true;
                     fahrenheit_pressedOut =false;
                 }
             }
         });
-        // from celciusGreen to fahrenheitGreen
+        // from celciusGreen to fahrenheitGreen outdoors
         fahrenheitOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if(celcius_pressedOut) {
                     for(int i=0;i<1;i++) {
-                        Integer degrees = Integer.parseInt(numberOut.getText().toString());
-                        Integer a = degrees * 9 / 5 + 32;
-                        numberOut.setText(Integer.toString(a));
+                        Double degrees = Double.parseDouble(numberOut.getText().toString());
+                        Double a = degrees * 9 / 5 + 32;
+                        numberOut.setText(Double.toString(a));
                     }
                     fahrenheit_pressedOut = true;
                     celcius_pressedOut =false;
