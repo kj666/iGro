@@ -11,8 +11,14 @@
 //Wifi and Firebase Configuration
 #define FIREBASE_HOST "greenhouseapp-5d7af.firebaseio.com"
 #define FIREBASE_AUTH "ANDIRrho71r1E8En8ySBSqXshGo3ykcJbxQqzXQq"
-#define WIFI_SSID "KJ"
-#define WIFI_PASSWORD "686AA884F6"
+#define WIFI_SSID "Karthi"
+#define WIFI_PASSWORD "karthi666"
+
+int uv_ain=A0;
+int ad_value;
+
+int soil_ain;
+int soil_val;
 
 BME280 mySensor;
 
@@ -38,8 +44,9 @@ void setup() {
   //Read from sensor
   Serial.println("Reading basic values from BME280");
 
-  Wire.begin(0,2);
-  Wire.setClock(100000);
+//Use only for esp
+//  Wire.begin(0,2);
+//  Wire.setClock(100000);
   if (mySensor.beginI2C() == false) //Begin communication over I2C
   {
     Serial.println("The sensor did not respond. Please check wiring.");
@@ -49,6 +56,7 @@ void setup() {
 
 
 void loop() {
+  
   poll = Firebase.getInt("config/poll");
   delay(100);
   t = Firebase.getInt("config/lastID");
@@ -80,10 +88,20 @@ void loop() {
       return;
   }
 
-  //Send Prssure data to firebase
+  //Send Pressure data to firebase
   Firebase.setFloat("data/"+String(t)+"/pressure", mySensor.readFloatPressure());
   if (Firebase.failed()) {
       Serial.print("pressure/ failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
+
+  ad_value=analogRead(uv_ain);
+  Serial.println(ad_value);
+  //Send UV data to firebase
+  Firebase.setFloat("data/"+String(t)+"/uv",ad_value);
+  if (Firebase.failed()) {
+      Serial.print("uv/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
@@ -103,4 +121,12 @@ void loop() {
 
   delay(poll);
   
+}
+
+int readSoil(){
+  digitalWrite(soilPower, HIGH);
+  delay(10);
+  val = analogRead(soilPin);
+  digitalWrite(soilPower, LOW);
+  return val;
 }
