@@ -10,7 +10,7 @@
         android:id="@+id/highTempEditText"
         android:layout_width="81dp"
         android:layout_height="25dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="8dp"
@@ -20,20 +20,19 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/textView24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/highTempRangeTextView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/highTempRangeTextView" />
 
     <TextView
         android:id="@+id/highTempRangeTextView"
         android:layout_width="82dp"
         android:layout_height="27dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:text="HIGH"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempSwitch" />
+        app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
     <TextView
         android:id="@+id/lowTempRangeTextView"
@@ -42,13 +41,10 @@
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:text="LOW"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/lowTempEditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempControlTextView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
     <Button
         android:id="@+id/textView10"
@@ -81,19 +77,24 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@null"
         android:ems="10"
         android:inputType="number"
         android:text="24"
         android:textAlignment="center"
         android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="@+id/outdoorTempEditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/outdoorTempEditText"
         android:layout_width="67dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
@@ -104,6 +105,8 @@
         android:textAlignment="center"
         android:textSize="45sp"
         app:layout_constraintEnd_toStartOf="@+id/textView4"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/ghTempEditText"
         app:layout_constraintTop_toBottomOf="@+id/outdoorTextView" />
 
     <Button
@@ -182,13 +185,20 @@
         android:id="@+id/tempControlTextView"
         android:layout_width="173dp"
         android:layout_height="31dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="TEMPERATURE CONTROL"
         android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tempSwitch"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+        app:layout_constraintTop_toBottomOf="@+id/textView10"
+        app:layout_constraintVertical_bias="0.003" />
 
     <Switch
         android:id="@+id/tempSwitch"
@@ -197,24 +207,34 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
+        android:layout_marginBottom="8dp"
         android:text="ON/OF"
         android:textOff="OFF"
         android:textOn="ON"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView19"
         android:layout_width="171dp"
         android:layout_height="27dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="218dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="TEMPERATURE RANGE"
         android:textAlignment="center"
-        app:layout_constraintStart_toEndOf="@+id/lowTempRangeTextView"
-        app:layout_constraintTop_toBottomOf="@+id/tempTextView" />
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tempTextView"
+        app:layout_constraintVertical_bias="0.04" />
 
     <ImageView
         android:id="@+id/logoBottomImageView"
@@ -255,12 +275,12 @@
         android:layout_marginLeft="5dp"
         android:layout_marginBottom="11dp"
         app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
-        app:layout_constraintStart_toStartOf="parent" >
+        app:layout_constraintStart_toStartOf="parent">
+
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph"
             android:layout_width="180dp"
-            android:layout_height="124dp"
-            />
+            android:layout_height="124dp" />
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -298,7 +318,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
+
                 <TextView
                     android:layout_gravity="left"
                     android:text="20/02/2019"
@@ -316,7 +337,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
+
                 <TextView
                     android:layout_gravity="left"
                     android:text="21/02/2019"
@@ -333,7 +355,8 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
+
                 <TextView
                     android:layout_gravity="left"
                     android:text="22/02/2019"
@@ -354,19 +377,18 @@
     <EditText
         android:id="@+id/lowTempEditText"
         android:layout_width="79dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="193dp"
-        android:layout_marginRight="193dp"
-        android:layout_marginBottom="19dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
         android:ems="10"
         android:inputType="numberSigned"
         android:text="Low Limit"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/textView23"
-        app:layout_constraintEnd_toStartOf="@+id/highTempEditText"
-        app:layout_constraintHorizontal_bias="0.576"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lowTempRangeTextView"
+        app:layout_constraintVertical_bias="0.75" />
 
 </android.support.constraint.ConstraintLayout>
