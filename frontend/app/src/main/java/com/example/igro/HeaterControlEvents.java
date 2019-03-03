@@ -2,9 +2,9 @@ package com.example.igro;
 
 public class HeaterControlEvents {
 
-    String heaterEventId;
-    String heaterEventDateTime;
-    Boolean heaterEventOnOff;
+    String heaterEventId = null;
+    String heaterEventDateTime = null;
+    Boolean heaterEventOnOff = false;
 
     HeaterControlEvents(){
 
