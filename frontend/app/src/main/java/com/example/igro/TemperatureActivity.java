@@ -1,5 +1,6 @@
 package com.example.igro;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.collection.LLRBNode;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -36,6 +38,8 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView tempControlTextView;
     Switch tempSwitch;
 
+    public Boolean lastHeaterState;
+
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
 
@@ -51,15 +55,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
        tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
        tempSwitch = (Switch)findViewById(R.id.tempSwitch);
-       tempSwitch.setChecked(false);
-
-        //
-        heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("heaterControlLog");
-
-        //set Switch state based on the last child value in heaterSwitchEventsDB
-        heaterSwitchState();
-        Boolean switchState = tempSwitch.isChecked();
-
+       tempSwitch.setClickable(true);
 
         double y,x;
         x=-5;
@@ -104,13 +100,11 @@ public class TemperatureActivity extends AppCompatActivity {
         heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("heaterControlLog");
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
-        heaterSwitchState();
+         heaterSwitchStateFromRecord();
 
         final Boolean switchState = tempSwitch.isChecked();
 
-        tempSwitch.setClickable(true);
-
-        if(switchState == true){
+        if(switchState){
             Log.d(TAG, "The heater was on");
         }else{
             Log.d(TAG, "The heater was off");
@@ -126,14 +120,12 @@ public class TemperatureActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
 
-    private void heaterSwitchState() {
+    private void heaterSwitchStateFromRecord() {
 
         heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("heaterControlLog");
-
 
         heaterSwitchEventDB.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
             @Override
@@ -144,7 +136,13 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 if(!(checkedStatus == null)){
 
+                    lastHeaterState = checkedStatus;
                     tempSwitch.setChecked(checkedStatus);
+                    if(checkedStatus){
+                        tempSwitch.setTextColor(Color.GREEN);
+                    }else{
+                        tempSwitch.setTextColor(Color.RED);
+                    }
 
                 }else{
 
@@ -174,6 +172,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
 
