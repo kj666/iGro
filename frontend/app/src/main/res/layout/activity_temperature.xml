@@ -9,38 +9,36 @@
     <EditText
         android:id="@+id/highTempEditText"
         android:layout_width="81dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="8dp"
-        android:editable="true"
-        android:ems="10"
+        android:layout_height="38dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginRight="28dp"
+        android:contentDescription="highTempLimit"
+        android:ems="20"
         android:foregroundGravity="fill_horizontal|bottom|center_vertical|center|center_horizontal"
         android:inputType="numberSigned"
-        android:numeric="signed|integer|decimal"
         android:saveEnabled="true"
-        android:text="Low Limit"
+        android:text="Lower Limit"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textIsSelectable="true"
-        android:textSize="24sp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/textView24"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/lowTempEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/highTempRangeTextView"
+        app:layout_constraintTop_toTopOf="@+id/lowTempEditText"
+        app:layout_constraintVertical_bias="0.0"
         tools:textColor="@color/colorAccent" />
 
     <TextView
         android:id="@+id/highTempRangeTextView"
         android:layout_width="82dp"
         android:layout_height="27dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:text="HIGH"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+        app:layout_constraintBottom_toBottomOf="@+id/lowTempRangeTextView"
+        app:layout_constraintEnd_toEndOf="@+id/highTempEditText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView19" />
 
     <TextView
         android:id="@+id/lowTempRangeTextView"
@@ -49,13 +47,16 @@
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:text="LOW"
         android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/textView19"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
     <Button
-        android:id="@+id/textView10"
+        android:id="@+id/fahrenheitghTextView"
         android:layout_width="43dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="21dp"
@@ -63,11 +64,11 @@
         android:layout_marginTop="3dp"
         android:text="F"
         android:textAlignment="center"
-        app:layout_constraintStart_toEndOf="@+id/ghTempEditText"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
+        app:layout_constraintTop_toBottomOf="@+id/celciusghTextView" />
 
     <Button
-        android:id="@+id/textView9"
+        android:id="@+id/celciusghTextView"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="21dp"
@@ -75,11 +76,11 @@
         android:layout_marginTop="8dp"
         android:text="ͦC"
         android:textAlignment="center"
-        app:layout_constraintStart_toEndOf="@+id/ghTempEditText"
+        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
         app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
 
     <TextView
-        android:id="@+id/ghTempEditText"
+        android:id="@+id/ghTempTextView"
         android:layout_width="67dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -88,17 +89,17 @@
         android:layout_marginBottom="8dp"
         android:background="@null"
         android:ems="10"
-        android:inputType="number"
-        android:text="24"
+        android:inputType="numberSigned"
+        android:text="10sp"
         android:textAlignment="center"
         android:textSize="45sp"
-        app:layout_constraintBottom_toBottomOf="@+id/outdoorTempEditText"
+        app:layout_constraintBottom_toBottomOf="@+id/outdoorTempTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/outdoorTempEditText"
+        android:id="@+id/outdoorTempTextView"
         android:layout_width="67dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -112,13 +113,13 @@
         android:text="18"
         android:textAlignment="center"
         android:textSize="45sp"
-        app:layout_constraintEnd_toStartOf="@+id/textView4"
+        app:layout_constraintEnd_toStartOf="@+id/celciusOutTextView"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/ghTempEditText"
+        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
         app:layout_constraintTop_toBottomOf="@+id/outdoorTextView" />
 
     <Button
-        android:id="@+id/textView4"
+        android:id="@+id/celciusOutTextView"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -130,7 +131,7 @@
         app:layout_constraintTop_toBottomOf="@+id/outdoorTextView" />
 
     <Button
-        android:id="@+id/textView8"
+        android:id="@+id/fahrenheitOutTextView"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -138,10 +139,10 @@
         android:text="F"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/celciusOutTextView" />
 
     <TextView
-        android:id="@+id/tempTextView"
+        android:id="@+id/temperatureTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="43dp"
         android:layout_marginTop="6dp"
@@ -164,7 +165,7 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/outdoorTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
 
     <TextView
         android:id="@+id/outdoorTextView"
@@ -176,7 +177,7 @@
         android:text="OUTDOOR"
         android:textSize="24sp"
         app:layout_constraintStart_toEndOf="@+id/greenhouseTextView"
-        app:layout_constraintTop_toBottomOf="@+id/tempTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
 
     <ImageView
         android:id="@+id/logoTopImageView"
@@ -199,17 +200,18 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:clickable="false"
         android:foregroundGravity="left"
         android:freezesText="false"
         android:gravity="start|left"
-        android:paddingTop="5dp"
+        android:paddingTop="8dp"
         android:text="HEATER CONTROL"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tempSwitch"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10"
+        app:layout_constraintTop_toBottomOf="@+id/fahrenheitghTextView"
         app:layout_constraintVertical_bias="0.0" />
 
     <Switch
@@ -221,6 +223,9 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="8dp"
         android:text="OFF / ON"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHighlight="@color/colorPrimary"
+        android:textColorLink="@color/colorAccent"
         android:textOff="OFF"
         android:textOn="ON"
         android:visibility="visible"
@@ -245,8 +250,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempTextView"
-        app:layout_constraintVertical_bias="0.04" />
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/logoBottomImageView"
@@ -389,26 +394,32 @@
     <EditText
         android:id="@+id/lowTempEditText"
         android:layout_width="79dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="12dp"
+        android:contentDescription="lowerTempLimit"
         android:editable="true"
-        android:ems="10"
+        android:ems="20"
         android:gravity="bottom|center|center_horizontal|center_vertical"
-        android:inputType="numberSigned"
+        android:inputType="numberSigned|number|numberDecimal"
         android:text="Low Limit"
         android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
+        android:textSize="12sp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/textView23"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lowTempRangeTextView"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintVertical_bias="0.333" />
 
     <android.support.constraint.Group
         android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

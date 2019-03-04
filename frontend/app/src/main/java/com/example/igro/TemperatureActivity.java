@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,12 +33,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static java.lang.Integer.parseInt;
+
 
 public class TemperatureActivity extends AppCompatActivity {
 
     LineGraphSeries<DataPoint> series;
 
     //initialize the layout fields
+    EditText lowTempEditText;
+    EditText highTempEditText;
     TextView tempControlTextView;
     Switch tempSwitch;
 
@@ -54,11 +59,17 @@ public class TemperatureActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-       setContentView(R.layout.activity_temperature);
+        setContentView(R.layout.activity_temperature);
 
-       tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
-       tempSwitch = (Switch)findViewById(R.id.tempSwitch);
-       tempSwitch.setClickable(true);
+        tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
+        tempSwitch = (Switch)findViewById(R.id.tempSwitch);
+        tempSwitch.setClickable(true);
+
+        lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
+        highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+
+
+
 
         double y,x;
         x=-5;
@@ -99,6 +110,21 @@ public class TemperatureActivity extends AppCompatActivity {
 
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
+
+        lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
+        highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+
+        String lowTempLimit = lowTempEditText.getText().toString();
+        String highTempLimit = lowTempEditText.getText().toString();
+
+        if((lowTempLimit.matches(".*[0-9].*"))&&(highTempLimit.matches(".*[0-9].*"))){
+            int lowTemp = parseInt(lowTempLimit);
+            int highTemp = parseInt(highTempLimit);
+        }else{
+            Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
+        }
+
+
 
         heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("heaterControlLog");
 

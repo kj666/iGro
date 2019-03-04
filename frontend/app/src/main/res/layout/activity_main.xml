@@ -167,7 +167,7 @@
             android:textSize="45sp" />
 
         <Button
-            android:id="@+id/textView4"
+            android:id="@+id/celciusOutTextView"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="120dp"
