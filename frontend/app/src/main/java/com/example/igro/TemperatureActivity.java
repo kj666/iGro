@@ -47,7 +47,7 @@ public class TemperatureActivity extends AppCompatActivity {
     private static final String TAG = "HeaterIsOnTag";
 
     //create heater database reference
-    DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("heaterControlLog");
+    DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("HeaterControlEvents");
 
 
 
@@ -184,6 +184,10 @@ public class TemperatureActivity extends AppCompatActivity {
             //record the time of the click
             //DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
+            long heatOnOffUnixFormat = System.currentTimeMillis()/1000;
+
+            String heatOnOffReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(heatOnOffUnixFormat*1000));
+
             DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
             String heatOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
@@ -191,7 +195,7 @@ public class TemperatureActivity extends AppCompatActivity {
             String heatEventId = heaterSwitchEventDB.push().getKey();
 
 
-            HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnTimeStampFormated, tempSwitchState);
+            HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffUnixFormat, tempSwitchState);
             heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
 
             if(!(heatEventId == null)) {
@@ -214,4 +218,6 @@ public class TemperatureActivity extends AppCompatActivity {
         }
 
 
+
     }
+

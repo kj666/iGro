@@ -4,21 +4,24 @@ public class HeaterControlEvents {
 
     String heaterEventId = null;
     String heaterEventDateTime = null;
+    Long heaterEventUnixEpoch = null;
     Boolean heaterEventOnOff = false;
 
     HeaterControlEvents(){
 
     }
 
-    public HeaterControlEvents(String heaterEventId, String heaterEventDateTime, Boolean heaterEventOnOff) {
+    public HeaterControlEvents(String heaterEventId, String heaterEventDateTime, Long heaterEventUnixEpoch, Boolean heaterEventOnOff) {
         this.heaterEventId = heaterEventId;
         this.heaterEventDateTime = heaterEventDateTime;
         this.heaterEventOnOff = heaterEventOnOff;
+        this.heaterEventUnixEpoch = heaterEventUnixEpoch;
     }
 
 
-    public HeaterControlEvents(String heaterEventDateTime, Boolean heaterEventOnOff) {
+    public HeaterControlEvents(String heaterEventDateTime, Long heaterEventUnixEpoch, Boolean heaterEventOnOff) {
         this.heaterEventDateTime = heaterEventDateTime;
+        this.heaterEventUnixEpoch = heaterEventUnixEpoch;
         this.heaterEventOnOff = heaterEventOnOff;
     }
 
@@ -36,6 +39,14 @@ public class HeaterControlEvents {
 
     public void setHeaterEventDateTime(String heaterEventDateTime) {
         this.heaterEventDateTime = heaterEventDateTime;
+    }
+
+    public Long getHeaterEventUnixEpoch() {
+        return heaterEventUnixEpoch;
+    }
+
+    public void setHeaterEventUnixEpoch(Long heaterEventUnixEpoch) {
+        this.heaterEventUnixEpoch = heaterEventUnixEpoch;
     }
 
     public Boolean getHeaterEventOnOff() {
