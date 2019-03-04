@@ -9,45 +9,49 @@
 
 
     <TextView
-        android:id="@+id/range0to25"
+        android:id="@+id/rangelow"
         android:layout_width="110dp"
         android:layout_height="19dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="20dp"
         android:text="LOW(10-20%)"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Holo.Small"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView24"
-        app:layout_constraintEnd_toStartOf="@+id/range25to50"
+        app:layout_constraintBottom_toTopOf="@+id/humidityhistoryTextView"
+        app:layout_constraintEnd_toStartOf="@+id/rangeoptimal"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView6"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/lowmoistureCardView"
+        app:layout_constraintVertical_bias="0.073" />
 
     <TextView
-        android:id="@+id/range25to50"
+        android:id="@+id/rangeoptimal"
         android:layout_width="110dp"
         android:layout_height="19dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginRight="26dp"
+        android:layout_marginBottom="20dp"
         android:text="OPTIMAL (20-30%)"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Holo.Small"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView24"
-        app:layout_constraintEnd_toStartOf="@+id/range50to75"
-        app:layout_constraintStart_toEndOf="@+id/range0to25"
-        app:layout_constraintTop_toBottomOf="@+id/cardView7"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintBottom_toTopOf="@+id/humidityhistoryTextView"
+        app:layout_constraintEnd_toStartOf="@+id/rangehigh"
+        app:layout_constraintStart_toEndOf="@+id/rangelow"
+        app:layout_constraintTop_toBottomOf="@+id/optimalmoistureCardView"
+        app:layout_constraintVertical_bias="0.076" />
 
     <TextView
-        android:id="@+id/range50to75"
+        android:id="@+id/rangehigh"
         android:layout_width="110dp"
         android:layout_height="19dp"
         android:layout_marginStart="224dp"
@@ -58,105 +62,89 @@
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Holo.Small"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/range25to50"
+        app:layout_constraintBottom_toBottomOf="@+id/rangeoptimal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.78"
+        app:layout_constraintHorizontal_bias="0.84"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView8"
+        app:layout_constraintTop_toBottomOf="@+id/graphCardView"
         app:layout_constraintVertical_bias="1.0" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="132dp"
-        android:layout_height="81dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="612dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/igro_logo" />
-
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/humidityrangeTextView"
         android:layout_width="171dp"
         android:layout_height="22dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="96dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="212dp"
         android:text="HUMIDITY RANGE"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Holo"
-        app:layout_constraintBottom_toTopOf="@+id/imageView6"
+        app:layout_constraintBottom_toTopOf="@+id/leaflogo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.513"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView23"
-        app:layout_constraintVertical_bias="0.005" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView6"
+        android:id="@+id/lowhumidityCardView"
         android:layout_width="110dp"
-        android:layout_height="18dp"
+        android:layout_height="15dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView24"
-        app:layout_constraintEnd_toStartOf="@+id/cardView7"
+        app:cardBackgroundColor="@color/rangelow"
+        app:layout_constraintBottom_toTopOf="@+id/humidityhistoryTextView"
+        app:layout_constraintEnd_toStartOf="@+id/optimalhumidityCardView"
+        app:layout_constraintHorizontal_bias="0.448"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/humidityrangeTextView"
+        app:layout_constraintVertical_bias="0.034" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView7"
+        android:id="@+id/optimalhumidityCardView"
         android:layout_width="110dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_height="15dp"
+        android:layout_marginStart="13dp"
+        android:layout_marginLeft="13dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView24"
-        app:layout_constraintEnd_toStartOf="@+id/range50to75"
-        app:layout_constraintHorizontal_bias="0.156"
-        app:layout_constraintStart_toEndOf="@+id/cardView6"
-        app:layout_constraintTop_toBottomOf="@+id/textView19"
-        app:layout_constraintVertical_bias="0.052" />
+        app:cardBackgroundColor="@color/rangeoptimal"
+        app:layout_constraintBottom_toTopOf="@+id/humidityhistoryTextView"
+        app:layout_constraintEnd_toStartOf="@+id/highhumidityCardView"
+        app:layout_constraintStart_toEndOf="@+id/lowhumidityCardView"
+        app:layout_constraintTop_toBottomOf="@+id/humidityrangeTextView"
+        app:layout_constraintVertical_bias="0.034" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView32"
+        android:id="@+id/highhumidityCardView"
         android:layout_width="110dp"
-        android:layout_height="18dp"
+        android:layout_height="15dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView24"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:cardBackgroundColor="@color/rangehigh"
+        app:layout_constraintBottom_toTopOf="@+id/humidityhistoryTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.516"
-        app:layout_constraintStart_toEndOf="@+id/cardView7"
-        app:layout_constraintTop_toBottomOf="@+id/textView19"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toEndOf="@+id/optimalhumidityCardView"
+        app:layout_constraintTop_toBottomOf="@+id/humidityrangeTextView"
+        app:layout_constraintVertical_bias="0.049" />
 
 
     <TextView
-        android:id="@+id/textView23"
+        android:id="@+id/graphTextView"
         android:layout_width="100dp"
         android:layout_height="23dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="188dp"
+        android:layout_marginTop="260dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="GRAPH"
@@ -165,10 +153,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+        app:layout_constraintTop_toBottomOf="@+id/igroLogo" />
 
     <TextView
-        android:id="@+id/textView24"
+        android:id="@+id/humidityhistoryTextView"
         android:layout_width="203dp"
         android:layout_height="19dp"
         android:layout_marginStart="8dp"
@@ -180,44 +168,46 @@
         android:text="HUMIDITY HISTORY"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Holo"
-        app:layout_constraintBottom_toTopOf="@+id/cardView10"
+        app:layout_constraintBottom_toTopOf="@+id/tableCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/humidityrangeTextView"
+        app:layout_constraintVertical_bias="0.96" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView8"
-        android:layout_width="398dp"
-        android:layout_height="82dp"
+        android:id="@+id/graphCardView"
+        android:layout_width="0dp"
+        android:layout_height="96dp"
         android:layout_marginStart="4dp"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView19"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/humidityrangeTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView23"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toBottomOf="@+id/graphTextView"
+        app:layout_constraintVertical_bias="0.28">
 
         <com.jjoe64.graphview.GraphView
             android:id="@+id/graph"
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="match_parent"
+            android:layout_gravity="fill" />
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView10"
-        android:layout_width="394dp"
-        android:layout_height="108dp"
+        android:id="@+id/tableCardView"
+        android:layout_width="0dp"
+        android:layout_height="107dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView6"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/leaflogo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent">
@@ -225,7 +215,8 @@
 
         <TableLayout
             android:layout_width="400dp"
-            android:layout_height="200dp">
+            android:layout_height="200dp"
+            android:gravity="fill|left">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -348,12 +339,12 @@
     </android.support.v7.widget.CardView>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/humidityTextView"
         android:layout_width="160dp"
         android:layout_height="33dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="HUMIDITY"
@@ -362,10 +353,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.591"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+        app:layout_constraintTop_toBottomOf="@+id/igroLogo" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/greenhouseTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
@@ -376,15 +367,16 @@
         android:layout_marginBottom="8dp"
         android:text="Greenhouse"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintBottom_toTopOf="@+id/watersystemTextView"
+        app:layout_constraintEnd_toStartOf="@+id/statusImage"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/humidityTextView"
+        app:layout_constraintVertical_bias="0.208" />
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="98dp"
+        android:id="@+id/readingTextView"
+        android:layout_width="97dp"
         android:layout_height="80dp"
         android:layout_marginStart="80dp"
         android:layout_marginLeft="80dp"
@@ -393,26 +385,26 @@
         android:layout_marginRight="8dp"
         android:text="24 %"
         android:textSize="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintBottom_toTopOf="@+id/watersystemTextView"
+        app:layout_constraintEnd_toStartOf="@+id/statusImage"
+        app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/statusImage"
         android:layout_width="82dp"
         android:layout_height="94dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="100dp"
-        android:layout_marginRight="100dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="112dp"
+        android:layout_marginRight="112dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/humidityTextView"
         app:srcCompat="@drawable/igro_humidity_optimal" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/watersystemTextView"
         android:layout_width="138dp"
         android:layout_height="26dp"
         android:layout_marginTop="8dp"
@@ -421,29 +413,28 @@
         android:layout_marginBottom="8dp"
         android:text="Dehumidifier"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-        app:layout_constraintBottom_toTopOf="@+id/textView23"
-        app:layout_constraintEnd_toStartOf="@+id/switch2"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintBottom_toTopOf="@+id/graphTextView"
+        app:layout_constraintEnd_toStartOf="@+id/watersystemSwitch"
+        app:layout_constraintTop_toBottomOf="@+id/statusImage"
+        app:layout_constraintVertical_bias="0.836" />
 
     <Switch
-        android:id="@+id/switch2"
+        android:id="@+id/watersystemSwitch"
         android:layout_width="73dp"
         android:layout_height="47dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="108dp"
-        android:layout_marginRight="108dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="116dp"
+        android:layout_marginRight="116dp"
         android:text="OFF"
-        app:layout_constraintBottom_toTopOf="@+id/textView23"
+        app:layout_constraintBottom_toTopOf="@+id/graphTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.172" />
+        app:layout_constraintTop_toBottomOf="@+id/statusImage"
+        app:layout_constraintVertical_bias="0.863" />
 
     <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="44dp"
-        android:layout_height="38dp"
+        android:id="@+id/leaflogo"
+        android:layout_width="56dp"
+        android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
@@ -455,9 +446,9 @@
         app:srcCompat="@drawable/igro_justleaf" />
 
     <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="47dp"
-        android:layout_height="38dp"
+        android:id="@+id/igroLogo"
+        android:layout_width="59dp"
+        android:layout_height="53dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"

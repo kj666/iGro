@@ -3,10 +3,9 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#d81b60</color>
-    <color name="moisturelow">#ab0211</color>
-    <color name="moisturemedium">#00fc19</color>
-    <color name="moisturehigh">#10bac6</color>
-    <color name="lowvalue">#f44336</color>
-    <color name="humidityhigh">#f9a825</color>
+    <color name="rangehigh">#10bac6</color>
+    <color name="rangelow">#ab0211</color>
+    <color name="rangeoptimal">#00fc19</color>
+
 
 </resources>

@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+       super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         humidityButton = (Button) findViewById(R.id.humiditybutton);
@@ -29,10 +29,9 @@ public class MainActivity extends AppCompatActivity {
                 openHumidityActivity();
             }
         });
-
         moistureButton.setOnClickListener( new View.OnClickListener(){
             @Override
-            public void onClick (View v){
+            public void onClick (View v2){
                 openMoistureActivity();
             }
         });
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openMoistureActivity(){
-        Intent intent = new Intent(this,MoistureActivity.class);
-        startActivity(intent);
+        Intent intent2 = new Intent(this,MoistureActivity.class);
+        startActivity(intent2);
     }
 }
