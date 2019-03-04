@@ -28,6 +28,9 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class TemperatureActivity extends AppCompatActivity {
@@ -102,7 +105,7 @@ public class TemperatureActivity extends AppCompatActivity {
         //call function check last child in heaterSwitchEventDB and set switch to that state
          heaterSwitchStateFromRecord();
 
-        final Boolean switchState = tempSwitch.isChecked();
+        Boolean switchState = tempSwitch.isChecked();
 
         if(switchState){
             Log.d(TAG, "The heater was on");
@@ -114,7 +117,7 @@ public class TemperatureActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton tempSwitch, boolean tempSwitchState){
 
                 //Call heaterSwitchEvent function
-                heaterSwitchEvent(switchState);
+                heaterSwitchEvent(tempSwitchState);
 
 
             }
@@ -179,13 +182,16 @@ public class TemperatureActivity extends AppCompatActivity {
         private void heaterSwitchEvent(boolean tempSwitchState) {
 
             //record the time of the click
-            DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+            //DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+
+            DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+            String heatOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String heatEventId = heaterSwitchEventDB.push().getKey();
 
 
-            HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnDateTime.toString(), tempSwitchState);
+            HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnTimeStampFormated, tempSwitchState);
             heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
 
             if(!(heatEventId == null)) {
@@ -193,12 +199,12 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 if (tempSwitchState) {
 
-                    Log.d(TAG, "The heater was turned on " + heatOnDateTime);
-                    Toast.makeText(this, "The heater was switched ON on " + heatOnDateTime, Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "The heater was turned on " + heatOnTimeStampFormated);
+                    Toast.makeText(this, "The heater was switched ON on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
                 } else {
-                    Log.d(TAG, "The heater was turned off on " + heatOnDateTime);
-                    Toast.makeText(this, "The heater was switched OFF on " + heatOnDateTime, Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "The heater was turned off on " + heatOnTimeStampFormated);
+                    Toast.makeText(this, "The heater was switched OFF on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }
             }else{
                 Log.d(TAG, "ERROR: heatEventId can't be null");
