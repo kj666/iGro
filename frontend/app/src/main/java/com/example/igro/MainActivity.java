@@ -29,6 +29,19 @@ public class MainActivity extends AppCompatActivity {
     private boolean celcius_pressed=true;
     private boolean fahrenheit_pressed=false;
     private Button tempNumberButton;
+    private Button logout;
+    private String UserN;
+    private String UserP;
+    MainActivity() {
+        UserN= " ";
+        UserP = " ";
+    }
+    MainActivity(String name,String pass){
+        UserN = name;
+        UserP = pass;
+
+    }
+
 
     public int tempD;
     //Reference to collection in firestore
@@ -63,6 +76,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Dashboard dash = new Dashboard();
+        int c= dash.getCounter();
+        if (c==0){
+            Intent j = new Intent(MainActivity.this, Dashboard.class);
+            startActivity(j);}
+        //logout =  (Button) findViewById(R.id.logout);
         temperature=(Button) findViewById(R.id.temp_button);
         number=(Button) findViewById(R.id.tempNumberView);
         getTempData("1");
