@@ -52,7 +52,7 @@ public class TemperatureActivity extends AppCompatActivity {
     private static final String TAG = "HeaterIsOnTag";
 
     //create heater database reference
-    DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("HeaterControlEvents");
+    DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("HeaterControlLog");
 
 
 
@@ -126,7 +126,6 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
 
-        heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("heaterControlLog");
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
          heaterSwitchStateFromRecord();
@@ -154,11 +153,12 @@ public class TemperatureActivity extends AppCompatActivity {
 
     private void heaterSwitchStateFromRecord() {
 
-        heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("heaterControlLog");
+        heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("HeaterControlLog");
 
         heaterSwitchEventDB.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
 
                 HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
                 Boolean checkedStatus = lastRecord.getHeaterEventOnOff();
@@ -183,6 +183,26 @@ public class TemperatureActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
+                Boolean checkedStatus = lastRecord.getHeaterEventOnOff();
+
+                if(!(checkedStatus == null)){
+
+                    lastHeaterState = checkedStatus;
+                    tempSwitch.setChecked(checkedStatus);
+                    if(checkedStatus){
+                        tempSwitch.setTextColor(Color.GREEN);
+                    }else{
+                        tempSwitch.setTextColor(Color.RED);
+                    }
+
+                }else{
+
+                    Log.d(TAG, "On/Off Status of heater can't be null, getHeaterEventOnOff points to null");
+
+                }
+
 
             }
 
@@ -242,8 +262,6 @@ public class TemperatureActivity extends AppCompatActivity {
             }
 
         }
-
-
 
     }
 
