@@ -153,7 +153,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
     private void heaterSwitchStateFromRecord() {
 
-        heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("HeaterControlLog");
+        
 
         heaterSwitchEventDB.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
             @Override
