@@ -9,8 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UvIndexActivity"
-            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".Dashboard"></activity>
+        <activity
+            android:name=".UvIndexActivity"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".TemperatureActivity"
             android:parentActivityName=".MainActivity" />
