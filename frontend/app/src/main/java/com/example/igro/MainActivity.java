@@ -164,10 +164,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent=new Intent(this,UvIndexActivity.class);
         startActivity(intent);
     }
-
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();
@@ -181,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.sign_out:
-                Intent i = new Intent(MainActivity.this, Dashboard.class);
-                startActivity(i);
+                Intent f = new Intent(MainActivity.this, Dashboard.class);
+                startActivity(f);
                 return true;
 
         }
