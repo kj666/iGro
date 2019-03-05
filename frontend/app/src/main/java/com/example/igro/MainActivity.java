@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
         Dashboard dash = new Dashboard();
         int c= dash.getCounter();
         if (c==0){
-            Intent j = new Intent(MainActivity.this, Dashboard.class);
-            startActivity(j);}
+           Intent j = new Intent(MainActivity.this, Dashboard.class);
+           startActivity(j);}
         //logout =  (Button) findViewById(R.id.logout);
         temperature=(Button) findViewById(R.id.temp_button);
         number=(Button) findViewById(R.id.tempNumberView);
@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();
@@ -178,6 +179,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.sign_out:
+                Intent i = new Intent(MainActivity.this, Dashboard.class);
+                startActivity(i);
+                return true;
+
+        }
         return super.onOptionsItemSelected(item);
     }
 }
