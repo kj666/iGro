@@ -36,18 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private Button logout;
     private String UserN;
     private String UserP;
-//    MainActivity() {
-//        UserN= " ";
-//        UserP = " ";
-//    }
-//    MainActivity(String name,String pass){
-//        UserN = name;
-//        UserP = pass;
-//
-//    }
-
-    protected Button temperatureTitle;
-    protected Button tempNumber;
 
     protected Button humidityTitle;
     protected TextView humNumber;
@@ -73,11 +61,10 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("ERROR", "Cannot get Temperature");
                     }
                 }
-                tempNumber.setText(tempD+"");
+                number.setText(tempD+"");
             }
         });
     }
-
 
     public int humD;
 
@@ -119,8 +106,6 @@ public class MainActivity extends AppCompatActivity {
         temperature=(Button) findViewById(R.id.temp_button);
         number=(Button) findViewById(R.id.tempNumberView);
 
-        temperatureTitle=(Button) findViewById(R.id.tempButton);
-        tempNumber=(Button) findViewById(R.id.tempNumberButton);
         getTempData("1");
         number=(Button) findViewById(R.id.tempNumberView);
         celcius=(Button) findViewById(R.id.celciusOutButton);
@@ -128,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
         uv=(Button) findViewById(R.id.uvButton);
         uvNumber=(Button)findViewById(R.id.uvNumberButton);
 
+        humidityTitle = (Button)findViewById(R.id.humidityButton);
+        humNumber = (TextView) findViewById(R.id.humidityPercentView);
+        getHumData("1");
 
         //from fahrenheit to celcius
         celcius.setOnClickListener(new View.OnClickListener() {
@@ -165,18 +153,14 @@ public class MainActivity extends AppCompatActivity {
 
         //opening the Temperature view when the temperature text is clicked
         temperature.setOnClickListener(new View.OnClickListener() {
-
-        humidityTitle = (Button)findViewById(R.id.humButton);
-        humNumber = (TextView) findViewById(R.id.humNumberTextView);
-        getHumData("1");
-
-
-        temperatureTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openTemperature();
             }
         });
+
+
+
         //opening the Uv index view  when the uv text is clicked
         uv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
 
         //opening the Temperature view when the temperature number is clicked
         number.setOnClickListener(new View.OnClickListener() {
-        tempNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openTemperature();
