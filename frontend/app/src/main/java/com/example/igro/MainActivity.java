@@ -32,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
     private Button fahrenheit;
     private boolean celcius_pressed=true;
     private boolean fahrenheit_pressed=false;
+
+    private Button moistureNumber;
+    private Button moistureButton;
+
     private Button tempNumberButton;
     private Button logout;
     private String UserN;
@@ -92,10 +96,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    private Button humidityButton;
-    private Button moistureButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
 
         humidityTitle = (Button)findViewById(R.id.humidityButton);
         humNumber = (TextView) findViewById(R.id.humidityPercentView);
+        moistureButton = (Button) findViewById(R.id.moistureButton);
+        moistureNumber = (Button) findViewById(R.id.moisturePercentView);
+
         getHumData("1");
 
         //from fahrenheit to celcius
@@ -201,6 +204,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+        moistureButton.setOnClickListener( new View.OnClickListener(){
+            @Override
+            public void onClick (View v2){
+                openMoistureActivity();
+            }
+        });
+
+        moistureNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openMoistureActivity();
+            }
+        });
+
+
     }
 
 
@@ -225,6 +244,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(humIntent);
     }
 
+    public void openMoistureActivity(){
+        Intent intent2 = new Intent(this,MoistureActivity.class);
+        startActivity(intent2);
+    }
+
 
 
     @Override
@@ -247,32 +271,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
 
-        humidityButton = (Button) findViewById(R.id.humiditybutton);
-        moistureButton = (Button) findViewById(R.id.moisturebutton);
-
-        humidityButton.setOnClickListener( new View.OnClickListener(){
-            @Override
-                    public void onClick (View v){
-                openHumidityActivity();
-            }
-        });
-        moistureButton.setOnClickListener( new View.OnClickListener(){
-            @Override
-            public void onClick (View v2){
-                openMoistureActivity();
-            }
-        });
-
-
     }
 
-    public void openHumidityActivity(){
-        Intent intent = new Intent(this,HumidityActivity.class);
-        startActivity(intent);
-    }
-
-    public void openMoistureActivity(){
-        Intent intent2 = new Intent(this,MoistureActivity.class);
-        startActivity(intent2);
-    }
 }
