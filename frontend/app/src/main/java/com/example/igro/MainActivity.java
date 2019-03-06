@@ -1,8 +1,10 @@
 package com.example.igro;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import java.util.Calendar;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,6 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.TextView;
+
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,16 +24,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class MainActivity extends AppCompatActivity {
-    private Button temperature;
-    private Button number;
-    private Button tempNumberButton;
+    protected Button temperatureTitle;
+    protected Button tempNumber;
+
+    protected Button humidityTitle;
+    protected TextView humNumber;
 
     public int tempD;
-    //Reference to collection in firestore
-    private CollectionReference tempRef = FirebaseFirestore.getInstance().collection("temperature");
 
     //Get document from firestore
     public void getTempData(String id){
+        //Reference to collection in firestore
+        CollectionReference tempRef = FirebaseFirestore.getInstance().collection("temperature");
+
         tempRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -40,15 +48,39 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("WORKING", ""+tempD);
                     }
                     else{
-                        Log.d("ERROR", "No such document");
+                        Log.d("ERROR", "Cannot get Temperature");
                     }
                 }
-                number.setText(tempD+"");
+                tempNumber.setText(tempD+"");
             }
         });
     }
 
 
+    public int humD;
+
+    //Get humidity document from firestore
+    public void getHumData(String id){
+        //Reference to humidity collection in firestore
+        CollectionReference humRef = FirebaseFirestore.getInstance().collection("humidity");
+        humRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists()){
+                        humD = Integer.parseInt(document.getString("humValue"));
+
+                        Log.d("SUCCESS", ""+humD);
+                    }
+                    else{
+                        Log.d("ERROR", "Cannot Retreave Humidity");
+                    }
+                }
+                humNumber.setText(humD+"");
+            }
+        });
+    }
 
 
 
@@ -56,27 +88,65 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        temperature=(Button) findViewById(R.id.temp_button);
-        number=(Button) findViewById(R.id.number_button);
+
+        temperatureTitle=(Button) findViewById(R.id.tempButton);
+        tempNumber=(Button) findViewById(R.id.tempNumberButton);
         getTempData("1");
-        temperature.setOnClickListener(new View.OnClickListener() {
+
+        humidityTitle = (Button)findViewById(R.id.humButton);
+        humNumber = (TextView) findViewById(R.id.humNumberTextView);
+        getHumData("1");
+
+
+        temperatureTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTemperature();
+            }
+        });
+        tempNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openTemperature();
             }
         });
 
-        number.setOnClickListener(new View.OnClickListener() {
+        humidityTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openTemperature();
+                openHumidity();
             }
         });
+        humNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openHumidity();
+            }
+        });
+
+
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+    }
+
     public void openTemperature(){
-        Intent intent=new Intent(this,TemperatureActivity.class);
-        startActivity(intent);
+        Intent tempIntent=new Intent(this,TemperatureActivity.class);
+        startActivity(tempIntent);
     }
+
+    public void openHumidity(){
+        Intent humIntent=new Intent(this,HumidityActivity.class);
+        startActivity(humIntent);
+    }
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater=getMenuInflater();

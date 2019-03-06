@@ -31,9 +31,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-
-import static java.lang.Integer.parseInt;
 
 
 public class TemperatureActivity extends AppCompatActivity {
@@ -67,7 +64,6 @@ public class TemperatureActivity extends AppCompatActivity {
 
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
-
 
 
 
@@ -118,8 +114,8 @@ public class TemperatureActivity extends AppCompatActivity {
         String highTempLimit = lowTempEditText.getText().toString();
 
         if((lowTempLimit.matches(".*[0-9].*"))&&(highTempLimit.matches(".*[0-9].*"))){
-            int lowTemp = parseInt(lowTempLimit);
-            int highTemp = parseInt(highTempLimit);
+            Integer lowTemp = Integer.parseInt(lowTempLimit);
+            Integer highTemp = Integer.parseInt(highTempLimit);
         }else{
             Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
         }

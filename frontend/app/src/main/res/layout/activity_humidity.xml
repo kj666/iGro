@@ -5,28 +5,33 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TemperatureActivity">
+    tools:context=".HumidityActivity">
 
 
     <TextView
-        android:id="@+id/highTempRangeTextView"
+        android:id="@+id/highHumRangeTextView"
         android:layout_width="82dp"
-        android:layout_height="27dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="32dp"
         android:text="HIGH"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/lowTempRangeTextView"
-        app:layout_constraintEnd_toEndOf="@+id/highTempEditText"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView19" />
+        app:layout_constraintBottom_toTopOf="@+id/highHumEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.869"
+        app:layout_constraintStart_toEndOf="@+id/lowHumRangeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/humRangeTextView" />
 
     <TextView
-        android:id="@+id/lowTempRangeTextView"
+        android:id="@+id/lowHumRangeTextView"
         android:layout_width="82dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
@@ -34,44 +39,30 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toStartOf="@+id/textView19"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+        app:layout_constraintTop_toBottomOf="@+id/humRangeTextView" />
 
     <Button
-        android:id="@+id/fahrenheitghButton"
+        android:id="@+id/ghPercentButton"
         android:layout_width="43dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="21dp"
-        android:layout_marginLeft="21dp"
-        android:text="F"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="%"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="@+id/celciusghButton"
-        app:layout_constraintHorizontal_bias="0.953"
-        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
-        app:layout_constraintStart_toStartOf="@+id/celciusghButton"
-        app:layout_constraintTop_toBottomOf="@+id/celciusghButton" />
+        app:layout_constraintBottom_toBottomOf="@+id/ghHumTextView"
+        app:layout_constraintStart_toEndOf="@+id/ghHumTextView" />
 
-    <Button
-        android:id="@+id/celciusghButton"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="21dp"
-        android:layout_marginLeft="21dp"
-        android:layout_marginTop="8dp"
-        android:text="ͦC"
-        android:textAlignment="center"
-        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
-        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
 
     <TextView
-        android:id="@+id/ghTempTextView"
+        android:id="@+id/ghHumTextView"
         android:layout_width="67dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:background="@null"
         android:ems="10"
-        android:inputType="numberSigned"
+        android:inputType="number"
         android:text="24"
         android:textAlignment="center"
         android:textSize="45sp"
@@ -79,62 +70,49 @@
         app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
 
     <TextView
-        android:id="@+id/outdoorTempTextView"
+        android:id="@+id/outdoorHumTextView"
         android:layout_width="67dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="172dp"
-        android:layout_marginLeft="172dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="184dp"
+        android:layout_marginLeft="184dp"
+        android:layout_marginTop="8dp"
         android:background="@null"
         android:ems="10"
         android:inputType="number"
         android:text="18"
         android:textAlignment="center"
         android:textSize="45sp"
-        app:layout_constraintBottom_toBottomOf="@+id/ghTempTextView"
-        app:layout_constraintEnd_toStartOf="@+id/celciusOutButton"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/ghTempTextView" />
+        app:layout_constraintBottom_toBottomOf="@+id/ghPercentButton"
+        app:layout_constraintStart_toEndOf="@+id/ghHumTextView"
+        app:layout_constraintTop_toBottomOf="@+id/outdoorTextView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/celciusOutButton"
+        android:id="@+id/outPercentButton"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
-        android:text="ͦC"
+        android:text="%"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/fahrenheitOutButton"
+        app:layout_constraintBottom_toBottomOf="@+id/outdoorHumTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/outdoorTempTextView" />
+        app:layout_constraintHorizontal_bias="0.076"
+        app:layout_constraintStart_toEndOf="@+id/outdoorHumTextView" />
 
-    <Button
-        android:id="@+id/fahrenheitOutButton"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="12dp"
-        android:text="F"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/tempSwitch"
-        app:layout_constraintEnd_toEndOf="@+id/celciusOutButton"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/celciusOutButton" />
 
     <TextView
-        android:id="@+id/temperatureTitleTextView"
+        android:id="@+id/humidityTitleTextView"
         android:layout_width="wrap_content"
         android:layout_height="43dp"
-        android:layout_marginTop="6dp"
-        android:text="TEMPERATURE"
+        android:layout_marginTop="20dp"
+        android:text="HUMIDITY"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/logoTopImageView"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/logoTopImageView"
         app:layout_constraintTop_toBottomOf="@+id/logoTopImageView" />
 
     <TextView
@@ -143,40 +121,40 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="88dp"
         android:layout_marginRight="88dp"
         android:text="GREENHOUSE"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/outdoorTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/humidityTitleTextView" />
 
     <TextView
         android:id="@+id/outdoorTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:layout_marginLeft="104dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginLeft="116dp"
         android:layout_marginTop="8dp"
         android:text="OUTDOOR"
         android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/greenhouseTextView"
         app:layout_constraintStart_toEndOf="@+id/greenhouseTextView"
-        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/humidityTitleTextView" />
 
     <ImageView
         android:id="@+id/logoTopImageView"
         android:layout_width="113dp"
         android:layout_height="47dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="150dp"
-        android:layout_marginRight="150dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginRight="148dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/igro_logo" />
 
     <TextView
-        android:id="@+id/tempControlTextView"
+        android:id="@+id/humControlTextView"
         android:layout_width="157dp"
         android:layout_height="32dp"
         android:layout_marginStart="16dp"
@@ -190,23 +168,23 @@
         android:freezesText="false"
         android:gravity="start|left"
         android:paddingTop="8dp"
-        android:text="HEATER CONTROL"
+        android:text="HUMIDIFIER CONTROL"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tempSwitch"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/humSwitch"
+        app:layout_constraintHorizontal_bias="0.134"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fahrenheitghButton"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/ghPercentButton"
+        app:layout_constraintVertical_bias="0.04" />
 
     <Switch
-        android:id="@+id/tempSwitch"
+        android:id="@+id/humSwitch"
         android:layout_width="113dp"
         android:layout_height="31dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginRight="48dp"
+        android:layout_marginBottom="440dp"
         android:text="OFF / ON"
         android:textColor="@color/colorPrimaryDark"
         android:textColorHighlight="@color/colorPrimary"
@@ -214,13 +192,13 @@
         android:textOff="OFF"
         android:textOn="ON"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/tempControlTextView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tempControlTextView"
-        app:layout_constraintVertical_bias="0.625" />
+        app:layout_constraintTop_toBottomOf="@+id/outdoorHumTextView"
+        app:layout_constraintVertical_bias="0.88" />
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/humRangeTextView"
         android:layout_width="171dp"
         android:layout_height="27dp"
         android:layout_marginStart="8dp"
@@ -229,13 +207,13 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:text="TEMPERATURE RANGE"
+        android:text="HUMIDITY RANGE"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/humidityTitleTextView"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
@@ -250,27 +228,39 @@
         app:srcCompat="@drawable/igro_justleaf" />
 
     <TextView
-        android:id="@+id/textView23"
-        android:layout_width="78dp"
-        android:layout_height="0dp"
+        android:id="@+id/graphTextView"
+        android:layout_width="77dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="8dp"
         android:text="GRAPH"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView8"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/humGraphCardView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lowHumEditText"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
-        android:id="@+id/textView24"
+        android:id="@+id/tableTextView"
         android:layout_width="85dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="236dp"
-        android:layout_marginLeft="236dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="228dp"
+        android:layout_marginLeft="228dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:text="TABLE"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView10"
-        app:layout_constraintStart_toEndOf="@+id/textView23" />
+        app:layout_constraintBottom_toTopOf="@+id/humTableCardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/graphTextView"
+        app:layout_constraintTop_toBottomOf="@+id/highHumEditText"
+        app:layout_constraintVertical_bias="0.876" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView8"
+        android:id="@+id/humGraphCardView"
         android:layout_width="180dp"
         android:layout_height="124dp"
         android:layout_marginStart="5dp"
@@ -286,7 +276,7 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView10"
+        android:id="@+id/humTableCardView"
         android:layout_width="210dp"
         android:layout_height="124dp"
         android:layout_marginEnd="12dp"
@@ -313,7 +303,7 @@
 
                 <TextView
                     android:layout_marginLeft="50dp"
-                    android:text="°C"
+                    android:text="%"
                     android:textSize="20dp" />
 
             </TableRow>
@@ -331,7 +321,7 @@
 
                 <TextView
                     android:layout_marginLeft="50dp"
-                    android:text="22°C"
+                    android:text="22%"
                     android:textSize="20dp" />
 
 
@@ -377,52 +367,49 @@
     </android.support.v7.widget.CardView>
 
     <EditText
-        android:id="@+id/lowTempEditText"
+        android:id="@+id/lowHumEditText"
         android:layout_width="79dp"
-        android:layout_height="36dp"
+        android:layout_height="48dp"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp"
-        android:contentDescription="lowerTempLimit"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="220dp"
+        android:contentDescription="lowerHumLimit"
         android:ems="20"
         android:gravity="bottom|center|center_horizontal|center_vertical"
-        android:inputType="numberSigned|number|numberDecimal"
+        android:inputType="number|numberDecimal"
         android:saveEnabled="true"
         android:text="Lower Limit"
+        android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorPrimary"
         android:textIsSelectable="true"
         android:textSize="12sp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/textView23"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lowTempRangeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/lowHumRangeTextView"
         app:layout_constraintVertical_bias="0.413"
         tools:textColor="@color/colorPrimary" />
 
     <EditText
-        android:id="@+id/highTempEditText"
+        android:id="@+id/highHumEditText"
         android:layout_width="81dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="28dp"
-        android:layout_marginBottom="12dp"
-        android:contentDescription="highTempLimit"
+        android:layout_height="46dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        android:contentDescription="highHumLimit"
         android:ems="20"
         android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
         android:gravity="bottom|clip_horizontal|center|center_horizontal|center_vertical"
-        android:inputType="numberSigned|number|numberDecimal"
+        android:inputType="number"
         android:saveEnabled="true"
         android:text="Upper Limit"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorAccent"
         android:textIsSelectable="true"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/lowTempEditText"
+        app:layout_constraintBottom_toBottomOf="@+id/lowHumEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/lowTempEditText"
-        app:layout_constraintVertical_bias="0.363"
         tools:textColor="@color/colorAccent" />
 
 

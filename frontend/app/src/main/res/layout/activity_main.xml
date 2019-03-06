@@ -7,18 +7,18 @@
     tools:context=".MainActivity">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/uvCardView"
         android:layout_width="0dp"
         android:layout_height="140dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView4"
+        app:layout_constraintStart_toEndOf="@+id/soilCardView"
         app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
         <Button
-            android:id="@+id/textView18"
+            android:id="@+id/uvIndexButton"
             android:layout_width="60dp"
             android:layout_height="35dp"
             android:layout_marginLeft="105dp"
@@ -28,7 +28,7 @@
             android:textSize="9sp" />
 
         <Button
-            android:id="@+id/textView17"
+            android:id="@+id/UVnmButton"
             android:layout_width="60dp"
             android:layout_height="35dp"
             android:layout_marginLeft="105dp"
@@ -38,9 +38,9 @@
             android:textSize="8sp" />
 
         <TextView
-            android:id="@+id/editText6"
+            android:id="@+id/uvNumberTextView"
             android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_height="73dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="45dp"
             android:layout_marginBottom="20dp"
@@ -52,10 +52,11 @@
             android:textSize="45sp" />
 
         <Button
-            android:id="@+id/textView6"
-            android:layout_width="112dp"
+            android:id="@+id/uvButton"
+            android:layout_width="match_parent"
             android:layout_height="38dp"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:text="UV INDEX"
             android:textColor="@color/colorPrimaryDark" />
     </android.support.v7.widget.CardView>
@@ -75,9 +76,9 @@
         app:srcCompat="@drawable/igro_logo" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/welcomeTextView"
         android:layout_width="200dp"
-        android:layout_height="60dp"
+        android:layout_height="64dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -97,21 +98,11 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
-
-        <Button
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:layout_marginLeft="50dp"
-            android:text="HUMIDITY"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="14sp" />
+        app:layout_constraintStart_toEndOf="@+id/tempCardView"
+        app:layout_constraintTop_toBottomOf="@+id/welcomeTextView">
 
         <TextView
-            android:id="@+id/editText2"
+            android:id="@+id/humNumberTextView"
             android:layout_width="100dp"
             android:layout_height="80dp"
             android:layout_marginLeft="30dp"
@@ -122,10 +113,26 @@
             android:text="90%"
             android:textAlignment="center"
             android:textSize="50sp" />
+
+        <Button
+            android:id="@+id/humButton"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:clickable="true"
+            android:foregroundGravity="top|center_horizontal"
+            android:freezesText="true"
+            android:gravity="center_horizontal|top"
+            android:text="HUMIDITY"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="12sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView3"
+        android:id="@+id/tempCardView"
         android:layout_width="0dp"
         android:layout_height="140dp"
         android:layout_marginStart="16dp"
@@ -133,15 +140,17 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="33dp"
         android:layout_marginRight="33dp"
+        app:cardElevation="2dp"
         app:layout_constraintEnd_toStartOf="@+id/cardView2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintTop_toBottomOf="@+id/welcomeTextView">
 
         <Button
-            android:id="@+id/temp_button"
-            android:layout_width="112dp"
+            android:id="@+id/tempButton"
+            android:layout_width="match_parent"
             android:layout_height="38dp"
             android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:text="TEMPERATURE"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -153,7 +162,7 @@
             android:layout_height="wrap_content" />
 
         <Button
-            android:id="@+id/number_button"
+            android:id="@+id/tempNumberButton"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginLeft="25dp"
@@ -167,7 +176,7 @@
             android:textSize="45sp" />
 
         <Button
-            android:id="@+id/celciusOutTextView"
+            android:id="@+id/celciusButton"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="120dp"
@@ -176,7 +185,7 @@
             android:textAlignment="center" />
 
         <Button
-            android:id="@+id/textView8"
+            android:id="@+id/fahrenheitghButton"
             android:layout_width="39dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="120dp"
@@ -187,7 +196,7 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView4"
+        android:id="@+id/soilCardView"
         android:layout_width="0dp"
         android:layout_height="140dp"
         android:layout_marginStart="16dp"
@@ -195,13 +204,14 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="37dp"
         android:layout_marginRight="37dp"
-        app:layout_constraintEnd_toStartOf="@+id/cardView"
+        app:cardElevation="2dp"
+        app:layout_constraintEnd_toStartOf="@+id/uvCardView"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView3">
+        app:layout_constraintTop_toBottomOf="@+id/tempCardView">
 
         <TextView
-            android:id="@+id/editText5"
+            android:id="@+id/soilNumberTextView"
             android:layout_width="100dp"
             android:layout_height="70dp"
             android:layout_marginLeft="30dp"
@@ -214,10 +224,11 @@
             android:textSize="50sp" />
 
         <Button
-            android:id="@+id/textView5"
-            android:layout_width="112dp"
+            android:id="@+id/soilButton"
+            android:layout_width="match_parent"
             android:layout_height="38dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:text="SOIL MOISTURE"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
@@ -236,7 +247,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView4">
+        app:layout_constraintTop_toBottomOf="@+id/soilCardView">
 
         <TextView
             android:id="@+id/textView7"
@@ -263,14 +274,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/cardView5"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
+        app:layout_constraintTop_toBottomOf="@+id/uvCardView">
 
         <TextView
             android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:text="GOOD OPTIMAL"
+            android:text="OPTIMAL"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark" />
     </android.support.v7.widget.CardView>
