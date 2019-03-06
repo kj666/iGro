@@ -32,15 +32,15 @@ public class MainActivity extends AppCompatActivity {
     private Button logout;
     private String UserN;
     private String UserP;
-    MainActivity() {
-        UserN= " ";
-        UserP = " ";
-    }
-    MainActivity(String name,String pass){
-        UserN = name;
-        UserP = pass;
-
-    }
+//    MainActivity() {
+//        UserN= " ";
+//        UserP = " ";
+//    }
+//    MainActivity(String name,String pass){
+//        UserN = name;
+//        UserP = pass;
+//
+//    }
 
 
     public int tempD;
