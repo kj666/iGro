@@ -31,9 +31,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-
-import static java.lang.Integer.parseInt;
 
 
 public class TemperatureActivity extends AppCompatActivity {
@@ -67,7 +64,6 @@ public class TemperatureActivity extends AppCompatActivity {
 
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
-
 
 
 
@@ -118,8 +114,8 @@ public class TemperatureActivity extends AppCompatActivity {
         String highTempLimit = lowTempEditText.getText().toString();
 
         if((lowTempLimit.matches(".*[0-9].*"))&&(highTempLimit.matches(".*[0-9].*"))){
-            int lowTemp = parseInt(lowTempLimit);
-            int highTemp = parseInt(highTempLimit);
+            Integer lowTemp = Integer.parseInt(lowTempLimit);
+            Integer highTemp = Integer.parseInt(highTempLimit);
         }else{
             Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
         }
@@ -139,10 +135,10 @@ public class TemperatureActivity extends AppCompatActivity {
         }
 
         tempSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton tempSwitch, boolean tempSwitchState){
+            public void onCheckedChanged(CompoundButton tempSwitch, boolean SwitchState){
 
                 //Call heaterSwitchEvent function
-                heaterSwitchEvent(tempSwitchState);
+                heaterSwitchEvent(SwitchState);
 
 
             }
@@ -160,24 +156,6 @@ public class TemperatureActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
 
-                HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
-                Boolean checkedStatus = lastRecord.getHeaterEventOnOff();
-
-                if(!(checkedStatus == null)){
-
-                    lastHeaterState = checkedStatus;
-                    tempSwitch.setChecked(checkedStatus);
-                    if(checkedStatus){
-                        tempSwitch.setTextColor(Color.GREEN);
-                    }else{
-                        tempSwitch.setTextColor(Color.RED);
-                    }
-
-                }else{
-
-                    Log.d(TAG, "On/Off Status of heater can't be null, getHeaterEventOnOff points to null");
-
-                }
 
             }
 
@@ -192,9 +170,9 @@ public class TemperatureActivity extends AppCompatActivity {
                     lastHeaterState = checkedStatus;
                     tempSwitch.setChecked(checkedStatus);
                     if(checkedStatus){
-                        tempSwitch.setTextColor(Color.GREEN);
-                    }else{
                         tempSwitch.setTextColor(Color.RED);
+                    }else{
+                        tempSwitch.setTextColor(Color.DKGRAY);
                     }
 
                 }else{

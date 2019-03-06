@@ -15,7 +15,7 @@
         android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/moistureView"
-        app:layout_constraintTop_toBottomOf="@+id/humidityButton">
+        app:layout_constraintTop_toBottomOf="@+id/humidityView">
 
         <Button
             android:id="@+id/indexButton"
@@ -90,7 +90,7 @@
         app:layout_constraintTop_toBottomOf="@+id/igroLogoDashView" />
 
     <android.support.v7.widget.CardView
-        android:id="@+id/humidityButton"
+        android:id="@+id/humidityView"
         android:layout_width="0dp"
         android:layout_height="140dp"
         android:layout_marginTop="8dp"
@@ -133,7 +133,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="33dp"
         android:layout_marginRight="33dp"
-        app:layout_constraintEnd_toStartOf="@+id/humidityButton"
+        app:layout_constraintEnd_toStartOf="@+id/humidityView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView">
 
