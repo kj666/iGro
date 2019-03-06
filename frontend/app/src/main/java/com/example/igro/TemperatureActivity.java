@@ -135,10 +135,10 @@ public class TemperatureActivity extends AppCompatActivity {
         }
 
         tempSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton tempSwitch, boolean tempSwitchState){
+            public void onCheckedChanged(CompoundButton tempSwitch, boolean SwitchState){
 
                 //Call heaterSwitchEvent function
-                heaterSwitchEvent(tempSwitchState);
+                heaterSwitchEvent(SwitchState);
 
 
             }
@@ -156,24 +156,6 @@ public class TemperatureActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
 
-                HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
-                Boolean checkedStatus = lastRecord.getHeaterEventOnOff();
-
-                if(!(checkedStatus == null)){
-
-                    lastHeaterState = checkedStatus;
-                    tempSwitch.setChecked(checkedStatus);
-                    if(checkedStatus){
-                        tempSwitch.setTextColor(Color.GREEN);
-                    }else{
-                        tempSwitch.setTextColor(Color.RED);
-                    }
-
-                }else{
-
-                    Log.d(TAG, "On/Off Status of heater can't be null, getHeaterEventOnOff points to null");
-
-                }
 
             }
 
@@ -188,9 +170,9 @@ public class TemperatureActivity extends AppCompatActivity {
                     lastHeaterState = checkedStatus;
                     tempSwitch.setChecked(checkedStatus);
                     if(checkedStatus){
-                        tempSwitch.setTextColor(Color.GREEN);
-                    }else{
                         tempSwitch.setTextColor(Color.RED);
+                    }else{
+                        tempSwitch.setTextColor(Color.DKGRAY);
                     }
 
                 }else{

@@ -139,10 +139,10 @@ public class HumidityActivity extends AppCompatActivity {
         }
 
         humSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton humSwitch, boolean humSwitchState){
+            public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
 
                 //Call heaterSwitchEvent function
-                humidSwitchEvent(humSwitchState);
+                humidSwitchEvent(SwitchState);
 
 
             }
@@ -160,30 +160,12 @@ public class HumidityActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
 
-                HumidControlEvents lastRecord = dataSnapshot.getValue(HumidControlEvents.class);
-                Boolean checkedStatus = lastRecord.getHumidEventOnOff();
-
-                if(!(checkedStatus == null)){
-
-                    lastHumidState = checkedStatus;
-                    humSwitch.setChecked(checkedStatus);
-                    if(checkedStatus){
-                        humSwitch.setTextColor(Color.RED);
-                    }else{
-                        humSwitch.setTextColor(Color.DKGRAY);
-                    }
-
-                }else{
-
-                    Log.d(TAG, "On/Off Status of humidifier can't be null, getHumidEventOnOff points to null");
-
-                }
-
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+
                 HumidControlEvents lastRecord = dataSnapshot.getValue(HumidControlEvents.class);
                 Boolean checkedStatus = lastRecord.getHumidEventOnOff();
 
@@ -202,7 +184,6 @@ public class HumidityActivity extends AppCompatActivity {
                     Log.d(TAG, "On/Off Status of humidifier can't be null, getHumidEventOnOff points to null");
 
                 }
-
 
             }
 
