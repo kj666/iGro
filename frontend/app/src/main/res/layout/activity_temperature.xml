@@ -6,207 +6,257 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/highUvCardView"
-        android:layout_width="193dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/colorAccent"
-        app:layout_constraintBottom_toTopOf="@+id/tableTempTextView"
-        app:layout_constraintStart_toEndOf="@+id/lowUvCardView" />
+    <EditText
+        android:id="@+id/highTempEditText"
+        android:layout_width="81dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginRight="28dp"
+        android:contentDescription="highTempLimit"
+        android:ems="20"
+        android:foregroundGravity="fill_horizontal|bottom|center_vertical|center|center_horizontal"
+        android:inputType="numberSigned"
+        android:saveEnabled="true"
+        android:text="Lower Limit"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textIsSelectable="true"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/lowTempEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lowTempEditText"
+        app:layout_constraintVertical_bias="0.0"
+        tools:textColor="@color/colorAccent" />
 
     <TextView
-        android:id="@+id/highTempView"
-        android:layout_width="82dp"
-        android:layout_height="27dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:text="HIGH"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/highUvCardView"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/lowTextView"
+        android:id="@+id/highTempRangeTextView"
         android:layout_width="82dp"
         android:layout_height="27dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:text="LOW"
+        android:text="HIGH"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/lowUvCardView"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/fahrenheitGreenButton"
-        android:layout_width="43dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:text="F"
-        android:textAlignment="center"
-        app:layout_constraintStart_toEndOf="@+id/indoorTempView"
-        app:layout_constraintTop_toBottomOf="@+id/celciusGreenButton" />
-
-    <Button
-        android:id="@+id/celciusGreenButton"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="16dp"
-        android:text="ͦC"
-        android:textAlignment="center"
-        app:layout_constraintStart_toEndOf="@+id/indoorTempView"
-        app:layout_constraintTop_toBottomOf="@+id/greenhouseTempTextView" />
+        app:layout_constraintBottom_toBottomOf="@+id/lowTempRangeTextView"
+        app:layout_constraintEnd_toEndOf="@+id/highTempEditText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView19" />
 
     <TextView
-        android:id="@+id/indoorTempView"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/lowTempRangeTextView"
+        android:layout_width="82dp"
+        android:layout_height="27dp"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="36dp"
-        android:background="@null"
-        android:ems="10"
-        android:inputType="number"
-        android:text="24"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="LOW"
         android:textAlignment="center"
-        android:textSize="45sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView19"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/greenhouseTempTextView" />
-
-    <TextView
-        android:id="@+id/outTempView"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@null"
-        android:ems="10"
-        android:inputType="number"
-        android:text="32"
-        android:textAlignment="center"
-        android:textSize="45sp"
-        app:layout_constraintEnd_toStartOf="@+id/celciusOutButton"
-        app:layout_constraintTop_toBottomOf="@+id/outdoorTempTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
     <Button
-        android:id="@+id/celciusOutButton"
+        android:id="@+id/fahrenheitghTextView"
+        android:layout_width="43dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="21dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="3dp"
+        android:text="F"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
+        app:layout_constraintTop_toBottomOf="@+id/celciusghTextView" />
+
+    <Button
+        android:id="@+id/celciusghTextView"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="36dp"
-        android:layout_marginRight="36dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="8dp"
+        android:text="ͦC"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
+
+    <TextView
+        android:id="@+id/ghTempTextView"
+        android:layout_width="67dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@null"
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:text="10sp"
+        android:textAlignment="center"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="@+id/outdoorTempTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/outdoorTempTextView"
+        android:layout_width="67dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@null"
+        android:ems="10"
+        android:inputType="number"
+        android:text="18"
+        android:textAlignment="center"
+        android:textSize="45sp"
+        app:layout_constraintEnd_toStartOf="@+id/celciusOutTextView"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
+        app:layout_constraintTop_toBottomOf="@+id/outdoorTextView" />
+
+    <Button
+        android:id="@+id/celciusOutTextView"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
         android:text="ͦC"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outdoorTempTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/outdoorTextView" />
 
     <Button
-        android:id="@+id/fahrenheitOutButton"
+        android:id="@+id/fahrenheitOutTextView"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="36dp"
-        android:layout_marginRight="36dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
         android:text="F"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/celciusOutButton" />
+        app:layout_constraintTop_toBottomOf="@+id/celciusOutTextView" />
 
     <TextView
-        android:id="@+id/temperatureTextView"
+        android:id="@+id/temperatureTitleTextView"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginTop="64dp"
-        android:layout_marginBottom="241dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="6dp"
         android:text="TEMPERATURE"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/lowUvCardView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toBottomOf="@+id/logoTopImageView" />
 
     <TextView
-        android:id="@+id/greenhouseTempTextView"
+        android:id="@+id/greenhouseTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="88dp"
         android:layout_marginRight="88dp"
         android:text="GREENHOUSE"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/outdoorTempTextView"
+        app:layout_constraintEnd_toStartOf="@+id/outdoorTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temperatureTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
 
     <TextView
-        android:id="@+id/outdoorTempTextView"
+        android:id="@+id/outdoorTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="116dp"
-        android:layout_marginLeft="116dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginLeft="104dp"
+        android:layout_marginTop="8dp"
         android:text="OUTDOOR"
         android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/greenhouseTempTextView"
-        app:layout_constraintTop_toBottomOf="@+id/temperatureTextView" />
+        app:layout_constraintStart_toEndOf="@+id/greenhouseTextView"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
 
     <ImageView
-        android:id="@+id/igroLogoTempView"
+        android:id="@+id/logoTopImageView"
         android:layout_width="113dp"
         android:layout_height="47dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="152dp"
-        android:layout_marginRight="152dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="150dp"
+        android:layout_marginRight="150dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/igro_logo" />
 
     <TextView
         android:id="@+id/tempControlTextView"
-        android:layout_width="173dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="157dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="12dp"
-        android:text="TEMPERATURE CONTROL"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="false"
+        android:foregroundGravity="left"
+        android:freezesText="false"
+        android:gravity="start|left"
+        android:paddingTop="8dp"
+        android:text="HEATER CONTROL"
         android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tempSwitch"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fahrenheitGreenButton" />
+        app:layout_constraintTop_toBottomOf="@+id/fahrenheitghTextView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Switch
-        android:id="@+id/switchTempView"
+        android:id="@+id/tempSwitch"
         android:layout_width="wrap_content"
         android:layout_height="31dp"
-        android:layout_marginEnd="68dp"
-        android:layout_marginRight="68dp"
-        android:text="ON/OF"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="8dp"
+        android:text="OFF / ON"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHighlight="@color/colorPrimary"
+        android:textColorLink="@color/colorAccent"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/tempControlTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fahrenheitOutButton" />
+        app:layout_constraintTop_toTopOf="@+id/tempControlTextView"
+        app:layout_constraintVertical_bias="0.625" />
 
     <TextView
-        android:id="@+id/tempRangeTextView"
+        android:id="@+id/textView19"
         android:layout_width="171dp"
         android:layout_height="27dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="218dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="TEMPERATURE RANGE"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/highUvCardView"
-        app:layout_constraintStart_toEndOf="@+id/lowTextView" />
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
-        android:id="@+id/leafLogoTempView"
-        android:layout_width="78dp"
-        android:layout_height="62dp"
+        android:id="@+id/logoBottomImageView"
+        android:layout_width="61dp"
+        android:layout_height="44dp"
         android:layout_marginEnd="164dp"
         android:layout_marginRight="164dp"
         android:layout_marginBottom="1dp"
@@ -214,40 +264,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/igro_justleaf" />
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/lowUvCardView"
-        android:layout_width="182dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/graphTempTextView"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
-        android:id="@+id/graphTempTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="18dp"
-        android:layout_marginStart="58dp"
-        android:layout_marginLeft="58dp"
-        android:layout_marginBottom="2dp"
+        android:id="@+id/textView23"
+        android:layout_width="78dp"
+        android:layout_height="0dp"
         android:text="GRAPH"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/cardView8"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/tableTempTextView"
+        android:id="@+id/textView24"
         android:layout_width="85dp"
         android:layout_height="18dp"
-        android:layout_marginStart="152dp"
-        android:layout_marginLeft="152dp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginStart="236dp"
+        android:layout_marginLeft="236dp"
         android:text="TABLE"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/cardView10"
-        app:layout_constraintStart_toEndOf="@+id/graphTempTextView" />
+        app:layout_constraintStart_toEndOf="@+id/textView23" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView8"
@@ -256,11 +291,11 @@
         android:layout_marginStart="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/leafLogoTempView"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
         app:layout_constraintStart_toStartOf="parent">
 
         <com.jjoe64.graphview.GraphView
-            android:id="@+id/graphTempCardView"
+            android:id="@+id/graph"
             android:layout_width="180dp"
             android:layout_height="124dp" />
     </android.support.v7.widget.CardView>
@@ -272,17 +307,15 @@
         android:layout_marginEnd="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/leafLogoTempView"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
         app:layout_constraintEnd_toEndOf="parent">
 
 
         <TableLayout
-            android:id="@+id/tableTempCardView"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <TableRow
-                android:id="@+id/titleTableRowView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -357,5 +390,37 @@
 
         </TableLayout>
     </android.support.v7.widget.CardView>
+
+    <EditText
+        android:id="@+id/lowTempEditText"
+        android:layout_width="79dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
+        android:contentDescription="lowerTempLimit"
+        android:editable="true"
+        android:ems="20"
+        android:gravity="bottom|center|center_horizontal|center_vertical"
+        android:inputType="numberSigned|number|numberDecimal"
+        android:text="Low Limit"
+        android:textColor="@color/colorPrimary"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/textView23"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lowTempRangeTextView"
+        app:layout_constraintVertical_bias="0.333" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </android.support.constraint.ConstraintLayout>

@@ -18,7 +18,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
-
 public class MainActivity extends AppCompatActivity {
     private Button temperature;
     private Button uv;
