@@ -28,11 +28,8 @@ import com.google.firebase.storage.StorageReference;
 * required to enter their valid info and this data is then stored onto the database
  */
 public class RegistrationActivity extends AppCompatActivity {
-    // TODO: 2019-02-27
-    // add dependency in android manifest file to login activity
-    // When initializing your Activity, check to see if the user is currently signed in.
-    // |||||WHERE DO I CHECK THE ABOVE|||||||
-    // |||||MAYBE ON EVERY ACTIVITY?|||||||||
+    // TODO: 2019-03-06
+    // add the provided firebase function to check if the user is logged into the app
     private FirebaseAuth mAuth;
     private StorageReference mStorageRef; // Don't think that this is necessary
     private String TAG = "RegistrationActivity"; //Used for debugging purposes
@@ -102,8 +99,6 @@ public class RegistrationActivity extends AppCompatActivity {
                     @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // TODO 2019-02-28
-                                // Store user info into the database if valid
                                 Toast toast = Toast.makeText(getApplicationContext(),
                                         "Registration Successful", Toast.LENGTH_LONG);
                                 toast.show();
