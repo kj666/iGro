@@ -78,6 +78,7 @@ public class Dashboard extends AppCompatActivity {
                     FirebaseUser validUser = mAuth.getCurrentUser();
                     Toast.makeText(Dashboard.this, "Authentication Success.",
                             Toast.LENGTH_SHORT).show();
+                    goToMainActivity();
                     // TODO 2019-03-07
                     // Direct valid user to the info screen
                 } else {
@@ -90,7 +91,7 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
-    void goToDashboard() {
+    void goToMainActivity() {
         Intent i = new Intent(Dashboard.this, MainActivity.class);
         startActivity(i);
     }
