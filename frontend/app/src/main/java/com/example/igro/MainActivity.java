@@ -1,10 +1,8 @@
 package com.example.igro;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import java.util.Calendar;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,16 +10,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.TextView;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 
 public class MainActivity extends AppCompatActivity {
     private Button temperature;
@@ -46,65 +44,20 @@ public class MainActivity extends AppCompatActivity {
 
     public int tempD;
 
-    //Get document from firestore
-    public void getTempData(String id){
-        //Reference to collection in firestore
-        CollectionReference tempRef = FirebaseFirestore.getInstance().collection("temperature");
-
-        tempRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        tempD = Integer.parseInt(document.getString("temp"));
-
-                        Log.d("WORKING", ""+tempD);
-                    }
-                    else{
-                        Log.d("ERROR", "Cannot get Temperature");
-                    }
-                }
-                number.setText(tempD+"");
-            }
-        });
-    }
-
-    public int humD;
-
-    //Get humidity document from firestore
-    public void getHumData(String id){
-        //Reference to humidity collection in firestore
-        CollectionReference humRef = FirebaseFirestore.getInstance().collection("humidity");
-        humRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        humD = Integer.parseInt(document.getString("humValue"));
-
-                        Log.d("SUCCESS", ""+humD);
-                    }
-                    else{
-                        Log.d("ERROR", "Cannot Retreave Humidity");
-                    }
-                }
-                humNumber.setText(humD+"");
-            }
-        });
-    }
-
+    private FirebaseAuth mAuth; // authentication instance
+    protected TextView userWelcomeMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Dashboard dash = new Dashboard();
-        int c= dash.getCounter();
-        if (c==0){
-           Intent j = new Intent(MainActivity.this, Dashboard.class);
-           startActivity(j);}
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            // current user validated
+        } else {
+            goToDashboardActivity();
+        }
         //logout =  (Button) findViewById(R.id.logout);
         temperature=(Button) findViewById(R.id.temp_button);
         number=(Button) findViewById(R.id.tempNumberView);
@@ -121,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         moistureButton = (Button) findViewById(R.id.moistureButton);
         moistureNumber = (Button) findViewById(R.id.moisturePercentView);
 
+        userWelcomeMessage = findViewById(R.id.welcomeMessageText);
+        userWelcomeMessage.setText("Hi " + currentUser.getEmail());
         getHumData("1");
 
         //from fahrenheit to celcius
@@ -222,34 +177,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
-
-
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            // current user validated
+        } else {
+            goToDashboardActivity();
+        }
     }
-
-    public void openTemperature(){
-        Intent tempIntent=new Intent(this,TemperatureActivity.class);
-        startActivity(tempIntent);
-    }
-    public void openUv(){
-        Intent intent=new Intent(this,UvIndexActivity.class);
-        startActivity(intent);
-    }
-
-    public void openHumidity(){
-        Intent humIntent=new Intent(this,HumidityActivity.class);
-        startActivity(humIntent);
-    }
-
-    public void openMoistureActivity(){
-        Intent intent2 = new Intent(this,MoistureActivity.class);
-        startActivity(intent2);
-    }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -272,5 +209,80 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
 
     }
+
+    //Get document from firestore
+    public void getTempData(String id){
+        //Reference to collection in firestore
+        CollectionReference tempRef = FirebaseFirestore.getInstance().collection("temperature");
+
+        tempRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists()){
+                        tempD = Integer.parseInt(document.getString("temp"));
+
+                        Log.d("WORKING", ""+tempD);
+                    }
+                    else{
+                        Log.d("ERROR", "Cannot get Temperature");
+                    }
+                }
+                number.setText(tempD+"");
+            }
+        });
+    }
+
+    public int humD;
+
+    //Get humidity document from firestore
+    public void getHumData(String id){
+        //Reference to humidity collection in firestore
+        CollectionReference humRef = FirebaseFirestore.getInstance().collection("humidity");
+        humRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if(document.exists()){
+                        humD = Integer.parseInt(document.getString("humValue"));
+
+                        Log.d("SUCCESS", ""+humD);
+                    }
+                    else{
+                        Log.d("ERROR", "Cannot Retreave Humidity");
+                    }
+                }
+                humNumber.setText(humD+"");
+            }
+        });
+    }
+
+    public void openTemperature(){
+        Intent tempIntent=new Intent(this,TemperatureActivity.class);
+        startActivity(tempIntent);
+    }
+    public void openUv(){
+        Intent intent=new Intent(this,UvIndexActivity.class);
+        startActivity(intent);
+    }
+
+    public void openHumidity(){
+        Intent humIntent=new Intent(this,HumidityActivity.class);
+        startActivity(humIntent);
+    }
+
+    public void openMoistureActivity(){
+        Intent intent2 = new Intent(this,MoistureActivity.class);
+        startActivity(intent2);
+    }
+
+    void goToDashboardActivity() {
+        Intent i = new Intent(MainActivity.this, Dashboard.class);
+        startActivity(i);
+    }
+
+
 
 }
