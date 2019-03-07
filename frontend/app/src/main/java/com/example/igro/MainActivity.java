@@ -245,11 +245,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(humIntent);
     }
 
-    protected void goToRegistrationActivity() {
-        Intent test = new Intent(MainActivity.this, RegistrationActivity.class);
-        startActivity(test);
-    }
-
     public void openMoistureActivity(){
         Intent intent2 = new Intent(this,MoistureActivity.class);
         startActivity(intent2);
