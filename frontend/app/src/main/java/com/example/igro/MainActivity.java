@@ -22,7 +22,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
 public class MainActivity extends AppCompatActivity {
     private Button temperature;
     private Button uv;
@@ -95,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    Button testButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,6 +243,11 @@ public class MainActivity extends AppCompatActivity {
     public void openHumidity(){
         Intent humIntent=new Intent(this,HumidityActivity.class);
         startActivity(humIntent);
+    }
+
+    protected void goToRegistrationActivity() {
+        Intent test = new Intent(MainActivity.this, RegistrationActivity.class);
+        startActivity(test);
     }
 
     public void openMoistureActivity(){

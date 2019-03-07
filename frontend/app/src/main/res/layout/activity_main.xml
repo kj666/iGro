@@ -289,5 +289,4 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/igro_justleaf" />
-
 </android.support.constraint.ConstraintLayout>
