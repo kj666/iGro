@@ -20,7 +20,7 @@
         android:layout_marginBottom="32dp"
         android:text="HIGH"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/highHumEditText"
+        app:layout_constraintBottom_toTopOf="@+id/highMoistureEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.869"
         app:layout_constraintStart_toEndOf="@+id/lowHumRangeTextView"
@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:text="%"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/ghHumTextView"
@@ -147,9 +148,13 @@
         android:id="@+id/logoTopImageView"
         android:layout_width="113dp"
         android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginEnd="148dp"
         android:layout_marginRight="148dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/igro_logo" />
 
@@ -159,7 +164,7 @@
         android:layout_height="32dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
@@ -170,21 +175,21 @@
         android:paddingTop="8dp"
         android:text="HUMIDIFIER CONTROL"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/lowHumRangeTextView"
         app:layout_constraintEnd_toStartOf="@+id/humSwitch"
-        app:layout_constraintHorizontal_bias="0.134"
+        app:layout_constraintHorizontal_bias="0.115"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ghPercentButton"
-        app:layout_constraintVertical_bias="0.04" />
+        app:layout_constraintTop_toBottomOf="@+id/outdoorHumTextView"
+        app:layout_constraintVertical_bias="0.117" />
 
     <Switch
         android:id="@+id/humSwitch"
         android:layout_width="113dp"
         android:layout_height="31dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginRight="48dp"
-        android:layout_marginBottom="440dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="8dp"
         android:text="OFF / ON"
         android:textColor="@color/colorPrimaryDark"
         android:textColorHighlight="@color/colorPrimary"
@@ -192,10 +197,10 @@
         android:textOff="OFF"
         android:textOn="ON"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/highHumRangeTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/outdoorHumTextView"
-        app:layout_constraintVertical_bias="0.88" />
+        app:layout_constraintVertical_bias="0.118" />
 
     <TextView
         android:id="@+id/humRangeTextView"
@@ -203,61 +208,67 @@
         android:layout_height="27dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="218dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="HUMIDITY RANGE"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintBottom_toTopOf="@+id/humTableCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/humidityTitleTextView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.674" />
 
     <ImageView
         android:id="@+id/logoBottomImageView"
-        android:layout_width="61dp"
+        android:layout_width="62dp"
         android:layout_height="44dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginEnd="164dp"
         android:layout_marginRight="164dp"
-        android:layout_marginBottom="1dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.937"
+        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/igro_justleaf" />
 
     <TextView
         android:id="@+id/graphTextView"
         android:layout_width="77dp"
         android:layout_height="20dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="GRAPH"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/humGraphCardView"
+        app:layout_constraintBottom_toTopOf="@+id/humTableCardView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lowHumEditText"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.92" />
 
     <TextView
         android:id="@+id/tableTextView"
         android:layout_width="85dp"
         android:layout_height="17dp"
-        android:layout_marginStart="228dp"
-        android:layout_marginLeft="228dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginLeft="200dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="TABLE"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/humTableCardView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/graphTextView"
         app:layout_constraintTop_toBottomOf="@+id/highHumEditText"
-        app:layout_constraintVertical_bias="0.876" />
+        app:layout_constraintVertical_bias="0.92" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/humGraphCardView"
@@ -369,11 +380,12 @@
     <EditText
         android:id="@+id/lowHumEditText"
         android:layout_width="79dp"
-        android:layout_height="48dp"
+        android:layout_height="40dp"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginBottom="220dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="lowerHumLimit"
         android:ems="20"
         android:gravity="bottom|center|center_horizontal|center_vertical"
@@ -385,18 +397,23 @@
         android:textIsSelectable="true"
         android:textSize="12sp"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/textView23"
+        app:layout_constraintBottom_toTopOf="@+id/humGraphCardView"
+        app:layout_constraintEnd_toEndOf="@+id/lowHumRangeTextView"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lowHumRangeTextView"
-        app:layout_constraintVertical_bias="0.413"
+        app:layout_constraintVertical_bias="0.0"
         tools:textColor="@color/colorPrimary" />
 
     <EditText
         android:id="@+id/highHumEditText"
-        android:layout_width="81dp"
-        android:layout_height="46dp"
+        android:layout_width="79dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginEnd="36dp"
         android:layout_marginRight="36dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="highHumLimit"
         android:ems="20"
         android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
@@ -408,8 +425,11 @@
         android:textColor="@color/colorAccent"
         android:textIsSelectable="true"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/lowHumEditText"
+        app:layout_constraintBottom_toTopOf="@+id/humTableCardView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/highHumRangeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/highHumRangeTextView"
+        app:layout_constraintVertical_bias="0.0"
         tools:textColor="@color/colorAccent" />
 
 
@@ -423,4 +443,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+
 </android.support.constraint.ConstraintLayout>
+

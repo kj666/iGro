@@ -9,28 +9,32 @@
     <TextView
         android:id="@+id/highUvRangeTextView"
         android:layout_width="82dp"
-        android:layout_height="27dp"
+        android:layout_height="22dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:text="HIGH"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/lowUvRangeTextView"
         app:layout_constraintEnd_toEndOf="@+id/highUvEditText"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView19" />
+        app:layout_constraintStart_toEndOf="@+id/textView19"
+        app:layout_constraintTop_toBottomOf="@+id/textView19"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/lowUvRangeTextView"
         android:layout_width="82dp"
-        android:layout_height="27dp"
+        android:layout_height="22dp"
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="LOW"
         android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/textView19"
+        app:layout_constraintEnd_toStartOf="@+id/highUvRangeTextView"
+        app:layout_constraintHorizontal_bias="0.005"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView19" />
 
@@ -52,21 +56,24 @@
         android:id="@+id/nmUvGreenButton"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="21dp"
-        android:layout_marginLeft="21dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="NM"
         android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/ghUvTextView"
         app:layout_constraintStart_toEndOf="@+id/ghUvTextView"
-        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView"
+        app:layout_constraintVertical_bias="0.523" />
 
     <TextView
         android:id="@+id/ghUvTextView"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
         android:background="@null"
         android:ems="10"
         android:inputType="numberSigned"
@@ -82,6 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="172dp"
         android:layout_marginLeft="172dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:background="@null"
@@ -92,8 +100,9 @@
         android:textSize="45sp"
         app:layout_constraintBottom_toBottomOf="@+id/ghUvTextView"
         app:layout_constraintEnd_toStartOf="@+id/nmUvOutButton"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/ghUvTextView" />
+        app:layout_constraintHorizontal_bias="0.84"
+        app:layout_constraintStart_toEndOf="@+id/ghUvTextView"
+        app:layout_constraintTop_toBottomOf="@+id/outdoorTextView" />
 
     <Button
         android:id="@+id/nmUvOutButton"
@@ -103,9 +112,10 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="12dp"
         android:text="NM"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/indexUvOutButton"
+        app:layout_constraintBottom_toBottomOf="@+id/outdoorUvTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/ghUvTextView" />
@@ -114,15 +124,15 @@
         android:id="@+id/indexUvOutButton"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="12dp"
         android:text="INDEX"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/uvSwitch"
         app:layout_constraintEnd_toEndOf="@+id/nmUvOutButton"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/nmUvOutButton" />
+        app:layout_constraintStart_toStartOf="@+id/nmUvOutButton"
+        app:layout_constraintTop_toBottomOf="@+id/nmUvOutButton" />
 
     <TextView
         android:id="@+id/uvIndexTitleTextView"
@@ -175,11 +185,11 @@
 
     <TextView
         android:id="@+id/uvControlTextView"
-        android:layout_width="157dp"
-        android:layout_height="32dp"
+        android:layout_width="120dp"
+        android:layout_height="28dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
@@ -190,20 +200,20 @@
         android:paddingTop="8dp"
         android:text="UV CONTROL"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/lowUvRangeTextView"
         app:layout_constraintEnd_toStartOf="@+id/uvSwitch"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.079"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/indexUvGreenButton"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/outdoorUvTextView"
+        app:layout_constraintVertical_bias="0.488" />
 
     <Switch
         android:id="@+id/uvSwitch"
         android:layout_width="113dp"
         android:layout_height="31dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:text="OFF / ON"
         android:textColor="@color/colorPrimaryDark"
@@ -212,10 +222,9 @@
         android:textOff="OFF"
         android:textOn="ON"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/uvControlTextView"
+        app:layout_constraintBottom_toTopOf="@+id/highUvRangeTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/uvControlTextView"
-        app:layout_constraintVertical_bias="0.625" />
+        app:layout_constraintTop_toBottomOf="@+id/outdoorUvTextView" />
 
     <TextView
         android:id="@+id/textView19"
@@ -223,15 +232,14 @@
         android:layout_height="27dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="218dp"
+        android:layout_marginTop="190dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="UV RANGE"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintBottom_toTopOf="@+id/cardView10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/uvIndexTitleTextView"
         app:layout_constraintVertical_bias="0.0" />
@@ -240,31 +248,43 @@
         android:id="@+id/logoBottomImageView"
         android:layout_width="61dp"
         android:layout_height="44dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginEnd="164dp"
         android:layout_marginRight="164dp"
-        android:layout_marginBottom="1dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/igro_justleaf" />
 
     <TextView
         android:id="@+id/textView23"
         android:layout_width="78dp"
         android:layout_height="0dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginBottom="8dp"
         android:text="GRAPH"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView8"
+        app:layout_constraintBottom_toTopOf="@+id/cardView10"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView24"
         android:layout_width="85dp"
         android:layout_height="18dp"
-        android:layout_marginStart="236dp"
-        android:layout_marginLeft="236dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginLeft="200dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="TABLE"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/cardView10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView23" />
 
     <android.support.v7.widget.CardView
@@ -378,10 +398,11 @@
         android:id="@+id/lowUvEditText"
         android:layout_width="79dp"
         android:layout_height="36dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginEnd="211dp"
+        android:layout_marginRight="211dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="lowerUvLimit"
         android:ems="20"
         android:gravity="bottom|center|center_horizontal|center_vertical"
@@ -392,20 +413,22 @@
         android:textIsSelectable="true"
         android:textSize="12sp"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/textView23"
+        app:layout_constraintBottom_toTopOf="@+id/cardView8"
+        app:layout_constraintEnd_toStartOf="@+id/highUvEditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lowUvRangeTextView"
-        app:layout_constraintVertical_bias="0.413"
+        app:layout_constraintVertical_bias="0.032"
         tools:textColor="@color/colorPrimary" />
 
     <EditText
         android:id="@+id/highUvEditText"
         android:layout_width="81dp"
         android:layout_height="38dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="28dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="highUvLimit"
         android:ems="20"
         android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
@@ -417,10 +440,12 @@
         android:textColor="@color/colorAccent"
         android:textIsSelectable="true"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/lowUvEditText"
+        app:layout_constraintBottom_toTopOf="@+id/cardView10"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/lowUvEditText"
         app:layout_constraintTop_toTopOf="@+id/lowUvEditText"
-        app:layout_constraintVertical_bias="0.363"
+        app:layout_constraintVertical_bias="0.0"
         tools:textColor="@color/colorAccent" />
 
 
