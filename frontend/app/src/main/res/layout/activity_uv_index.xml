@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UvIndexActivity">
+
+    <TextView
+        android:id="@+id/highUvRangeTextView"
+        android:layout_width="82dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="HIGH"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/lowUvRangeTextView"
+        app:layout_constraintEnd_toEndOf="@+id/highUvEditText"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textView19" />
+
+    <TextView
+        android:id="@+id/lowUvRangeTextView"
+        android:layout_width="82dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="LOW"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/textView19"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+
+    <Button
+        android:id="@+id/indexUvGreenButton"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="21dp"
+        android:layout_marginLeft="21dp"
+        android:text="INDEX"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/nmUvGreenButton"
+        app:layout_constraintHorizontal_bias="0.953"
+        app:layout_constraintStart_toEndOf="@+id/ghUvTextView"
+        app:layout_constraintStart_toStartOf="@+id/nmUvGreenButton"
+        app:layout_constraintTop_toBottomOf="@+id/nmUvGreenButton" />
+
+    <Button
+        android:id="@+id/nmUvGreenButton"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="21dp"
+        android:layout_marginLeft="21dp"
+        android:layout_marginTop="8dp"
+        android:text="NM"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@+id/ghUvTextView"
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
+
+    <TextView
+        android:id="@+id/ghUvTextView"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@null"
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:text="320"
+        android:textAlignment="center"
+        android:textSize="45sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
+
+    <TextView
+        android:id="@+id/outdoorUvTextView"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="172dp"
+        android:layout_marginLeft="172dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@null"
+        android:ems="10"
+        android:inputType="number"
+        android:text="320"
+        android:textAlignment="center"
+        android:textSize="45sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ghUvTextView"
+        app:layout_constraintEnd_toStartOf="@+id/nmUvOutButton"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/ghUvTextView" />
+
+    <Button
+        android:id="@+id/nmUvOutButton"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="NM"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/indexUvOutButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/ghUvTextView" />
+
+    <Button
+        android:id="@+id/indexUvOutButton"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="12dp"
+        android:text="INDEX"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/uvSwitch"
+        app:layout_constraintEnd_toEndOf="@+id/nmUvOutButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/nmUvOutButton" />
+
+    <TextView
+        android:id="@+id/uvIndexTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_marginTop="6dp"
+        android:text="UV INDEX"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoTopImageView" />
+
+    <TextView
+        android:id="@+id/greenhouseTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="88dp"
+        android:layout_marginRight="88dp"
+        android:text="GREENHOUSE"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/outdoorTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uvIndexTitleTextView" />
+
+    <TextView
+        android:id="@+id/outdoorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="104dp"
+        android:layout_marginLeft="104dp"
+        android:layout_marginTop="8dp"
+        android:text="OUTDOOR"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/greenhouseTextView"
+        app:layout_constraintTop_toBottomOf="@+id/uvIndexTitleTextView" />
+
+    <ImageView
+        android:id="@+id/logoTopImageView"
+        android:layout_width="113dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="150dp"
+        android:layout_marginRight="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/igro_logo" />
+
+    <TextView
+        android:id="@+id/uvControlTextView"
+        android:layout_width="157dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="false"
+        android:foregroundGravity="left"
+        android:freezesText="false"
+        android:gravity="start|left"
+        android:paddingTop="8dp"
+        android:text="UV CONTROL"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/uvSwitch"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/indexUvGreenButton"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Switch
+        android:id="@+id/uvSwitch"
+        android:layout_width="113dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="8dp"
+        android:text="OFF / ON"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHighlight="@color/colorPrimary"
+        android:textColorLink="@color/colorAccent"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/uvControlTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/uvControlTextView"
+        app:layout_constraintVertical_bias="0.625" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="171dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="218dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="UV RANGE"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/uvIndexTitleTextView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/logoBottomImageView"
+        android:layout_width="61dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="164dp"
+        android:layout_marginRight="164dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/igro_justleaf" />
+
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="78dp"
+        android:layout_height="0dp"
+        android:text="GRAPH"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/cardView8"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView24"
+        android:layout_width="85dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="236dp"
+        android:layout_marginLeft="236dp"
+        android:text="TABLE"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/cardView10"
+        app:layout_constraintStart_toEndOf="@+id/textView23" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView8"
+        android:layout_width="180dp"
+        android:layout_height="124dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="11dp"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph"
+            android:layout_width="180dp"
+            android:layout_height="124dp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView10"
+        android:layout_width="210dp"
+        android:layout_height="124dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="11dp"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_gravity="left"
+                    android:text="Date"
+                    android:textSize="20dp"
+
+                    />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="°C"
+                    android:textSize="20dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_gravity="left"
+                    android:text="20/02/2019"
+                    android:textSize="20dp"
+
+                    />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="22°C"
+                    android:textSize="20dp" />
+
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_gravity="left"
+                    android:text="21/02/2019"
+                    android:textSize="20dp"
+
+                    />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="19°C"
+                    android:textSize="20dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_gravity="left"
+                    android:text="22/02/2019"
+                    android:textSize="20dp"
+
+                    />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="23°C"
+                    android:textSize="20dp" />
+            </TableRow>
+
+
+        </TableLayout>
+    </android.support.v7.widget.CardView>
+
+    <EditText
+        android:id="@+id/lowUvEditText"
+        android:layout_width="79dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp"
+        android:contentDescription="lowerUvLimit"
+        android:ems="20"
+        android:gravity="bottom|center|center_horizontal|center_vertical"
+        android:inputType="numberSigned|number|numberDecimal"
+        android:saveEnabled="true"
+        android:text="Lower Limit"
+        android:textColor="@color/colorPrimary"
+        android:textIsSelectable="true"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/textView23"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lowUvRangeTextView"
+        app:layout_constraintVertical_bias="0.413"
+        tools:textColor="@color/colorPrimary" />
+
+    <EditText
+        android:id="@+id/highUvEditText"
+        android:layout_width="81dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginBottom="12dp"
+        android:contentDescription="highUvLimit"
+        android:ems="20"
+        android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
+        android:gravity="bottom|clip_horizontal|center|center_horizontal|center_vertical"
+        android:inputType="numberSigned|number|numberDecimal"
+        android:saveEnabled="true"
+        android:text="Upper Limit"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="@color/colorAccent"
+        android:textIsSelectable="true"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/lowUvEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lowUvEditText"
+        app:layout_constraintVertical_bias="0.363"
+        tools:textColor="@color/colorAccent" />
+
+
+    <android.support.constraint.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</android.support.constraint.ConstraintLayout>

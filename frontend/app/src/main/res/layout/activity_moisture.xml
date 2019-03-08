@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activitymoisture"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MoistureActivity">
+
+
+    <TextView
+        android:id="@+id/highMoistureRangeTextView"
+        android:layout_width="82dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="32dp"
+        android:text="HIGH"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/highMoistureEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.869"
+        app:layout_constraintStart_toEndOf="@+id/lowMoistureRangeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/moistureRangeTextView" />
+
+    <TextView
+        android:id="@+id/lowMoistureRangeTextView"
+        android:layout_width="82dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="LOW"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/textView19"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moistureRangeTextView" />
+
+    <Button
+        android:id="@+id/ghPercentButton"
+        android:layout_width="43dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="%"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/ghMoistureTextView"
+        app:layout_constraintStart_toEndOf="@+id/ghMoistureTextView"
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
+
+
+    <TextView
+        android:id="@+id/ghMoistureTextView"
+        android:layout_width="67dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="148dp"
+        android:layout_marginLeft="148dp"
+        android:layout_marginTop="12dp"
+        android:background="@null"
+        android:ems="10"
+        android:inputType="number"
+        android:text="24"
+        android:textAlignment="center"
+        android:textSize="45sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
+
+
+    <TextView
+        android:id="@+id/moistureTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="43dp"
+        android:layout_marginTop="20dp"
+        android:text="MOISTURE"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/logoTopImageView"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/logoTopImageView"
+        app:layout_constraintTop_toBottomOf="@+id/logoTopImageView" />
+
+    <TextView
+        android:id="@+id/greenhouseTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="128dp"
+        android:layout_marginLeft="128dp"
+        android:layout_marginTop="24dp"
+        android:text="GREENHOUSE"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moistureTitleTextView" />
+
+    <ImageView
+        android:id="@+id/logoTopImageView"
+        android:layout_width="113dp"
+        android:layout_height="47dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginRight="148dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/igro_logo" />
+
+    <TextView
+        android:id="@+id/waterControlTextView"
+        android:layout_width="157dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="false"
+        android:foregroundGravity="left"
+        android:freezesText="false"
+        android:gravity="start|left"
+        android:paddingTop="8dp"
+        android:text="WATER SYSTEM CONTROL"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/moistureSwitch"
+        app:layout_constraintHorizontal_bias="0.391"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ghPercentButton"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Switch
+        android:id="@+id/moistureSwitch"
+        android:layout_width="113dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginRight="48dp"
+        android:layout_marginBottom="440dp"
+        android:text="OFF / ON"
+        android:textColor="@color/colorPrimaryDark"
+        android:textColorHighlight="@color/colorPrimary"
+        android:textColorLink="@color/colorAccent"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/waterControlTextView" />
+
+    <TextView
+        android:id="@+id/moistureRangeTextView"
+        android:layout_width="171dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="218dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="MOISTURE RANGE"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moistureTitleTextView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/logoBottomImageView"
+        android:layout_width="61dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="164dp"
+        android:layout_marginRight="164dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/igro_justleaf" />
+
+    <TextView
+        android:id="@+id/graphTextView"
+        android:layout_width="77dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="8dp"
+        android:text="GRAPH"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/moistureGraphCardView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lowMoistureEditText"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/tableTextView"
+        android:layout_width="85dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="228dp"
+        android:layout_marginLeft="228dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="TABLE"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/moistureTableCardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/graphTextView"
+        app:layout_constraintTop_toBottomOf="@+id/highMoistureEditText"
+        app:layout_constraintVertical_bias="0.876" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/moistureGraphCardView"
+        android:layout_width="180dp"
+        android:layout_height="124dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="11dp"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph"
+            android:layout_width="180dp"
+            android:layout_height="124dp" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/moistureTableCardView"
+        android:layout_width="210dp"
+        android:layout_height="124dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="11dp"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_gravity="left"
+                    android:text="Date"
+                    android:textSize="20dp"
+
+                    />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="%"
+                    android:textSize="20dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_gravity="left"
+                    android:text="20/02/2019"
+                    android:textSize="20dp"
+
+                    />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="22%"
+                    android:textSize="20dp" />
+
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_gravity="left"
+                    android:text="21/02/2019"
+                    android:textSize="20dp"
+
+                    />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="19°C"
+                    android:textSize="20dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_gravity="left"
+                    android:text="22/02/2019"
+                    android:textSize="20dp"
+
+                    />
+
+                <TextView
+                    android:layout_marginLeft="50dp"
+                    android:text="23°C"
+                    android:textSize="20dp" />
+            </TableRow>
+
+
+        </TableLayout>
+    </android.support.v7.widget.CardView>
+
+    <EditText
+        android:id="@+id/lowMoistureEditText"
+        android:layout_width="79dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="220dp"
+        android:contentDescription="lowerMoistureLimit"
+        android:ems="20"
+        android:gravity="bottom|center|center_horizontal|center_vertical"
+        android:inputType="number|numberDecimal"
+        android:saveEnabled="true"
+        android:text="Lower Limit"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="@color/colorPrimary"
+        android:textIsSelectable="true"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/textView23"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lowMoistureRangeTextView"
+        app:layout_constraintVertical_bias="0.413"
+        tools:textColor="@color/colorPrimary" />
+
+    <EditText
+        android:id="@+id/highMoistureEditText"
+        android:layout_width="81dp"
+        android:layout_height="46dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        android:contentDescription="highMoistureLimit"
+        android:ems="20"
+        android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
+        android:gravity="bottom|clip_horizontal|center|center_horizontal|center_vertical"
+        android:inputType="number"
+        android:saveEnabled="true"
+        android:text="Upper Limit"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="@color/colorAccent"
+        android:textIsSelectable="true"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/lowMoistureEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:textColor="@color/colorAccent" />
+
+
+    <android.support.constraint.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <android.support.constraint.Group
+        android:id="@+id/group2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</android.support.constraint.ConstraintLayout>
+
