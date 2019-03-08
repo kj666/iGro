@@ -46,18 +46,14 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth; // authentication instance
     protected TextView userWelcomeMessage;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            // current user validated
-        } else {
-            goToDashboardActivity();
-        }
+        checkAuthentication();
         //logout =  (Button) findViewById(R.id.logout);
         temperature=(Button) findViewById(R.id.temp_button);
         number=(Button) findViewById(R.id.tempNumberView);
@@ -75,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
         moistureNumber = (Button) findViewById(R.id.moisturePercentView);
 
         userWelcomeMessage = findViewById(R.id.welcomeMessageText);
-        userWelcomeMessage.setText("Hi " + currentUser.getEmail());
+        String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
+        userWelcomeMessage.setText(welcomeMessage);
         getHumData("1");
 
         //from fahrenheit to celcius
@@ -119,9 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 openTemperature();
             }
         });
-
-
-
         //opening the Uv index view  when the uv text is clicked
         uv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
                 openUv();
             }
         });
-
         //opening the Temperature view when the temperature number is clicked
         number.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
                 openUv();
             }
         });
-
         humidityTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,35 +149,36 @@ public class MainActivity extends AppCompatActivity {
                 openHumidity();
             }
         });
-
-
-
         moistureButton.setOnClickListener( new View.OnClickListener(){
             @Override
             public void onClick (View v2){
                 openMoistureActivity();
             }
         });
-
         moistureNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openMoistureActivity();
             }
         });
-
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            // current user validated
-        } else {
-            goToDashboardActivity();
-        }
+        checkAuthentication();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkAuthentication();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        checkAuthentication();
     }
 
     @Override
@@ -283,6 +276,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-
-
+    private void checkAuthentication() {
+        currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            // current user validated
+        } else {
+            goToDashboardActivity();
+        }
+    }
 }
