@@ -28,7 +28,6 @@ public class Dashboard extends AppCompatActivity {
     //protected Login profile;
     private String userName;
     private String password;
-    static int counter;
 
 
     @Override
@@ -99,13 +98,5 @@ public class Dashboard extends AppCompatActivity {
     protected void goToRegistrationActivity() {
         Intent test = new Intent(Dashboard.this, RegistrationActivity.class);
         startActivity(test);
-    }
-
-    int getCounter(){
-        return counter;
-    }
-    void setCounter(int i){
-        counter =i;
-
     }
 }

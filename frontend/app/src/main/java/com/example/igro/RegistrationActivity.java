@@ -31,7 +31,6 @@ public class RegistrationActivity extends AppCompatActivity {
     // TODO: 2019-03-06
     // add the provided firebase function to check if the user is logged into the app
     private FirebaseAuth mAuth;
-    private StorageReference mStorageRef; // Don't think that this is necessary
     private String TAG = "RegistrationActivity"; //Used for debugging purposes
     protected EditText userName;
     protected EditText userEmail;
@@ -102,6 +101,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                 Toast toast = Toast.makeText(getApplicationContext(),
                                         "Registration Successful", Toast.LENGTH_LONG);
                                 toast.show();
+                                // FirebaseUser registeredUser = mAuth.getCurrentUser();
+                                // sendEmailVerification(registeredUser);
                                 finish();
                             } else {
                                 // sign in fails
@@ -118,7 +119,7 @@ public class RegistrationActivity extends AppCompatActivity {
      * functions for each entry type (e.g. email, password)
      */
     boolean isValidUser() {
-        if (isValidEmail(userEmail.getText().toString()) && isValidPassword()) {
+        if (isValidEmail(userEmail.getText().toString()) && isValidPassword() && isValidName()) {
             return true;
         } else {
             return false;
@@ -143,6 +144,32 @@ public class RegistrationActivity extends AppCompatActivity {
     boolean isValidPassword() {
         return userPassword.getText().toString()
                 .equals(userPasswordConfirmation.getText().toString());
+    }
+
+    boolean isValidName() {
+        String nameUnderTest = userName.getText().toString();
+        if (nameUnderTest == null || nameUnderTest.length() == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    void sendEmailVerification(final FirebaseUser registeredUser) {
+        registeredUser.sendEmailVerification()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, " Verification email sent to " +
+                                    registeredUser.getEmail());
+                            Toast.makeText(getApplicationContext(), "Verification email sent to " +
+                                    registeredUser.getEmail(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d(TAG, "Failed to send verification email");
+                        }
+                    }
+                });
     }
 
 }
