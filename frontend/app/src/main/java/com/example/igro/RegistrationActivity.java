@@ -195,9 +195,15 @@ public class RegistrationActivity extends AppCompatActivity {
         // Check if there could be some sort of concurrency or security issue from sourcing-
         // data from both the firebase user and the inputted data in the registration EditText-
         // widgets
+        // TODO 2019-03-08
+        // Figure out how to determine greenhouse ID and user role
+        // so far, greenhouse ID = extra field on registration screen
+        // user role = ?
         user.put("Name", userName.getText().toString());
         user.put("Email", addThisUser.getEmail());
         user.put("ID", addThisUser.getUid());
+        user.put("Greenhouse ID#", "test");
+        user.put("User Role", "user"); // admin or user
 
         userDatabase.collection("Users")
                 .add(user)
