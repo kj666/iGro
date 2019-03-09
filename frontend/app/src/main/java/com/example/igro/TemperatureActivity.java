@@ -65,9 +65,6 @@ public class TemperatureActivity extends AppCompatActivity {
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
 
-        heaterSwitchStateFromRecord();
-        Boolean switchState = tempSwitch.isChecked();
-
         double y,x;
         x=-5;
 

@@ -60,7 +60,6 @@ public class UvIndexActivity extends AppCompatActivity {
         lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
         highUvEditText = (EditText)findViewById(R.id.highUvEditText);
 
-        uvSwitchStateFromRecord();
 
         double y,x;
         x=-5;

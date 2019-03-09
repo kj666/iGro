@@ -67,7 +67,6 @@ public class HumidityActivity extends AppCompatActivity {
         lowHumEditText = (EditText)findViewById(R.id.lowHumEditText);
         highHumEditText = (EditText)findViewById(R.id.highHumEditText);
 
-        humidSwitchStateFromRecord();
 
         double y,x;
         x=-5;

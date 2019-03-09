@@ -63,7 +63,6 @@ public class MoistureActivity extends AppCompatActivity {
         lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
         highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
 
-        moistureSwitchStateFromRecord();
 
         double y,x;
         x=-5;
