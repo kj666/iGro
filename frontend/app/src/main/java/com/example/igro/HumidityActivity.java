@@ -55,8 +55,6 @@ public class HumidityActivity extends AppCompatActivity {
     DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("HumidControlLog");
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -69,7 +67,7 @@ public class HumidityActivity extends AppCompatActivity {
         lowHumEditText = (EditText)findViewById(R.id.lowHumEditText);
         highHumEditText = (EditText)findViewById(R.id.highHumEditText);
 
-
+        humidSwitchStateFromRecord();
 
         double y,x;
         x=-5;
@@ -124,18 +122,17 @@ public class HumidityActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter a valid number for lower and upper humidity limits", Toast.LENGTH_LONG).show();
         }
 
-
-
-
         //call function check last child in heaterSwitchEventDB and set switch to that state
         humidSwitchStateFromRecord();
 
-        Boolean switchState = humSwitch.isChecked();
+        final Boolean switchState = humSwitch.isChecked();
 
         if(switchState){
             Log.d(TAG, "The heater was on");
+            Toast.makeText(this,  "The humidifier was On", Toast.LENGTH_LONG).show();
         }else{
             Log.d(TAG, "The heater was off");
+            Toast.makeText(this,  "The humidifier was Off", Toast.LENGTH_LONG).show();
         }
 
         humSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
@@ -143,7 +140,6 @@ public class HumidityActivity extends AppCompatActivity {
 
                 //Call heaterSwitchEvent function
                 humidSwitchEvent(SwitchState);
-
 
             }
         });
@@ -159,15 +155,9 @@ public class HumidityActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-
                 HumidControlEvents lastRecord = dataSnapshot.getValue(HumidControlEvents.class);
-                Boolean checkedStatus = lastRecord.getHumidEventOnOff();
+                assert lastRecord != null;
+                final Boolean checkedStatus = lastRecord.getHumidEventOnOff();
 
                 if(!(checkedStatus == null)){
 
@@ -184,6 +174,12 @@ public class HumidityActivity extends AppCompatActivity {
                     Log.d(TAG, "On/Off Status of humidifier can't be null, getHumidEventOnOff points to null");
 
                 }
+
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
             }
 
