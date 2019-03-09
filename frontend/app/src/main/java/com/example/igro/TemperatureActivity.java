@@ -229,9 +229,9 @@ public class TemperatureActivity extends AppCompatActivity {
             //record the time of the click
             //DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
-            long heatOnOffUnixFormat = System.currentTimeMillis()/1000;
+            long heatOnOffDateUnixFormat = System.currentTimeMillis()/1000;
 
-            String heatOnOffReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(heatOnOffUnixFormat*1000));
+            String heatOnOffDateReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(heatOnOffDateUnixFormat*1000));
 
             DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
             String heatOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
@@ -239,7 +239,7 @@ public class TemperatureActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String heatEventId = heaterSwitchEventDB.push().getKey();
 
-            HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffUnixFormat, tempSwitchState);
+            HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat, tempSwitchState);
             heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
 
             if(!(heatEventId == null)) {

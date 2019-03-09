@@ -207,9 +207,9 @@ public class HumidityActivity extends AppCompatActivity {
         //record the time of the click
         //DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
-        long humOnOffUnixFormat = System.currentTimeMillis()/1000;
+        long humOnOffDateUnixFormat = System.currentTimeMillis()/1000;
 
-        String humOnOffReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(humOnOffUnixFormat*1000));
+        String humOnOffDateReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(humOnOffDateUnixFormat*1000));
 
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String humOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
@@ -217,8 +217,7 @@ public class HumidityActivity extends AppCompatActivity {
         //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
         String humEventId = humidSwitchEventDB.push().getKey();
 
-
-        HumidControlEvents humSwitchClickEvent = new HumidControlEvents(humEventId, humOnTimeStampFormated, humOnOffUnixFormat, humSwitchState);
+        HumidControlEvents humSwitchClickEvent = new HumidControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, humSwitchState);
         humidSwitchEventDB.child(humEventId).setValue(humSwitchClickEvent);
 
         if(!(humEventId == null)) {
@@ -226,11 +225,11 @@ public class HumidityActivity extends AppCompatActivity {
 
             if (humSwitchState) {
 
-                Log.d(TAG, "The heater was turned on " + humOnTimeStampFormated);
+                Log.d(TAG, "The humidifier was turned on " + humOnTimeStampFormated);
                 Toast.makeText(this, "The humidifier was switched ON on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
             } else {
-                Log.d(TAG, "The heater was turned off on " + humOnTimeStampFormated);
+                Log.d(TAG, "The humidifier was turned off on " + humOnTimeStampFormated);
                 Toast.makeText(this, "The humidifier was switched OFF on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
             }
         }else{
