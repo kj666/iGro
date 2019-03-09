@@ -23,6 +23,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*
 * This class represents the registration section of the application. Every new user is
 * required to enter their valid info and this data is then stored onto the database
@@ -170,6 +173,16 @@ public class RegistrationActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    void addToUserDatabase(FirebaseUser addThisUser) {
+        Map<String, Object> user = new HashMap<>();
+        // TODO 2019-03-08
+        // Check if there could be some sort of concurrency or security issue from sourcing-
+        // data from both the firebase user and the inputted data in the registration EditText-
+        // widgets
+        user.put("Name", userName);
+
     }
 
 }

@@ -143,28 +143,18 @@ public class TemperatureActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
-
     private void heaterSwitchStateFromRecord() {
-
-        
-
         heaterSwitchEventDB.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-
-
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
                 HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
                 Boolean checkedStatus = lastRecord.getHeaterEventOnOff();
-
                 if(!(checkedStatus == null)){
 
                     lastHeaterState = checkedStatus;
@@ -178,28 +168,20 @@ public class TemperatureActivity extends AppCompatActivity {
                 }else{
 
                     Log.d(TAG, "On/Off Status of heater can't be null, getHeaterEventOnOff points to null");
-
                 }
-
-
             }
-
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
-
     }
 
 
