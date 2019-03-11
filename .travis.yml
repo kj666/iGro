@@ -1,0 +1,5 @@
+language: android
+
+before_script:
+  - cd frontend
+script: .gradlew build assembleDebug
