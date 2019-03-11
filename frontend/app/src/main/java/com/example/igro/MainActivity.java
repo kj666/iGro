@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 
+import com.example.igro.Controller.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,25 +23,22 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
-    private Button temperature;
-    private Button uv;
-    private Button uvNumber;
-    private Button number;
-    private Button celcius;
-    private Button fahrenheit;
+    private Button temperatureTitleButton;
+    private Button temperatureNumberButton;
+    private Button temperatureCelsiusButton;
+    private Button temperatureFahrenheitButton;
+
+    private Button uvTitleButton;
+    private Button uvNumberButton;
+
     private boolean celcius_pressed=true;
     private boolean fahrenheit_pressed=false;
 
-    private Button moistureNumber;
-    private Button moistureButton;
+    private Button moistureNumberButton;
+    private Button moistureTitleButton;
 
-    private Button tempNumberButton;
-    private Button logout;
-    private String UserN;
-    private String UserP;
-
-    protected Button humidityTitle;
-    protected TextView humNumber;
+    protected Button humidityTitleButton;
+    protected TextView humidityNumberButton;
 
     public int tempD;
 
@@ -52,56 +50,46 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         mAuth = FirebaseAuth.getInstance();
         checkAuthentication();
-        //logout =  (Button) findViewById(R.id.logout);
-        temperature=(Button) findViewById(R.id.temp_button);
-        number=(Button) findViewById(R.id.tempNumberView);
 
-        getTempData("1");
-        number=(Button) findViewById(R.id.tempNumberView);
-        celcius=(Button) findViewById(R.id.celciusOutButton);
-        fahrenheit=(Button) findViewById(R.id.fahrenheitOutButton);
-        uv=(Button) findViewById(R.id.uvButton);
-        uvNumber=(Button)findViewById(R.id.uvNumberButton);
-
-        humidityTitle = (Button)findViewById(R.id.humidityButton);
-        humNumber = (TextView) findViewById(R.id.humidityPercentView);
-        moistureButton = (Button) findViewById(R.id.moistureButton);
-        moistureNumber = (Button) findViewById(R.id.moisturePercentView);
+        //Initialize all the UI elements
+        initializeUI();
 
         userWelcomeMessage = findViewById(R.id.welcomeMessageText);
         String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
         userWelcomeMessage.setText(welcomeMessage);
         getHumData("1");
+        getTempData("1");
 
-        //from fahrenheit to celcius
-        celcius.setOnClickListener(new View.OnClickListener() {
+        //from temperatureFahrenheitButton to temperatureCelsiusButton
+        temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
                 if(fahrenheit_pressed) {
                     for(int i=0;i<1;i++) {
-                        Double degrees = Double.parseDouble(number.getText().toString());
-                         Double a = (degrees - 32) * 5 / 9;
-                        number.setText(Double.toString(a));
+                        Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
+                        Double a = (degrees - 32) * 5 / 9;
+                        temperatureNumberButton.setText(Double.toString(a));
                     }
                     celcius_pressed = true;
                     fahrenheit_pressed=false;
                 }
             }
         });
-        // from celcius to fahrenheit
-        fahrenheit.setOnClickListener(new View.OnClickListener() {
+        // convert temperatureCelsiusButton to temperatureFahrenheitButton
+        temperatureFahrenheitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if(celcius_pressed) {
                     for(int i=0;i<1;i++) {
-                        Double degrees = Double.parseDouble(number.getText().toString());
+                        Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
                         Double a = degrees * 9 / 5 + 32;
-                        number.setText(Double.toString(a));
+                        temperatureNumberButton.setText(Double.toString(a));
                     }
                     fahrenheit_pressed = true;
                     celcius_pressed=false;
@@ -110,57 +98,80 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //opening the Temperature view when the temperature text is clicked
-        temperature.setOnClickListener(new View.OnClickListener() {
+        temperatureTitleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openTemperature();
-            }
-        });
-        //opening the Uv index view  when the uv text is clicked
-        uv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openUv();
+                Helper.goTo(getApplicationContext(), TemperatureActivity.class);
             }
         });
         //opening the Temperature view when the temperature number is clicked
-        number.setOnClickListener(new View.OnClickListener() {
+        temperatureNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openTemperature();
+                Helper.goTo(getApplicationContext(), TemperatureActivity.class);
             }
         });
-        ////opening the uv view when the uv number is clicked
-        uvNumber.setOnClickListener(new View.OnClickListener() {
+
+        //opening the Uv index view  when the uvTitleButton text is clicked
+        uvTitleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openUv();
+                Helper.goTo(getApplicationContext(), UvIndexActivity.class);
             }
         });
-        humidityTitle.setOnClickListener(new View.OnClickListener() {
+
+        ////opening the uvTitleButton view when the uvTitleButton number is clicked
+        uvNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openHumidity();
+                Helper.goTo(getApplicationContext(), UvIndexActivity.class);
             }
         });
-        humNumber.setOnClickListener(new View.OnClickListener() {
+        humidityTitleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openHumidity();
+                Helper.goTo(getApplicationContext(), HumidityActivity.class);
             }
         });
-        moistureButton.setOnClickListener( new View.OnClickListener(){
+        humidityNumberButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Helper.goTo(getApplicationContext(), HumidityActivity.class);
+            }
+        });
+        moistureTitleButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v2){
-                openMoistureActivity();
+                Helper.goTo(getApplicationContext(), MoistureActivity.class);
             }
         });
-        moistureNumber.setOnClickListener(new View.OnClickListener() {
+        moistureNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openMoistureActivity();
+                Helper.goTo(getApplicationContext(), MoistureActivity.class);
             }
         });
+    }
+
+    protected void initializeUI(){
+        //Temperature View initialization
+        temperatureTitleButton = (Button) findViewById(R.id.temp_button);
+        temperatureNumberButton = (Button) findViewById(R.id.tempNumberView);
+        temperatureCelsiusButton = (Button) findViewById(R.id.celciusOutButton);
+        temperatureFahrenheitButton = (Button) findViewById(R.id.fahrenheitOutButton);
+
+
+        //UV view initialization
+        uvTitleButton = (Button) findViewById(R.id.uvButton);
+        uvNumberButton = (Button)findViewById(R.id.uvNumberButton);
+
+        //Humidity view initialization
+        humidityTitleButton = (Button)findViewById(R.id.humidityButton);
+        humidityNumberButton = (TextView) findViewById(R.id.humidityPercentView);
+
+        //Moisture view initialization
+        moistureTitleButton = (Button) findViewById(R.id.moistureButton);
+        moistureNumberButton = (Button) findViewById(R.id.moisturePercentView);
     }
 
     @Override
@@ -195,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.sign_out:
                 mAuth.signOut();
-                Intent f = new Intent(MainActivity.this, Dashboard.class);
+                Intent f = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(f);
                 return true;
 
@@ -223,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("ERROR", "Cannot get Temperature");
                     }
                 }
-                number.setText(tempD+"");
+                temperatureNumberButton.setText(tempD+"");
             }
         });
     }
@@ -248,41 +259,18 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("ERROR", "Cannot Retreave Humidity");
                     }
                 }
-                humNumber.setText(humD+"");
+                humidityNumberButton.setText(humD+"");
             }
         });
     }
 
-    public void openTemperature(){
-        Intent tempIntent=new Intent(this,TemperatureActivity.class);
-        startActivity(tempIntent);
-    }
-    public void openUv(){
-        Intent intent=new Intent(this,UvIndexActivity.class);
-        startActivity(intent);
-    }
-
-    public void openHumidity(){
-        Intent humIntent=new Intent(this,HumidityActivity.class);
-        startActivity(humIntent);
-    }
-
-    public void openMoistureActivity(){
-        Intent intent2 = new Intent(this,MoistureActivity.class);
-        startActivity(intent2);
-    }
-
-    void goToDashboardActivity() {
-        Intent i = new Intent(MainActivity.this, Dashboard.class);
-        startActivity(i);
-    }
 
     private void checkAuthentication() {
         currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             // current user validated
         } else {
-            goToDashboardActivity();
+            Helper.goTo(getApplicationContext(), LoginActivity.class);
         }
     }
 }

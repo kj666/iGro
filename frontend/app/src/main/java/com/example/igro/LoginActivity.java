@@ -11,20 +11,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.igro.Controller.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Dashboard extends AppCompatActivity {
+
+public class LoginActivity extends AppCompatActivity {
     private Button loginUserButton;
     private FirebaseAuth mAuth; //authentication instance
     protected EditText UserEditText;
     protected EditText passwordEditText;
     protected Button registerUserButton;
-    private String TAG = "Dashboard";
+    private String TAG = "LoginActivity";
     //protected Login profile;
     private String userName;
     private String password;
@@ -35,7 +36,7 @@ public class Dashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //Initiating authentication instance
         mAuth = FirebaseAuth.getInstance();
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_login);
         passwordEditText = findViewById(R.id.userPasswordEditText);
         UserEditText = findViewById(R.id.userNameEditText);
         loginUserButton = findViewById(R.id.loginUserButton);
@@ -49,19 +50,26 @@ public class Dashboard extends AppCompatActivity {
             public void onClick(View v) {
                 userName = UserEditText.getText().toString();
                 password = passwordEditText.getText().toString();
-                Validate(userName, password);
+                //Validate that inputs are not empty
+                if(userName.equals("") || password.equals("")){
+                    Toast.makeText(LoginActivity.this, "Login fields are empty",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Validate(userName, password);
+                }
             }
         });
 
         registerUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToRegistrationActivity();
+                Helper.goTo(getApplicationContext(), RegistrationActivity.class);
             }
         });
     }
 
-    /*
+    /**
     * This function will authenticate user registration credentials by verifying if there is an
     * equivalent entry in the firebase user database
      */
@@ -75,26 +83,19 @@ public class Dashboard extends AppCompatActivity {
                     //sign in succeed
                     Log.d(TAG, "signInWithEmail:success");
                     FirebaseUser validUser = mAuth.getCurrentUser();
-                    Toast.makeText(Dashboard.this, "Authentication Success.",
+                    Toast.makeText(LoginActivity.this, "Authentication Success.",
                             Toast.LENGTH_SHORT).show();
-                    goToMainActivity();
+
+                    //Use function in Controller.Helper to go to dashboard activity
+                    Helper.goTo(getApplicationContext(), MainActivity.class);
+
                 } else {
                     //sign in failed
                     Log.w(TAG, "signInWithEmail:failure", task.getException());
-                    Toast.makeText(Dashboard.this, "Authentication Failed.",
+                    Toast.makeText(LoginActivity.this, "Authentication Failed.",
                             Toast.LENGTH_SHORT).show();
                 }
             }
         });
-    }
-
-    void goToMainActivity() {
-        Intent i = new Intent(Dashboard.this, MainActivity.class);
-        startActivity(i);
-    }
-
-    protected void goToRegistrationActivity() {
-        Intent test = new Intent(Dashboard.this, RegistrationActivity.class);
-        startActivity(test);
     }
 }

@@ -15,14 +15,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igro.Models.ActuatorControl.HumidControlEvents;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.collection.LLRBNode;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -31,7 +29,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import static java.lang.Integer.parseInt;
 
@@ -80,8 +77,6 @@ public class HumidityActivity extends AppCompatActivity {
         }
         graph.addSeries(series);
     }
-
-
 
 
 
@@ -147,7 +142,6 @@ public class HumidityActivity extends AppCompatActivity {
 
 
     private void humidSwitchStateFromRecord() {
-
 
 
         humidSwitchEventDB.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
