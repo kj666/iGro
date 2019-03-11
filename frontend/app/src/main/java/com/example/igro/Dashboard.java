@@ -78,8 +78,6 @@ public class Dashboard extends AppCompatActivity {
                     Toast.makeText(Dashboard.this, "Authentication Success.",
                             Toast.LENGTH_SHORT).show();
                     goToMainActivity();
-                    // TODO 2019-03-07
-                    // Direct valid user to the info screen
                 } else {
                     //sign in failed
                     Log.w(TAG, "signInWithEmail:failure", task.getException());
