@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.sign_out:
+                mAuth.signOut();
                 Intent f = new Intent(MainActivity.this, Dashboard.class);
                 startActivity(f);
                 return true;

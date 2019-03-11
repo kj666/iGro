@@ -14,14 +14,21 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /*
 * This class represents the registration section of the application. Every new user is
@@ -38,6 +45,7 @@ public class RegistrationActivity extends AppCompatActivity {
     protected EditText userPasswordConfirmation;
     protected Button signUpButton;
     protected Button cancelButton;
+    FirebaseFirestore userDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,7 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
         FirebaseApp.initializeApp(this); // This will probably be needed to move to main activity
         mAuth = FirebaseAuth.getInstance();
+        userDatabase = FirebaseFirestore.getInstance();
         //mStorageRef = FirebaseStorage.getInstance().getReference();
         //Creating a link to widgets on user interface
         userName = findViewById(R.id.userNameText);
@@ -101,8 +110,9 @@ public class RegistrationActivity extends AppCompatActivity {
                                 Toast toast = Toast.makeText(getApplicationContext(),
                                         "Registration Successful", Toast.LENGTH_LONG);
                                 toast.show();
-                                // FirebaseUser registeredUser = mAuth.getCurrentUser();
+                                FirebaseUser registeredUser = mAuth.getCurrentUser();
                                 // sendEmailVerification(registeredUser);
+                                addToUserDatabase(registeredUser);
                                 finish();
                             } else {
                                 // sign in fails
@@ -168,6 +178,45 @@ public class RegistrationActivity extends AppCompatActivity {
                         } else {
                             Log.d(TAG, "Failed to send verification email");
                         }
+                    }
+                });
+    }
+
+    /*
+    * Function that adds a user object to the firestore database.
+    * user object is tentatively structured as follows:
+    * name
+    * email
+    * ID
+     */
+    void addToUserDatabase(FirebaseUser addThisUser) {
+        Map<String, Object> user = new HashMap<>();
+        // TODO 2019-03-08
+        // Check if there could be some sort of concurrency or security issue from sourcing-
+        // data from both the firebase user and the inputted data in the registration EditText-
+        // widgets
+        // TODO 2019-03-08
+        // Figure out how to determine greenhouse ID and user role
+        // so far, greenhouse ID = extra field on registration screen
+        // user role = ?
+        user.put("Name", userName.getText().toString());
+        user.put("Email", addThisUser.getEmail());
+        user.put("ID", addThisUser.getUid());
+        user.put("Greenhouse ID#", "test");
+        user.put("User Role", "user"); // admin or user
+
+        userDatabase.collection("Users")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG,"DocumentSnapshot added with ID" + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
                     }
                 });
     }
