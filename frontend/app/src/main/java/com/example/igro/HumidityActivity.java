@@ -55,8 +55,6 @@ public class HumidityActivity extends AppCompatActivity {
     DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("HumidControlLog");
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -68,7 +66,6 @@ public class HumidityActivity extends AppCompatActivity {
 
         lowHumEditText = (EditText)findViewById(R.id.lowHumEditText);
         highHumEditText = (EditText)findViewById(R.id.highHumEditText);
-
 
 
         double y,x;
@@ -124,18 +121,17 @@ public class HumidityActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter a valid number for lower and upper humidity limits", Toast.LENGTH_LONG).show();
         }
 
-
-
-
         //call function check last child in heaterSwitchEventDB and set switch to that state
         humidSwitchStateFromRecord();
 
-        Boolean switchState = humSwitch.isChecked();
+        final Boolean switchState = humSwitch.isChecked();
 
         if(switchState){
             Log.d(TAG, "The heater was on");
+            Toast.makeText(this,  "The humidifier was On", Toast.LENGTH_LONG).show();
         }else{
             Log.d(TAG, "The heater was off");
+            Toast.makeText(this,  "The humidifier was Off", Toast.LENGTH_LONG).show();
         }
 
         humSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
@@ -143,7 +139,6 @@ public class HumidityActivity extends AppCompatActivity {
 
                 //Call heaterSwitchEvent function
                 humidSwitchEvent(SwitchState);
-
 
             }
         });
@@ -159,15 +154,9 @@ public class HumidityActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-
                 HumidControlEvents lastRecord = dataSnapshot.getValue(HumidControlEvents.class);
-                Boolean checkedStatus = lastRecord.getHumidEventOnOff();
+                assert lastRecord != null;
+                final Boolean checkedStatus = lastRecord.getHumidEventOnOff();
 
                 if(!(checkedStatus == null)){
 
@@ -184,6 +173,12 @@ public class HumidityActivity extends AppCompatActivity {
                     Log.d(TAG, "On/Off Status of humidifier can't be null, getHumidEventOnOff points to null");
 
                 }
+
+
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
             }
 
@@ -211,9 +206,9 @@ public class HumidityActivity extends AppCompatActivity {
         //record the time of the click
         //DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
-        long humOnOffUnixFormat = System.currentTimeMillis()/1000;
+        long humOnOffDateUnixFormat = System.currentTimeMillis()/1000;
 
-        String humOnOffReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(humOnOffUnixFormat*1000));
+        String humOnOffDateReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(humOnOffDateUnixFormat*1000));
 
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String humOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
@@ -221,8 +216,7 @@ public class HumidityActivity extends AppCompatActivity {
         //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
         String humEventId = humidSwitchEventDB.push().getKey();
 
-
-        HumidControlEvents humSwitchClickEvent = new HumidControlEvents(humEventId, humOnTimeStampFormated, humOnOffUnixFormat, humSwitchState);
+        HumidControlEvents humSwitchClickEvent = new HumidControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, humSwitchState);
         humidSwitchEventDB.child(humEventId).setValue(humSwitchClickEvent);
 
         if(!(humEventId == null)) {
@@ -230,11 +224,11 @@ public class HumidityActivity extends AppCompatActivity {
 
             if (humSwitchState) {
 
-                Log.d(TAG, "The heater was turned on " + humOnTimeStampFormated);
+                Log.d(TAG, "The humidifier was turned on " + humOnTimeStampFormated);
                 Toast.makeText(this, "The humidifier was switched ON on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
             } else {
-                Log.d(TAG, "The heater was turned off on " + humOnTimeStampFormated);
+                Log.d(TAG, "The humidifier was turned off on " + humOnTimeStampFormated);
                 Toast.makeText(this, "The humidifier was switched OFF on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
             }
         }else{

@@ -65,8 +65,6 @@ public class TemperatureActivity extends AppCompatActivity {
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
 
-
-
         double y,x;
         x=-5;
 
@@ -78,9 +76,9 @@ public class TemperatureActivity extends AppCompatActivity {
             series.appendData(new DataPoint(x,y),true,500);
         }
          graph.addSeries(series);
+
+
     }
-
-
 
 
 
@@ -121,40 +119,67 @@ public class TemperatureActivity extends AppCompatActivity {
         }
 
 
-
-
         //call function check last child in heaterSwitchEventDB and set switch to that state
-         heaterSwitchStateFromRecord();
-
-        Boolean switchState = tempSwitch.isChecked();
+        heaterSwitchStateFromRecord();
+        final Boolean switchState = tempSwitch.isChecked();
 
         if(switchState){
             Log.d(TAG, "The heater was on");
+            Toast.makeText(this,  "The heater was On", Toast.LENGTH_LONG).show();
         }else{
             Log.d(TAG, "The heater was off");
+            Toast.makeText(this,  "The heater was Off", Toast.LENGTH_LONG).show();
         }
 
         tempSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton tempSwitch, boolean SwitchState){
 
+
                 //Call heaterSwitchEvent function
                 heaterSwitchEvent(SwitchState);
-
-
             }
         });
+
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        heaterSwitchStateFromRecord();
+        final boolean switchState = tempSwitch.isChecked();
+
+        if(switchState){
+            Log.d(TAG, "The heater was on");
+            Toast.makeText(this,  "The heater was On", Toast.LENGTH_LONG).show();
+        }else{
+            Log.d(TAG, "The heater was off");
+            Toast.makeText(this,  "The heater was Off", Toast.LENGTH_LONG).show();
+        }
+
+        tempSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton tempSwitch, boolean tempSwitchState){
+
+                //Call heaterSwitchEvent function
+                heaterSwitchEvent(tempSwitchState);
+            }
+        });
+
+    }
+
+
+
     private void heaterSwitchStateFromRecord() {
+
         heaterSwitchEventDB.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
-                Boolean checkedStatus = lastRecord.getHeaterEventOnOff();
+                assert lastRecord != null;
+                final Boolean checkedStatus = lastRecord.getHeaterEventOnOff();
+
                 if(!(checkedStatus == null)){
 
                     lastHeaterState = checkedStatus;
@@ -169,19 +194,30 @@ public class TemperatureActivity extends AppCompatActivity {
 
                     Log.d(TAG, "On/Off Status of heater can't be null, getHeaterEventOnOff points to null");
                 }
+
             }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
             }
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
+
     }
 
 
@@ -190,9 +226,9 @@ public class TemperatureActivity extends AppCompatActivity {
             //record the time of the click
             //DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
-            long heatOnOffUnixFormat = System.currentTimeMillis()/1000;
+            long heatOnOffDateUnixFormat = System.currentTimeMillis()/1000;
 
-            String heatOnOffReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(heatOnOffUnixFormat*1000));
+            String heatOnOffDateReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(heatOnOffDateUnixFormat*1000));
 
             DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
             String heatOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
@@ -200,8 +236,7 @@ public class TemperatureActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String heatEventId = heaterSwitchEventDB.push().getKey();
 
-
-            HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffUnixFormat, tempSwitchState);
+            HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat, tempSwitchState);
             heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
 
             if(!(heatEventId == null)) {
