@@ -103,14 +103,6 @@ public class MoistureActivity extends AppCompatActivity {
         final Boolean switchState = moistureSwitch.isChecked();
         moistureSwitchStateFromRecord();
 
-        if(switchState){
-            Log.d(TAG, "The irrigation was on");
-            Toast.makeText(this,  "The irrigation was On", Toast.LENGTH_LONG).show();
-        }else{
-            Log.d(TAG, "The irrigation was off");
-            Toast.makeText(this,  "The irrigation was Off", Toast.LENGTH_LONG).show();
-        }
-
         moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
 
@@ -132,10 +124,8 @@ public class MoistureActivity extends AppCompatActivity {
 
         if(switchState){
             Log.d(TAG, "The irrigation was on");
-            Toast.makeText(this,  "The irrigation was On", Toast.LENGTH_LONG).show();
         }else{
             Log.d(TAG, "The irrigation was off");
-            Toast.makeText(this,  "The irrigation was Off", Toast.LENGTH_LONG).show();
         }
 
         moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){

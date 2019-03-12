@@ -99,14 +99,6 @@ public class UvIndexActivity extends AppCompatActivity {
         final Boolean switchState = uvSwitch.isChecked();
         uvSwitchStateFromRecord();
 
-        if(switchState){
-            Log.d(TAG, "The lights were on");
-            Toast.makeText(this,  "The lights were On", Toast.LENGTH_LONG).show();
-        }else{
-            Log.d(TAG, "Thelights were off");
-            Toast.makeText(this,  "The lights were Off", Toast.LENGTH_LONG).show();
-        }
-
         uvSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton uvSwitch, boolean SwitchState){
 
@@ -127,10 +119,9 @@ public class UvIndexActivity extends AppCompatActivity {
 
         if(switchState){
             Log.d(TAG, "The lights were on");
-            Toast.makeText(this,  "The lights were On", Toast.LENGTH_LONG).show();
         }else{
             Log.d(TAG, "Thelights were off");
-            Toast.makeText(this,  "The lights were Off", Toast.LENGTH_LONG).show();
+
         }
 
         uvSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){

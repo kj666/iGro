@@ -126,13 +126,6 @@ public class HumidityActivity extends AppCompatActivity {
         final boolean switchState = humSwitch.isChecked();
         humidSwitchStateFromRecord();
 
-        if(switchState){
-            Log.d(TAG, "The heater was on");
-            Toast.makeText(this,  "The humidifier was On", Toast.LENGTH_LONG).show();
-        }else{
-            Log.d(TAG, "The heater was off");
-            Toast.makeText(this,  "The humidifier was Off", Toast.LENGTH_LONG).show();
-        }
 
         humSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
@@ -157,10 +150,8 @@ public class HumidityActivity extends AppCompatActivity {
 
         if(switchState){
             Log.d(TAG, "The heater was on");
-            Toast.makeText(this,  "The humidifier was On", Toast.LENGTH_LONG).show();
-        }else{
+        }else {
             Log.d(TAG, "The heater was off");
-            Toast.makeText(this,  "The humidifier was Off", Toast.LENGTH_LONG).show();
         }
 
         // Listen for change in switch status

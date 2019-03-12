@@ -150,14 +150,11 @@ public class TemperatureActivity extends AppCompatActivity {
 
         final boolean switchState = tempSwitch.isChecked();
             heaterSwitchStateFromRecord();
-
-
+            
         if(switchState){
             Log.d(TAG, "The heater was on");
-            Toast.makeText(this,  "The heater was On", Toast.LENGTH_LONG).show();
         }else{
             Log.d(TAG, "The heater was off");
-            Toast.makeText(this,  "The heater was Off", Toast.LENGTH_LONG).show();
         }
 
         //Listen for changes in switch status
