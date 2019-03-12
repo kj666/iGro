@@ -21,6 +21,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.collection.LLRBNode;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -29,6 +32,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import static java.lang.Integer.parseInt;
 
@@ -43,7 +47,7 @@ public class HumidityActivity extends AppCompatActivity {
     TextView humControlTextView;
     Switch humSwitch;
 
-    public Boolean lastHumidState;
+    public Boolean lastHumidState = false;
 
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HumidifyerIsOnTag";
@@ -77,6 +81,8 @@ public class HumidityActivity extends AppCompatActivity {
         }
         graph.addSeries(series);
     }
+
+
 
 
 
@@ -117,17 +123,9 @@ public class HumidityActivity extends AppCompatActivity {
         }
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
+
+        final boolean switchState = humSwitch.isChecked();
         humidSwitchStateFromRecord();
-
-        final Boolean switchState = humSwitch.isChecked();
-
-        if(switchState){
-            Log.d(TAG, "The heater was on");
-            Toast.makeText(this,  "The humidifier was On", Toast.LENGTH_LONG).show();
-        }else{
-            Log.d(TAG, "The heater was off");
-            Toast.makeText(this,  "The humidifier was Off", Toast.LENGTH_LONG).show();
-        }
 
         humSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
@@ -141,8 +139,35 @@ public class HumidityActivity extends AppCompatActivity {
     }
 
 
-    private void humidSwitchStateFromRecord() {
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        //call function check last child in heaterSwitchEventDB and set switch to that state
+
+        final boolean switchState = humSwitch.isChecked();
+        humidSwitchStateFromRecord();
+
+        if(switchState){
+            Log.d(TAG, "The heater was on");
+        }else {
+            Log.d(TAG, "The heater was off");
+        }
+
+        // Listen for change in switch status
+        humSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
+
+                //Call heaterSwitchEvent function
+                humidSwitchEvent(SwitchState);
+
+            }
+        });
+
+    }
+
+
+    private void humidSwitchStateFromRecord() {
 
         humidSwitchEventDB.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
             @Override
@@ -194,7 +219,6 @@ public class HumidityActivity extends AppCompatActivity {
 
     }
 
-
     private void humidSwitchEvent(boolean humSwitchState) {
 
         //record the time of the click
@@ -207,26 +231,27 @@ public class HumidityActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String humOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
-        //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
-        String humEventId = humidSwitchEventDB.push().getKey();
+        if(!(humSwitchState==lastHumidState)){
 
-        HumidControlEvents humSwitchClickEvent = new HumidControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, humSwitchState);
-        humidSwitchEventDB.child(humEventId).setValue(humSwitchClickEvent);
+            //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
+            String humEventId = humidSwitchEventDB.push().getKey();
 
-        if(!(humEventId == null)) {
+            HumidControlEvents humSwitchClickEvent = new HumidControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, humSwitchState);
+            humidSwitchEventDB.child(humEventId).setValue(humSwitchClickEvent);
 
+            if(!(humEventId == null)) {
 
-            if (humSwitchState) {
+                if (humSwitchState) {
 
-                Log.d(TAG, "The humidifier was turned on " + humOnTimeStampFormated);
-                Toast.makeText(this, "The humidifier was switched ON on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "The humidifier was turned on " + humOnTimeStampFormated);
+                    Toast.makeText(this, "The humidifier was switched ON on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
-            } else {
-                Log.d(TAG, "The humidifier was turned off on " + humOnTimeStampFormated);
-                Toast.makeText(this, "The humidifier was switched OFF on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
-            }
-        }else{
-            Log.d(TAG, "ERROR: humEventId can't be null");
+                } else {
+                    Log.d(TAG, "The humidifier was turned off on " + humOnTimeStampFormated);
+                    Toast.makeText(this, "The humidifier was switched OFF on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                }
+            }else{
+                Log.d(TAG, "ERROR: humEventId can't be null");
 
         }
 
