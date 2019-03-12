@@ -3,19 +3,57 @@ package com.example.igro.Controller;
 import android.content.Context;
 import android.content.Intent;
 
+import com.example.igro.LoginActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+/**
+ * This class contains functions that are used across the entire app
+ */
 public class Helper {
 
+    //Retrieve the current context of the app
+    Context context;
+    //Firebase authentication
+    FirebaseAuth firebaseAuth;
+    //Firebase user
+    FirebaseUser user;
+
+    public Helper(Context context, FirebaseAuth firebaseAuth) {
+        this.context = context;
+        this.firebaseAuth = firebaseAuth;
+        this.user = firebaseAuth.getCurrentUser();
+    }
+
     /**
-     * This function goes from the current activity to the specified Activity
-     * @param currentContext
+     * Go to specified activity
      * @param goTo
      */
-    static public void goTo(Context currentContext, Class goTo) {
-        Intent test = new Intent(currentContext, goTo);
-        currentContext.startActivity(test);
+    public void goToActivity(Class goTo) {
+        Intent test = new Intent(context, goTo);
+        context.startActivity(test);
     }
 
-    static public void Onclick(){
+    /**
+     * Check firebase user authentication
+     * @return
+     */
+    public FirebaseUser checkAuthentication() {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            // current user validated
+        } else {
+            goToActivity(LoginActivity.class);
+        }
 
+        return currentUser;
     }
+
+    /**
+     * Signout a firebase user
+     */
+    public void signout(){
+        firebaseAuth.signOut();
+    }
+
 }

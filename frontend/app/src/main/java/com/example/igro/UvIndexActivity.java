@@ -47,7 +47,6 @@ public class UvIndexActivity extends AppCompatActivity {
     DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("UVControlLog");
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
 

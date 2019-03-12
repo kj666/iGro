@@ -20,16 +20,19 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 public class LoginActivity extends AppCompatActivity {
+    //UI component
     private Button loginUserButton;
-    private FirebaseAuth mAuth; //authentication instance
     protected EditText UserEditText;
     protected EditText passwordEditText;
     protected Button registerUserButton;
+
+    private FirebaseAuth mAuth; //authentication instance
     private String TAG = "LoginActivity";
     //protected Login profile;
     private String userName;
     private String password;
 
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         registerUserButton = findViewById(R.id.registerUserButton);
 
         // UserEditText.setText(profile.getUsername());
-
 
         loginUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         registerUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.goTo(getApplicationContext(), RegistrationActivity.class);
+                helper.goToActivity(RegistrationActivity.class);
             }
         });
     }
@@ -87,8 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
 
                     //Use function in Controller.Helper to go to dashboard activity
-                    Helper.goTo(getApplicationContext(), MainActivity.class);
-
+                    helper.goToActivity(MainActivity.class);
                 } else {
                     //sign in failed
                     Log.w(TAG, "signInWithEmail:failure", task.getException());

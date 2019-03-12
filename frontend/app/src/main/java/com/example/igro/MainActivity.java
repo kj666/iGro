@@ -1,5 +1,6 @@
 package com.example.igro;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 
 import com.example.igro.Controller.Helper;
+import com.example.igro.Models.SensorData.Temperature;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,19 +42,25 @@ public class MainActivity extends AppCompatActivity {
     protected Button humidityTitleButton;
     protected TextView humidityNumberButton;
 
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+
     public int tempD;
 
     private FirebaseAuth mAuth; // authentication instance
     protected TextView userWelcomeMessage;
     private FirebaseUser currentUser;
 
+
+    /**
+     * On create
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mAuth = FirebaseAuth.getInstance();
-        checkAuthentication();
+        currentUser = helper.checkAuthentication();
 
         //Initialize all the UI elements
         initializeUI();
@@ -63,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         getHumData("1");
         getTempData("1");
 
-        //from temperatureFahrenheitButton to temperatureCelsiusButton
+        //Temperature Celsius Button listener
         temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -101,14 +109,14 @@ public class MainActivity extends AppCompatActivity {
         temperatureTitleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.goTo(getApplicationContext(), TemperatureActivity.class);
+                helper.goToActivity(TemperatureActivity.class);
             }
         });
         //opening the Temperature view when the temperature number is clicked
         temperatureNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.goTo(getApplicationContext(), TemperatureActivity.class);
+                helper.goToActivity(TemperatureActivity.class);
             }
         });
 
@@ -116,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         uvTitleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.goTo(getApplicationContext(), UvIndexActivity.class);
+                helper.goToActivity(UvIndexActivity.class);
             }
         });
 
@@ -124,31 +132,31 @@ public class MainActivity extends AppCompatActivity {
         uvNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.goTo(getApplicationContext(), UvIndexActivity.class);
+                helper.goToActivity(UvIndexActivity.class);
             }
         });
         humidityTitleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.goTo(getApplicationContext(), HumidityActivity.class);
+                helper.goToActivity(HumidityActivity.class);
             }
         });
         humidityNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.goTo(getApplicationContext(), HumidityActivity.class);
+                helper.goToActivity(HumidityActivity.class);
             }
         });
         moistureTitleButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick (View v2){
-                Helper.goTo(getApplicationContext(), MoistureActivity.class);
+                helper.goToActivity(MoistureActivity.class);
             }
         });
         moistureNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Helper.goTo(getApplicationContext(), MoistureActivity.class);
+                helper.goToActivity(MoistureActivity.class);
             }
         });
     }
@@ -159,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
         temperatureNumberButton = (Button) findViewById(R.id.tempNumberView);
         temperatureCelsiusButton = (Button) findViewById(R.id.celciusOutButton);
         temperatureFahrenheitButton = (Button) findViewById(R.id.fahrenheitOutButton);
-
 
         //UV view initialization
         uvTitleButton = (Button) findViewById(R.id.uvButton);
@@ -177,44 +184,43 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        checkAuthentication();
+        helper.checkAuthentication();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        checkAuthentication();
+        helper.checkAuthentication();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        checkAuthentication();
+        helper.checkAuthentication();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.sign_out:
-                mAuth.signOut();
-                Intent f = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(f);
+                helper.signout();
+                helper.goToActivity(LoginActivity.class);
                 return true;
 
         }
         return super.onOptionsItemSelected(item);
-
     }
 
+
+    //Todo have to change this to real time database format
     //Get document from firestore
     public void getTempData(String id){
         //Reference to collection in firestore
@@ -262,15 +268,5 @@ public class MainActivity extends AppCompatActivity {
                 humidityNumberButton.setText(humD+"");
             }
         });
-    }
-
-
-    private void checkAuthentication() {
-        currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            // current user validated
-        } else {
-            Helper.goTo(getApplicationContext(), LoginActivity.class);
-        }
     }
 }
