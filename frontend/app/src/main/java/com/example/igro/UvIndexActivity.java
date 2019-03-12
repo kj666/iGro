@@ -37,14 +37,13 @@ public class UvIndexActivity extends AppCompatActivity {
     TextView uvControlTextView;
     Switch uvSwitch;
 
-    public Boolean lastUvState;
+    public Boolean lastUvState = false;
 
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "LightsAreOnTag";
 
     //create heater database reference
     DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("UVControlLog");
-
 
 
     @Override
@@ -96,9 +95,9 @@ public class UvIndexActivity extends AppCompatActivity {
         }
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
-        uvSwitchStateFromRecord();
 
         final Boolean switchState = uvSwitch.isChecked();
+        uvSwitchStateFromRecord();
 
         if(switchState){
             Log.d(TAG, "The lights were on");
@@ -118,6 +117,31 @@ public class UvIndexActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final Boolean switchState = uvSwitch.isChecked();
+        uvSwitchStateFromRecord();
+
+        if(switchState){
+            Log.d(TAG, "The lights were on");
+            Toast.makeText(this,  "The lights were On", Toast.LENGTH_LONG).show();
+        }else{
+            Log.d(TAG, "Thelights were off");
+            Toast.makeText(this,  "The lights were Off", Toast.LENGTH_LONG).show();
+        }
+
+        uvSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton uvSwitch, boolean SwitchState){
+
+                //Call heaterSwitchEvent function
+                uvSwitchEvent(SwitchState);
+            }
+        });
+
+    }
 
     private void uvSwitchStateFromRecord() {
 
@@ -184,29 +208,34 @@ public class UvIndexActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String uvOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
-        //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
-        String uvEventId = uvSwitchEventDB.push().getKey();
+       if(!(uvSwitchState==lastUvState)){
+
+           //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
+           String uvEventId = uvSwitchEventDB.push().getKey();
 
 
-        UvControlEvents uvSwitchClickEvent = new UvControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
-        uvSwitchEventDB.child(uvEventId).setValue(uvSwitchClickEvent);
+           UvControlEvents uvSwitchClickEvent = new UvControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
+           uvSwitchEventDB.child(uvEventId).setValue(uvSwitchClickEvent);
 
-        if(!(uvEventId == null)) {
+           if(!(uvEventId == null)) {
 
 
-            if (uvSwitchState) {
+               if (uvSwitchState) {
 
-                Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
-                Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                   Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
+                   Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
-            } else {
-                Log.d(TAG, "Thelights were turned off on " + uvOnTimeStampFormated);
-                Toast.makeText(this, "The lights were switched OFF on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
-            }
-        }else{
-            Log.d(TAG, "ERROR: uvEventId can't be null");
+               } else {
+                   Log.d(TAG, "Thelights were turned off on " + uvOnTimeStampFormated);
+                   Toast.makeText(this, "The lights were switched OFF on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
+               }
+           }else{
+               Log.d(TAG, "ERROR: uvEventId can't be null");
 
-        }
+           }
+
+       }
+
 
     }
 

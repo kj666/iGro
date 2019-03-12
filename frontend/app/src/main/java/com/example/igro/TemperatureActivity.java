@@ -43,7 +43,7 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView tempControlTextView;
     Switch tempSwitch;
 
-    public Boolean lastHeaterState;
+    public Boolean lastHeaterState = false;
 
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
@@ -120,8 +120,9 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
-        heaterSwitchStateFromRecord();
-        final Boolean switchState = tempSwitch.isChecked();
+        final boolean switchState = tempSwitch.isChecked();
+            heaterSwitchStateFromRecord();
+
 
         if(switchState){
             Log.d(TAG, "The heater was on");
@@ -147,8 +148,9 @@ public class TemperatureActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        heaterSwitchStateFromRecord();
         final boolean switchState = tempSwitch.isChecked();
+            heaterSwitchStateFromRecord();
+
 
         if(switchState){
             Log.d(TAG, "The heater was on");
@@ -158,6 +160,7 @@ public class TemperatureActivity extends AppCompatActivity {
             Toast.makeText(this,  "The heater was Off", Toast.LENGTH_LONG).show();
         }
 
+        //Listen for changes in switch status
         tempSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton tempSwitch, boolean tempSwitchState){
 
@@ -233,26 +236,30 @@ public class TemperatureActivity extends AppCompatActivity {
             DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
             String heatOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
-            //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
-            String heatEventId = heaterSwitchEventDB.push().getKey();
+            if(!(tempSwitchState==lastHeaterState)){
 
-            HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat, tempSwitchState);
-            heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
+                //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
+                String heatEventId = heaterSwitchEventDB.push().getKey();
 
-            if(!(heatEventId == null)) {
+                HeaterControlEvents heatSwitchClickEvent = new HeaterControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat, tempSwitchState);
+                heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
 
+                if(!(heatEventId == null)) {
 
-                if (tempSwitchState) {
+                    if (tempSwitchState) {
 
-                    Log.d(TAG, "The heater was turned on " + heatOnTimeStampFormated);
-                    Toast.makeText(this, "The heater was switched ON on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "The heater was turned on " + heatOnTimeStampFormated);
+                        Toast.makeText(this, "The heater was switched ON on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
-                } else {
-                    Log.d(TAG, "The heater was turned off on " + heatOnTimeStampFormated);
-                    Toast.makeText(this, "The heater was switched OFF on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                    } else {
+                        Log.d(TAG, "The heater was turned off on " + heatOnTimeStampFormated);
+                        Toast.makeText(this, "The heater was switched OFF on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Log.d(TAG, "ERROR: heatEventId can't be null");
+
                 }
-            }else{
-                Log.d(TAG, "ERROR: heatEventId can't be null");
+
 
             }
 

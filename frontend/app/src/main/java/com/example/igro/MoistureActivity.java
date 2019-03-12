@@ -40,7 +40,7 @@ public class MoistureActivity extends AppCompatActivity {
     TextView waterControlTextView;
     Switch moistureSwitch;
 
-    public Boolean lastMoistureState;
+    public Boolean lastMoistureState = false;
 
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "IrrigationIsOnTag";
@@ -99,9 +99,9 @@ public class MoistureActivity extends AppCompatActivity {
         }
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
-        moistureSwitchStateFromRecord();
 
         final Boolean switchState = moistureSwitch.isChecked();
+        moistureSwitchStateFromRecord();
 
         if(switchState){
             Log.d(TAG, "The irrigation was on");
@@ -122,6 +122,32 @@ public class MoistureActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final Boolean switchState = moistureSwitch.isChecked();
+        moistureSwitchStateFromRecord();
+
+        if(switchState){
+            Log.d(TAG, "The irrigation was on");
+            Toast.makeText(this,  "The irrigation was On", Toast.LENGTH_LONG).show();
+        }else{
+            Log.d(TAG, "The irrigation was off");
+            Toast.makeText(this,  "The irrigation was Off", Toast.LENGTH_LONG).show();
+        }
+
+        moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
+
+                //Call heaterSwitchEvent function
+                moistureSwitchEvent(SwitchState);
+
+            }
+        });
+
+    }
 
     private void moistureSwitchStateFromRecord() {
 
@@ -188,27 +214,31 @@ public class MoistureActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String moistOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
-        //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
-        String moistEventId = moistureSwitchEventDB.push().getKey();
+        if(!(moistSwitchState==lastMoistureState)){
+
+            //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
+            String moistEventId = moistureSwitchEventDB.push().getKey();
 
 
-        MoistureControlEvents moistSwitchClickEvent = new MoistureControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
-        moistureSwitchEventDB.child(moistEventId).setValue(moistSwitchClickEvent);
+            MoistureControlEvents moistSwitchClickEvent = new MoistureControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
+            moistureSwitchEventDB.child(moistEventId).setValue(moistSwitchClickEvent);
 
-        if(!(moistEventId == null)) {
+            if(!(moistEventId == null)) {
 
 
-            if (moistSwitchState) {
+                if (moistSwitchState) {
 
-                Log.d(TAG, "The irrigation was turned on " + moistOnTimeStampFormated);
-                Toast.makeText(this, "The irrigation was switched ON on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "The irrigation was turned on " + moistOnTimeStampFormated);
+                    Toast.makeText(this, "The irrigation was switched ON on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
-            } else {
-                Log.d(TAG, "The irrigation was turned off on " + moistOnTimeStampFormated);
-                Toast.makeText(this, "The irrigation was switched OFF on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                } else {
+                    Log.d(TAG, "The irrigation was turned off on " + moistOnTimeStampFormated);
+                    Toast.makeText(this, "The irrigation was switched OFF on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                }
+            }else{
+                Log.d(TAG, "ERROR: moistEventId can't be null");
+
             }
-        }else{
-            Log.d(TAG, "ERROR: moistEventId can't be null");
 
         }
 
