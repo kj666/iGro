@@ -1,4 +1,4 @@
-package com.example.igro;
+package com.example.igro.Models.ActuatorControl;
 
 public class UvControlEvents {
 
