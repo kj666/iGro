@@ -9,8 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Dashboard"
-            android:parentActivityName=".MainActivity" />
+        <activity android:name=".LoginActivity"/>
         <activity
             android:name=".UvIndexActivity"
             android:parentActivityName=".MainActivity" />
@@ -18,11 +17,14 @@
             android:name=".TemperatureActivity"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".HumidityActivity"></activity>
+            android:name=".HumidityActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity
-            android:name=".MoistureActivity"></activity>
+            android:name=".MoistureActivity"
+            android:parentActivityName=".MainActivity"></activity>
         <activity
-            android:name=".RegistrationActivity" android:parentActivityName=".Dashboard"></activity>
+            android:name=".RegistrationActivity"
+            android:parentActivityName=".LoginActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

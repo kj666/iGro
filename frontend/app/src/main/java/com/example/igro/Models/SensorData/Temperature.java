@@ -1,4 +1,4 @@
-package com.example.igro;
+package com.example.igro.Models.SensorData;
 
 import java.sql.Time;
 import java.util.Date;
