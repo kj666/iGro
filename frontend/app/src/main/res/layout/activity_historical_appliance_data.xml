@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HistoricalApplianceActivity">
+
+    <TextView
+        android:id="@+id/historicalApplianceTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        android:layout_above="@+id/applianceEventListView"
+        android:layout_below="@+id/logoTopImageView2"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="62dp"
+        android:layout_marginLeft="62dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="66dp"
+        android:layout_marginRight="66dp"
+        android:layout_marginBottom="77dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="HISTORICAL HEATER USE"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/logoTopImageView2"
+        android:layout_width="120dp"
+        android:layout_height="53dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="147dp"
+        android:layout_marginLeft="147dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="144dp"
+        android:layout_marginRight="144dp" />
+
+    <ListView
+        android:id="@+id/applianceEventListView"
+        android:layout_width="wrap_content"
+        android:layout_height="498dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="6dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:id="@+id/listOnOffTitleTextView"
+        android:layout_width="110dp"
+        android:layout_height="26dp"
+        android:layout_above="@+id/applianceEventListView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="162dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginRight="21dp"
+        android:layout_marginBottom="8dp"
+        android:text="On/Off Status"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/listDateTitleTextView"
+        android:layout_width="151dp"
+        android:layout_height="42dp"
+        android:layout_above="@+id/applianceEventListView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="162dp"
+        android:layout_marginEnd="138dp"
+        android:layout_marginRight="138dp"
+        android:layout_marginBottom="9dp"
+        android:gravity="clip_vertical"
+        android:text="Date and Time"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/listCounterTitleTextView"
+        android:layout_width="104dp"
+        android:layout_height="41dp"
+        android:layout_above="@+id/applianceEventListView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="162dp"
+        android:layout_marginEnd="297dp"
+        android:layout_marginRight="297dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="clip_vertical"
+        android:text="Counter"
+        android:textSize="16sp" />
+
+
+
+</RelativeLayout>

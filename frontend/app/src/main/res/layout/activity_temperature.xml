@@ -9,15 +9,35 @@
 
 
     <TextView
+        android:id="@+id/historicalSensorDataTextView"
+        android:layout_width="189dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="HISTORICAL SENSOR DATA"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView"
+        app:layout_constraintVertical_bias="0.349" />
+
+    <TextView
         android:id="@+id/highTempRangeTextView"
         android:layout_width="82dp"
         android:layout_height="22dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginRight="28dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
         android:text="HIGH"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+        app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
 
     <TextView
         android:id="@+id/lowTempRangeTextView"
@@ -25,6 +45,7 @@
         android:layout_height="22dp"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="110dp"
         android:layout_marginRight="110dp"
         android:text="LOW"
@@ -32,7 +53,7 @@
         app:layout_constraintEnd_toStartOf="@+id/highTempRangeTextView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+        app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
 
     <Button
         android:id="@+id/fahrenheitghButton"
@@ -174,10 +195,10 @@
 
     <ImageView
         android:id="@+id/logoTopImageView"
-        android:layout_width="113dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="124dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginEnd="148dp"
         android:layout_marginRight="148dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -188,8 +209,8 @@
 
     <TextView
         android:id="@+id/tempControlTextView"
-        android:layout_width="157dp"
-        android:layout_height="32dp"
+        android:layout_width="133dp"
+        android:layout_height="30dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
@@ -207,15 +228,16 @@
         app:layout_constraintEnd_toStartOf="@+id/tempSwitch"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outdoorTempTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/outdoorTempTextView"
+        app:layout_constraintVertical_bias="0.254" />
 
     <Switch
         android:id="@+id/tempSwitch"
         android:layout_width="113dp"
         android:layout_height="31dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginRight="28dp"
         android:layout_marginBottom="8dp"
         android:text="OFF / ON"
         android:textColor="@color/colorPrimaryDark"
@@ -226,15 +248,16 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/highTempRangeTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outdoorTempTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/outdoorTempTextView"
+        app:layout_constraintVertical_bias="0.26" />
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/tempRangeTextView"
         android:layout_width="171dp"
         android:layout_height="27dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
@@ -242,9 +265,10 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/cardView10"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/heaterUseHistoryButton"
+        app:layout_constraintVertical_bias="0.217" />
 
     <ImageView
         android:id="@+id/logoBottomImageView"
@@ -413,16 +437,16 @@
         android:contentDescription="lowerTempLimit"
         android:ems="20"
         android:gravity="bottom|center|center_horizontal|center_vertical"
+        android:hint="Lower Limit"
         android:inputType="numberSigned|number|numberDecimal"
         android:saveEnabled="true"
-        android:text="Lower Limit"
         android:textColor="@color/colorPrimary"
         android:textIsSelectable="true"
         android:textSize="12sp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/cardView8"
         app:layout_constraintEnd_toEndOf="@+id/lowTempRangeTextView"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lowTempRangeTextView"
         app:layout_constraintVertical_bias="0.0"
@@ -441,16 +465,16 @@
         android:ems="20"
         android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
         android:gravity="bottom|clip_horizontal|center|center_horizontal|center_vertical"
+        android:hint="Upper Limit"
         android:inputType="numberSigned|number|numberDecimal"
         android:saveEnabled="true"
-        android:text="Upper Limit"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorAccent"
         android:textIsSelectable="true"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/cardView10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.92"
+        app:layout_constraintHorizontal_bias="0.898"
         app:layout_constraintStart_toEndOf="@+id/lowTempEditText"
         app:layout_constraintTop_toTopOf="@+id/lowTempEditText"
         app:layout_constraintVertical_bias="0.0"
@@ -466,5 +490,19 @@
         android:id="@+id/group2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/heaterUseHistoryButton"
+        android:layout_width="235dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="212dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="HEATER USE HISTORY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
 
 </android.support.constraint.ConstraintLayout>

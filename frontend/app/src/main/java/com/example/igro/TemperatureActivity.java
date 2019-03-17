@@ -1,5 +1,7 @@
 package com.example.igro;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,13 +11,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,10 +43,13 @@ public class TemperatureActivity extends AppCompatActivity {
     LineGraphSeries<DataPoint> series;
 
     //initialize the layout fields
+    Button heaterUseHistoryButton;
     EditText lowTempEditText;
     EditText highTempEditText;
     TextView tempControlTextView;
     Switch tempSwitch;
+
+    private FirebaseUser currentUser;
 
     public Boolean lastHeaterState = false;
 
@@ -49,6 +59,8 @@ public class TemperatureActivity extends AppCompatActivity {
     //create heater database reference
     DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("HeaterControlLog");
 
+    //Get current user using the Helper class
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
 
     @Override
@@ -56,12 +68,17 @@ public class TemperatureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
 
+        heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
         tempSwitch.setClickable(true);
 
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+
+
+
+        currentUser = helper.checkAuthentication();
 
         double y,x;
         x=-5;
@@ -100,6 +117,7 @@ public class TemperatureActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
 
@@ -113,9 +131,22 @@ public class TemperatureActivity extends AppCompatActivity {
             Integer lowTemp = Integer.parseInt(lowTempLimit);
             Integer highTemp = Integer.parseInt(highTempLimit);
         }else{
-            Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
+  //          Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
         }
 
+        //opening the Temperature History activity view when the HeaterUseHistory button is clicked
+        heaterUseHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Context context = TemperatureActivity.this ;
+                Intent i = new Intent(context, HistoricalApplianceActivity.class);
+                i.putExtra("UserName", currentUser.getDisplayName());
+                i.putExtra("ApplianceType", "HEATER");
+                context.startActivity(i);
+
+            }
+        });
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
         final boolean switchState = tempSwitch.isChecked();
@@ -123,10 +154,10 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
         if(switchState){
-            Log.d(TAG, "The heater was on");
+
             Toast.makeText(this,  "The heater was On", Toast.LENGTH_LONG).show();
         }else{
-            Log.d(TAG, "The heater was off");
+
             Toast.makeText(this,  "The heater was Off", Toast.LENGTH_LONG).show();
         }
 
