@@ -84,7 +84,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
     protected void loadHeaterOnOffList() {
 
-        DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("HeaterControlLog");
+        final DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("HeaterControlLog");
 
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
@@ -92,15 +92,17 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         final List<String> heaterListStrings = new ArrayList<>();
 
 
-//        final int i = 0;
-//        while (i < 20) {
+ //     final int i = 0;
+ //      while (i < 20) {
 
       //      heaterSwitchEventDB.orderByKey().limitToLast(1 + i).addValueEventListener(new ValueEventListener() {
 
-            heaterSwitchEventDB.addValueEventListener(new ValueEventListener() {
+            heaterSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    long records = dataSnapshot.getChildrenCount();
 
                   for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
 
@@ -111,30 +113,6 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
                     HeaterEventConfig adapter = new HeaterEventConfig(HistoricalApplianceActivity.this, heaterList);
                   applianceEventListView.setAdapter(adapter);
-/*
-                    HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
-                    String eventDate = lastRecord.getHeaterEventDateTime();
-                    Boolean heaterEventOnOff = lastRecord.getHeaterEventOnOff();
-                    final String heaterOnOffString;
-                    if (heaterEventOnOff) {
-                        heaterOnOffString = " ON ";
-                    } else {
-                        heaterOnOffString = " OFF ";
-                    }
-
-//Creates a string called temp to temporarily store the date and on/off state
-
-                    String counterStr = String.valueOf(i);
-
-                    String temp = "";
-                    temp += " " + counterStr + "     ";
-                    temp += " " + eventDate + "     ";
-                    temp += " " + heaterOnOffString + "\n";
-
-// adds the temporary values stored in temp to nest item of courseListText
-
-                    heaterListStrings.add(temp);
-*/
 
                 }
 
@@ -143,13 +121,6 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
                 }
             });
-
-            // ArrayAdapter used to display appliance events in listView
-//            ArrayAdapter arrayAdapter = new ArrayAdapter<String>(HistoricalApplianceActivity.this, R.layout.activity_historical_appliance_data, heaterListStrings);
-//            applianceEventListView.setAdapter(arrayAdapter);
-
-
-
 
 
     }

@@ -20,10 +20,6 @@ import java.util.List;
 public class HeaterEventConfig extends ArrayAdapter<HeaterControlEvents>{
 
     private Activity context;
-    private TemperatureActivity tempContext;
-    private HumidityActivity humContext;
-    private MoistureActivity moistContext;
-    private UvIndexActivity uvContext;
 
     private List<HeaterControlEvents> heaterEventList;
 
@@ -54,7 +50,7 @@ public class HeaterEventConfig extends ArrayAdapter<HeaterControlEvents>{
             onOffStr = "OFF";
         }
 
-        listItemCounterTextView.setText(String.valueOf(position));
+        listItemCounterTextView.setText(String.valueOf(position+1));
         listItemDateTextView.setText(heaterEvent.getHeaterEventDateTime());
         listItemOnOffStatusTextView.setText(onOffStr);
 
