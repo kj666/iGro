@@ -1,9 +1,11 @@
 package com.example.igro;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -30,6 +32,17 @@ public class SensorDataActivity extends AppCompatActivity {
 
         historicalSensorDataTextView.setText(pageTitle);
 
+        if(sensorType=="TEMPERATURE"){
+
+        } else if (sensorType == "HUMIDITY") {
+
+        }else if(sensorType=="MOISTURE"){
+
+        }else if(sensorType=="UV"){
+
+        }else{
+            Toast.makeText(this, "ERROR: unKnown sensor type ", Toast.LENGTH_LONG ).show();
+        }
 
         double y,x;
         x=-5;

@@ -217,10 +217,10 @@ public class MoistureActivity extends AppCompatActivity {
                 if (moistSwitchState) {
 
                     Log.d(TAG, "The irrigation was turned on " + moistOnTimeStampFormated);
-
+                    Toast.makeText(this, "The irrigation was switched ON on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 } else {
                     Log.d(TAG, "The irrigation was turned off on " + moistOnTimeStampFormated);
-
+                    Toast.makeText(this, "The irrigation was switched OFF on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }
             }else{
                 Log.d(TAG, "ERROR: moistEventId can't be null");

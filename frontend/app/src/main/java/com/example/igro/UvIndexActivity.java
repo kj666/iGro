@@ -215,11 +215,11 @@ public class UvIndexActivity extends AppCompatActivity {
                if (lastUvState) {
 
                    Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
-
+                   Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
                } else {
                    Log.d(TAG, "Thelights were turned off on " + uvOnTimeStampFormated);
-
+                   Toast.makeText(this, "The lights were switched OFF on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
                }
            }else{
                Log.d(TAG, "ERROR: uvEventId can't be null");

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
 import com.example.igro.Models.ActuatorControl.HeaterEventConfig;
@@ -68,7 +69,17 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
         historicalApplianceTitleTextView.setText(pageTitle);
 
-        loadHeaterOnOffList();
+        if(applianceType=="HEATER"){
+            loadHeaterOnOffList();
+        } else if (applianceType == "HUMIDIFIER") {
+
+        }else if(applianceType=="IRRIGATION"){
+
+        }else if(applianceType=="LIGHTS"){
+
+        }else{
+            Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG ).show();
+        }
 
     }
 
