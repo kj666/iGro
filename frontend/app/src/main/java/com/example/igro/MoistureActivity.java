@@ -120,7 +120,7 @@ public class MoistureActivity extends AppCompatActivity {
         final Boolean switchState = moistureSwitch.isChecked();
         moistureSwitchStateFromRecord();
 
-        if(switchState){
+        if(lastMoistureState){
             Log.d(TAG, "The irrigation was on");
         }else{
             Log.d(TAG, "The irrigation was off");

@@ -40,9 +40,10 @@ import java.util.Calendar;
 
 public class TemperatureActivity extends AppCompatActivity {
 
-    LineGraphSeries<DataPoint> series;
+
 
     //initialize the layout fields
+    Button tempHistoryButton;
     Button heaterUseHistoryButton;
     EditText lowTempEditText;
     EditText highTempEditText;
@@ -68,6 +69,7 @@ public class TemperatureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
 
+        tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
@@ -80,17 +82,6 @@ public class TemperatureActivity extends AppCompatActivity {
 
         currentUser = helper.checkAuthentication();
 
-        double y,x;
-        x=-5;
-
-        GraphView graph =findViewById(R.id.graph);
-        series=new LineGraphSeries<>();
-        for(int i=0; i<500; i++){
-            x=x+0.1;
-            y=Math.sin(x);
-            series.appendData(new DataPoint(x,y),true,500);
-        }
-         graph.addSeries(series);
 
 
     }
@@ -117,6 +108,7 @@ public class TemperatureActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
@@ -134,31 +126,44 @@ public class TemperatureActivity extends AppCompatActivity {
   //          Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
         }
 
-        //opening the Temperature History activity view when the HeaterUseHistory button is clicked
+        //opening the HistoricalApplianceActivity view when the HeaterUseHistory button is clicked
         heaterUseHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Context context = TemperatureActivity.this ;
                 Intent i = new Intent(context, HistoricalApplianceActivity.class);
-                i.putExtra("UserName", currentUser.getDisplayName());
                 i.putExtra("ApplianceType", "HEATER");
                 context.startActivity(i);
 
             }
         });
 
+        //opening the SensorDataActivity on history sensor data button click
+        tempHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Context context = TemperatureActivity.this ;
+                Intent i = new Intent(context, SensorDataActivity.class);
+                i.putExtra("SensorType", "TEMPERATURE");
+                context.startActivity(i);
+
+            }
+        });
+
+
         //call function check last child in heaterSwitchEventDB and set switch to that state
         final boolean switchState = tempSwitch.isChecked();
             heaterSwitchStateFromRecord();
 
 
-        if(switchState){
+        if(lastHeaterState){
 
-            Toast.makeText(this,  "The heater was On", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "The heater was on");
         }else{
 
-            Toast.makeText(this,  "The heater was Off", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "The heater was on");
         }
 
         tempSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){

@@ -25,5 +25,6 @@
         <item>DateTime</item>
         <item>OnOffStatus</item>
     </array>
+    <string name="SensorType">Sensor</string>
 
 </resources>

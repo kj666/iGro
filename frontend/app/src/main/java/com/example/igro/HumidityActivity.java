@@ -236,7 +236,7 @@ public class HumidityActivity extends AppCompatActivity {
 
             if (!(humEventId == null)) {
 
-                if (humSwitchState) {
+                if (lastHumidState) {
 
                     Log.d(TAG, "The humidifier was turned on " + humOnTimeStampFormated);
 
