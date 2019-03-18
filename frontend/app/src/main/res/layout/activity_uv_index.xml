@@ -18,8 +18,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/lowUvRangeTextView"
         app:layout_constraintEnd_toEndOf="@+id/highUvEditText"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView19"
-        app:layout_constraintTop_toBottomOf="@+id/textView19"
+        app:layout_constraintStart_toEndOf="@+id/tempRangeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toStartOf="@+id/highUvRangeTextView"
         app:layout_constraintHorizontal_bias="0.005"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19" />
+        app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
 
     <Button
         android:id="@+id/indexUvGreenButton"
@@ -227,7 +227,7 @@
         app:layout_constraintTop_toBottomOf="@+id/outdoorUvTextView" />
 
     <TextView
-        android:id="@+id/textView19"
+        android:id="@+id/tempRangeTextView"
         android:layout_width="171dp"
         android:layout_height="27dp"
         android:layout_marginStart="8dp"
@@ -406,9 +406,9 @@
         android:contentDescription="lowerUvLimit"
         android:ems="20"
         android:gravity="bottom|center|center_horizontal|center_vertical"
+        android:hint="Lower Limit"
         android:inputType="numberSigned|number|numberDecimal"
         android:saveEnabled="true"
-        android:text="Lower Limit"
         android:textColor="@color/colorPrimary"
         android:textIsSelectable="true"
         android:textSize="12sp"
@@ -433,9 +433,9 @@
         android:ems="20"
         android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
         android:gravity="bottom|clip_horizontal|center|center_horizontal|center_vertical"
+        android:hint="Upper Limit"
         android:inputType="numberSigned|number|numberDecimal"
         android:saveEnabled="true"
-        android:text="Upper Limit"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorAccent"
         android:textIsSelectable="true"

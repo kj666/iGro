@@ -120,7 +120,7 @@ public class MoistureActivity extends AppCompatActivity {
         final Boolean switchState = moistureSwitch.isChecked();
         moistureSwitchStateFromRecord();
 
-        if(switchState){
+        if(lastMoistureState){
             Log.d(TAG, "The irrigation was on");
         }else{
             Log.d(TAG, "The irrigation was off");
@@ -218,7 +218,6 @@ public class MoistureActivity extends AppCompatActivity {
 
                     Log.d(TAG, "The irrigation was turned on " + moistOnTimeStampFormated);
                     Toast.makeText(this, "The irrigation was switched ON on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
-
                 } else {
                     Log.d(TAG, "The irrigation was turned off on " + moistOnTimeStampFormated);
                     Toast.makeText(this, "The irrigation was switched OFF on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();

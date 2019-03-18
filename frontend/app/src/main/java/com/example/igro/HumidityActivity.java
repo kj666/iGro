@@ -236,11 +236,10 @@ public class HumidityActivity extends AppCompatActivity {
 
             if (!(humEventId == null)) {
 
-                if (humSwitchState) {
+                if (lastHumidState) {
 
                     Log.d(TAG, "The humidifier was turned on " + humOnTimeStampFormated);
                     Toast.makeText(this, "The humidifier was switched ON on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
-
                 } else {
                     Log.d(TAG, "The humidifier was turned off on " + humOnTimeStampFormated);
                     Toast.makeText(this, "The humidifier was switched OFF on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
