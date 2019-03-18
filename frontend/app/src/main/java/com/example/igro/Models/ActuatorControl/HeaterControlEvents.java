@@ -25,6 +25,12 @@ public class HeaterControlEvents {
         this.heaterEventOnOff = heaterEventOnOff;
     }
 
+    public HeaterControlEvents(String heaterEventDateTime, Boolean heaterEventOnOff){
+        this.heaterEventDateTime = heaterEventDateTime;
+        this.heaterEventOnOff = heaterEventOnOff;
+    }
+
+
     public String getHeaterEventId() {
         return heaterEventId;
     }

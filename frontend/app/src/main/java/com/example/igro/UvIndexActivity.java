@@ -212,7 +212,7 @@ public class UvIndexActivity extends AppCompatActivity {
            if(!(uvEventId == null)) {
 
 
-               if (uvSwitchState) {
+               if (lastUvState) {
 
                    Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
                    Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();

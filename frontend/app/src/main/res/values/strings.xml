@@ -3,4 +3,28 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="sign_out">Sign Out</string>
+    <string name="ApplianceType">Appliance Type </string>
+    <string name="Heater">HEATER </string>
+    <string name="Humidifier">HUMIDIFIER </string>
+    <string name="Irrigation">IRRIGATION </string>
+    <string name="Lights">LIGHTS </string>
+    <string name="HeaterStatus">Heater Status </string>
+    <string name="HumidifierStatus">Humidifier Status </string>
+    <string name="IrrigationStatus">Irrigation Status </string>
+    <string name="LightsStatus">Lights Status </string>
+    <string name="DateTime">Date and Time </string>
+    <string name="ApplianceStatus">Appliance Status</string>
+    <array name="Appliances">
+        <item>HEATER</item>
+        <item>HUMIDIFIER</item>
+        <item>IRRIGATION</item>
+        <item>LIGHTS</item>
+    </array>
+    <array name="HeaterTriggerEvents">
+        <item>ItemCounter</item>
+        <item>DateTime</item>
+        <item>OnOffStatus</item>
+    </array>
+    <string name="SensorType">Sensor</string>
+
 </resources>
