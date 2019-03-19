@@ -13,6 +13,13 @@ import android.util.Log;
 import android.widget.TextView;
 
 
+import com.android.volley.Cache;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,7 +28,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
+    private static final String MAIN_LOG_TAG = "MAIN_LOG_TAG";
+
     private Button temperature;
     private Button uv;
     private Button uvNumber;
@@ -45,8 +56,11 @@ public class MainActivity extends AppCompatActivity {
     public int tempD;
 
     private FirebaseAuth mAuth; // authentication instance
-    protected TextView userWelcomeMessage;
+    private TextView userWelcomeMessage;
     private FirebaseUser currentUser;
+
+    private RequestQueue queue;
+    private TextView cityWeatherMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
         userWelcomeMessage = findViewById(R.id.welcomeMessageText);
         String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
         userWelcomeMessage.setText(welcomeMessage);
+        cityWeatherMessage = findViewById(R.id.cityWeatherTextView);
+        queue = Volley.newRequestQueue(this);
+        requestWeather();
+
         getHumData("1");
 
         //from fahrenheit to celcius
@@ -283,5 +301,42 @@ public class MainActivity extends AppCompatActivity {
         } else {
             goToDashboardActivity();
         }
+    }
+
+    void requestWeather() {
+        // TODO: 2019-03-18
+        // Make this function capable of pulling data for any city as per user request
+        // Get weather for Montreal
+        final String url = "http://api.openweathermap.org/data/2.5/weather?q=Montreal&units=metric&APPID=9208dccec4431655d17d8dfa3d4fabc7";
+
+        // Make request
+        JsonObjectRequest weatherRequest = new JsonObjectRequest(
+                Request.Method.GET, url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(MAIN_LOG_TAG, "response: " + response);
+                        try {
+                            // Get description from weather response
+                            //String description = response.getJSONArray("weather").getJSONObject(0).getString("main");
+                            //descriptionTextView.setText(description);
+
+                            // Get temperature from weather response
+                            int temperature = response.getJSONObject("main").getInt("temp");
+                            cityWeatherMessage.setText("Montreal" + temperature + "°");
+
+                        } catch (Exception e) {
+                            Log.w(MAIN_LOG_TAG, "THIS SHIT AINT WORKING");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Called when there is an error making the request
+                    }
+                });
+        queue.add(weatherRequest);
     }
 }
