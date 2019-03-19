@@ -17,13 +17,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class SensorDataActivity extends AppCompatActivity {
 
@@ -39,8 +43,8 @@ public class SensorDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_data);
 
-        retrieveFromDB();
-        initializeUI();
+        retrieveSensorDataFromDB();
+        initializeGraphUI();
 
 
         Intent intent = getIntent();
@@ -60,36 +64,56 @@ public class SensorDataActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "ERROR: unKnown sensor type ", Toast.LENGTH_LONG ).show();
         }
-//        populateGraph();
-
 
     }
 
-    void initializeUI(){
+    void initializeGraphUI(){
         historicalSensorDataTextView = (TextView) findViewById(R.id.historicalSensorDataTextView);
         graphView = (GraphView) findViewById(R.id.sensorGraph);
     }
 
-    void populateGraph(){
-        double y,x;
-        x=-5;
-        series = new LineGraphSeries<>();
-//        for(int i=0; i<1000; i++){
-//            x=x+0.1;
-//            y=Math.sin(x);
-//            series.appendData(new DataPoint(x,y),true,500);
-//        }
-        for(SensorData data: sensorDataList){
-            x = data.getTime();
-            Log.d("FIREBASE", data.getTime()+"");
+    void initializeTableUI(){
 
-            y = data.getTemperatureC();
-            series.appendData(new DataPoint(x,y), true, 500);
-        }
-        graphView.addSeries(series);
     }
 
-    void retrieveFromDB(){
+    void setupGraphUI(){
+
+    }
+
+    void setupTableUI(){
+
+    }
+
+    /**
+     * Populate with data
+     */
+    void populateGraph(){
+        series = new LineGraphSeries<>();
+
+        for(SensorData data: sensorDataList){
+            long t = data.getTime();
+            Date time = new Date(t*1000L);
+
+            Log.d("FIREBASE", data.getTime()+"");
+
+            double y = data.getTemperatureC();
+            series.appendData(new DataPoint(time.getTime(),y), true, 500);
+        }
+        graphView.addSeries(series);
+        graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getApplication()));
+
+        //make the graph scrollable and scalable
+        graphView.getViewport().setYAxisBoundsManual(true);
+        graphView.getViewport().setXAxisBoundsManual(true);
+        graphView.getViewport().setScrollable(true);
+        graphView.getViewport().setScrollableY(true);
+        graphView.getViewport().setScalable(true);
+    }
+
+    /**
+     * Retrieve sensor data from Firebase database
+     */
+    void retrieveSensorDataFromDB(){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
 
         ValueEventListener eventListener = new ValueEventListener() {
@@ -111,8 +135,7 @@ public class SensorDataActivity extends AppCompatActivity {
             }
         };
 
-
-        db.limitToLast(30).addValueEventListener(eventListener);
+        db.addValueEventListener(eventListener);
 
     }
 }

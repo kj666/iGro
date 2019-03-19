@@ -1,5 +1,8 @@
 package com.example.igro.Models.SensorData;
 
+/**
+ * Historical data for all sensors
+ */
 public class SensorData {
     private double humidity;
     private double temperatureC;
@@ -9,7 +12,6 @@ public class SensorData {
     private long time;
 
     public SensorData(){
-
     }
 
     public SensorData(double humidity, double temperatureC, int uv, long time) {
@@ -17,6 +19,7 @@ public class SensorData {
         this.temperatureC = temperatureC;
         this.uv = uv;
         this.time = time;
+
     }
 
     public double getHumidity() {
