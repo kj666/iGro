@@ -48,7 +48,7 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/celciusghButton"
         app:layout_constraintHorizontal_bias="0.953"
-        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
+        app:layout_constraintStart_toEndOf="@+id/indoorTempTextView"
         app:layout_constraintStart_toStartOf="@+id/celciusghButton"
         app:layout_constraintTop_toBottomOf="@+id/celciusghButton" />
 
@@ -63,13 +63,13 @@
         android:layout_marginBottom="8dp"
         android:text="ͦC"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/ghTempTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/indoorTempTextView"
         app:layout_constraintEnd_toStartOf="@+id/outdoorTempTextView"
         app:layout_constraintHorizontal_bias="0.008"
-        app:layout_constraintStart_toEndOf="@+id/ghTempTextView" />
+        app:layout_constraintStart_toEndOf="@+id/indoorTempTextView" />
 
     <TextView
-        android:id="@+id/ghTempTextView"
+        android:id="@+id/indoorTempTextView"
         android:layout_width="67dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -97,8 +97,8 @@
         android:text="18"
         android:textAlignment="center"
         android:textSize="45sp"
-        app:layout_constraintBottom_toBottomOf="@+id/ghTempTextView"
-        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/indoorTempTextView"
+        app:layout_constraintStart_toEndOf="@+id/indoorTempTextView"
         app:layout_constraintTop_toBottomOf="@+id/outdoorTextView"
         app:layout_constraintVertical_bias="1.0" />
 
