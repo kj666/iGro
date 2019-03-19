@@ -7,6 +7,11 @@ import com.example.igro.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * This class contains functions that are used across the entire app
  */
@@ -56,4 +61,18 @@ public class Helper {
         firebaseAuth.signOut();
     }
 
+
+    /**
+     * Convert unix time to human readable time
+     * @param timestamp
+     */
+    public static String convertTime(long timestamp){
+
+        String dateReadable = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date(timestamp));
+
+//        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+//        String heatOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
+
+        return dateReadable;
+    }
 }

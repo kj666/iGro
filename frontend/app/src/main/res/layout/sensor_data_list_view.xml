@@ -7,9 +7,9 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="91dp"
-        android:layout_height="28dp"
+        android:id="@+id/sensorDateTextView"
+        android:layout_width="162dp"
+        android:layout_height="29dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/sensorDataTextView"
         android:layout_width="82dp"
         android:layout_height="27dp"
         android:layout_marginEnd="8dp"

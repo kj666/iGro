@@ -10,11 +10,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igro.Controller.Helper;
 import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,7 +40,7 @@ import java.util.TimeZone;
 
 public class SensorDataActivity extends AppCompatActivity {
 
-    //UI component
+    //UI components
     TextView historicalSensorDataTextView;
     GraphView graphView;
     ListView listView;
@@ -115,7 +119,6 @@ public class SensorDataActivity extends AppCompatActivity {
 
     void initializeTableUI(){
         listView = findViewById(R.id.sensorDataTable);
-
     }
 
     void setupGraphUI(){
@@ -123,7 +126,6 @@ public class SensorDataActivity extends AppCompatActivity {
         graphView = new GraphView(getApplicationContext());
         constraintLayout.removeView(graphView);
         populateGraph();
-
     }
 
     void setupTableUI(){
@@ -140,7 +142,7 @@ public class SensorDataActivity extends AppCompatActivity {
 
         for(SensorData data: sensorDataList){
             long t = data.getTime();
-            Date time = new Date(t*1000L);
+            Date time = new Date(t);
 
             Log.d("FIREBASE", data.getTime()+"");
 
@@ -148,7 +150,9 @@ public class SensorDataActivity extends AppCompatActivity {
             series.appendData(new DataPoint(time.getTime(),y), true, 500);
         }
         graphView.addSeries(series);
-        graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getApplication()));
+
+        //Use time as x-axis
+        graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getApplication(),new SimpleDateFormat("dd-MM HH:mm")));
 
         //make the graph scrollable and scalable
         graphView.getViewport().setYAxisBoundsManual(true);
@@ -156,6 +160,13 @@ public class SensorDataActivity extends AppCompatActivity {
         graphView.getViewport().setScrollable(true);
         graphView.getViewport().setScrollableY(true);
         graphView.getViewport().setScalable(true);
+    }
+
+    void populateTable(){
+
+        initializeTableUI();
+        SensorDataListAdapter sensorDataListAdapter = new SensorDataListAdapter(sensorDataList);
+        listView.setAdapter(sensorDataListAdapter);
     }
 
     /**
@@ -174,6 +185,7 @@ public class SensorDataActivity extends AppCompatActivity {
                     sensorDataList.add(sensorData);
                 }
                 populateGraph();
+                populateTable();
             }
 
             @Override
@@ -183,5 +195,42 @@ public class SensorDataActivity extends AppCompatActivity {
         };
 
         db.addValueEventListener(eventListener);
+    }
+
+    //Used for the listView
+    class SensorDataListAdapter extends BaseAdapter{
+
+        private List<SensorData> sensorDataList;
+
+        public SensorDataListAdapter(List<SensorData> sensorDataList) {
+            this.sensorDataList = sensorDataList;
+        }
+
+        @Override
+        public int getCount() {
+            return sensorDataList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = getLayoutInflater().inflate(R.layout.sensor_data_list_view,null);
+            TextView sensorDate = convertView.findViewById(R.id.sensorDateTextView);
+            TextView sensorData = convertView.findViewById(R.id.sensorDataTextView);
+
+            sensorDate.setText(Helper.convertTime(sensorDataList.get(position).getTime()));
+            sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
+
+            return convertView;
+        }
     }
 }
