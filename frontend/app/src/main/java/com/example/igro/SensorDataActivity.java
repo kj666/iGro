@@ -3,10 +3,15 @@ package com.example.igro;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,20 +36,28 @@ import java.util.TimeZone;
 
 public class SensorDataActivity extends AppCompatActivity {
 
+    //UI component
     TextView historicalSensorDataTextView;
     GraphView graphView;
+    ListView listView;
 
+    ConstraintLayout constraintLayout;
+    //Graph
     LineGraphSeries<DataPoint> series;
-
+    //Array of data
     List<SensorData> sensorDataList = new ArrayList<>();
+
+    //boolean to decide if its table/graph
+    boolean tableMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_data);
 
+        historicalSensorDataTextView = (TextView) findViewById(R.id.historicalSensorDataTextView);
+
         retrieveSensorDataFromDB();
-        initializeGraphUI();
 
 
         Intent intent = getIntent();
@@ -65,18 +78,51 @@ public class SensorDataActivity extends AppCompatActivity {
             Toast.makeText(this, "ERROR: unKnown sensor type ", Toast.LENGTH_LONG ).show();
         }
 
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.graph_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.tableGraph_switch:
+                if(tableMode) {
+                    tableMode = false;
+                    item.setChecked(false);
+                    setupGraphUI();
+                }
+                else {
+                    tableMode = true;
+                    item.setChecked(true);
+                    setupTableUI();
+                }
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+
     }
 
     void initializeGraphUI(){
-        historicalSensorDataTextView = (TextView) findViewById(R.id.historicalSensorDataTextView);
         graphView = (GraphView) findViewById(R.id.sensorGraph);
     }
 
     void initializeTableUI(){
+        listView = findViewById(R.id.sensorDataTable);
 
     }
 
     void setupGraphUI(){
+        constraintLayout = (ConstraintLayout) findViewById(R.id.sensorHistoryConstraintLayout);
+        graphView = new GraphView(getApplicationContext());
+        constraintLayout.removeView(graphView);
+        populateGraph();
 
     }
 
@@ -88,6 +134,8 @@ public class SensorDataActivity extends AppCompatActivity {
      * Populate with data
      */
     void populateGraph(){
+        initializeGraphUI();
+
         series = new LineGraphSeries<>();
 
         for(SensorData data: sensorDataList){
@@ -125,7 +173,6 @@ public class SensorDataActivity extends AppCompatActivity {
                     Log.d("FIREBASE", sensorData.getTime()+"");
                     sensorDataList.add(sensorData);
                 }
-
                 populateGraph();
             }
 
@@ -136,6 +183,5 @@ public class SensorDataActivity extends AppCompatActivity {
         };
 
         db.addValueEventListener(eventListener);
-
     }
 }

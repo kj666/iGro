@@ -2,29 +2,34 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sensorHistoryConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SensorDataActivity">
 
     <ImageView
         android:id="@+id/logoTopImageView"
-        android:layout_width="59dp"
-        android:layout_height="51dp"
+        android:layout_width="74dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/historicalSensorDataTextView"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.571"
-        app:srcCompat="@drawable/igro_justleaf" />
+        app:srcCompat="@drawable/igro_logo" />
 
 
     <TextView
         android:id="@+id/historicalSensorDataTextView"
-        android:layout_width="392dp"
-        android:layout_height="42dp"
+        android:layout_width="353dp"
+        android:layout_height="33dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="center_horizontal|center_vertical"
@@ -33,152 +38,34 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="73dp" />
+        app:layout_constraintTop_toBottomOf="@+id/logoTopImageView" />
 
-    <TextView
-        android:id="@+id/graphTextView"
-        android:layout_width="92dp"
-        android:layout_height="36dp"
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/sensorGraph"
+        android:layout_width="396dp"
+        android:layout_height="249dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="GRAPH"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/sensorGraph"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/historicalSensorDataTextView"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <com.jjoe64.graphview.GraphView
-        android:id="@+id/sensorGraph"
-        android:layout_width="match_parent"
-        android:layout_height="312dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="52dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-    <TextView
-        android:id="@+id/textView24"
-        android:layout_width="53dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="4dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="TABLE"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView10"
-        android:layout_width="337dp"
-        android:layout_height="128dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/historicalSensorDataTextView"
+        app:layout_constraintVertical_bias="0.092" />
 
-
-        <TableLayout
-            android:layout_width="230dp"
-            android:layout_height="119dp">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="Date"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="°C"
-                    android:textSize="20dp" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="20/02/2019"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="22°C"
-                    android:textSize="20dp" />
-
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="21/02/2019"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="19°C"
-                    android:textSize="20dp" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="22/02/2019"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="23°C"
-                    android:textSize="20dp" />
-            </TableRow>
-
-
-        </TableLayout>
-    </android.support.v7.widget.CardView>
+    <ListView
+        android:id="@+id/sensorDataTable"
+        android:layout_width="395dp"
+        android:layout_height="179dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.562"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
