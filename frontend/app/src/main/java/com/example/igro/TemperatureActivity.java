@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
+import com.example.igro.Models.SensorData.TemperatureRange;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -45,10 +47,12 @@ public class TemperatureActivity extends AppCompatActivity {
     //initialize the layout fields
     Button tempHistoryButton;
     Button heaterUseHistoryButton;
+    Button setRangeTempButton;
     EditText lowTempEditText;
     EditText highTempEditText;
     TextView tempControlTextView;
     Switch tempSwitch;
+    DatabaseReference databaseRange;
 
     private FirebaseUser currentUser;
 
@@ -69,24 +73,46 @@ public class TemperatureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
 
+        databaseRange=FirebaseDatabase.getInstance().getReference("Ranges");
+
         tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
         tempSwitch.setClickable(true);
 
+        //Get the values from the user
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
-
-
+        setRangeTempButton=(Button)findViewById(R.id.setRangeTempButton);
 
         currentUser = helper.checkAuthentication();
-
-
+        setRangeTempButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setRange();
+            }
+        });
 
     }
 
+    public void setRange(){
+        String lowTemp=lowTempEditText.getText().toString();
+        String highTemp=highTempEditText.getText().toString();
 
+        //check if the ranges are empty or not
+        if(!TextUtils.isEmpty(lowTemp)&&!TextUtils.isEmpty(highTemp))
+        {
+                    //get Unique Id for range
+            String rangeId= databaseRange.push().getKey();
+            TemperatureRange temperatureRange=new TemperatureRange(rangeId,lowTemp,highTemp);
+            databaseRange.child(rangeId).setValue(temperatureRange);
+            Toast.makeText(this,"RANGE SUCCESSFULLY SET!!!",Toast.LENGTH_LONG).show();
+        }
+        else{
+            Toast.makeText(this,"YOU SHOULD ENTER LOW AND HIGH VALUES!!!",Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,6 +141,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+        setRangeTempButton=(Button)findViewById(R.id.setRangeTempButton);
 
         String lowTempLimit = lowTempEditText.getText().toString();
         String highTempLimit = lowTempEditText.getText().toString();
@@ -123,7 +150,7 @@ public class TemperatureActivity extends AppCompatActivity {
             Integer lowTemp = Integer.parseInt(lowTempLimit);
             Integer highTemp = Integer.parseInt(highTempLimit);
         }else{
-  //          Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
+          Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
         }
 
         //opening the HistoricalApplianceActivity view when the HeaterUseHistory button is clicked
@@ -136,8 +163,10 @@ public class TemperatureActivity extends AppCompatActivity {
                 i.putExtra("ApplianceType", "HEATER");
                 context.startActivity(i);
 
+
             }
         });
+
 
         //opening the SensorDataActivity on history sensor data button click
         tempHistoryButton.setOnClickListener(new View.OnClickListener() {

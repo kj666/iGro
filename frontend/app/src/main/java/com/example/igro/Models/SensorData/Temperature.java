@@ -8,9 +8,11 @@ public class Temperature {
     private Time time;
     private double temperature;
 
+
     public Temperature(double temperature) {
         this.temperature = temperature;
     }
+
 
     public Date getDate() {
         return date;
