@@ -6,7 +6,7 @@
         android:id="@+id/tableGraph_switch"
         android:title="Table/Graph"
         android:checkable="true"
-        app:actionLayout="@layout/switch_item" />
+         />
     <item
         android:id="@+id/refreshButton"
         android:title="Refresh" />
