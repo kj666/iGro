@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,130 +10,92 @@
         android:id="@+id/logoTopImageView"
         android:layout_width="124dp"
         android:layout_height="52dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="145dp"
-        android:layout_marginLeft="145dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="141dp"
-        android:layout_marginRight="141dp"
-        app:srcCompat="@drawable/igro_logo" />
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/historicalSensorDataTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/historicalSensorDataTextView"
         android:layout_width="392dp"
         android:layout_height="42dp"
-        android:layout_below="@+id/logoTopImageView"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="11dp"
-        android:layout_marginRight="11dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:gravity="center_horizontal|center_vertical"
         android:text="HISTORICAL SENSOR DATA"
         android:textAlignment="center"
         android:textSize="14sp"
-        app:fontFamily="sans-serif-medium"
-        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView"
-        app:layout_constraintVertical_bias="0.349" />
+        tools:layout_editor_absoluteY="73dp" />
 
     <TextView
         android:id="@+id/graphTextView"
         android:layout_width="92dp"
         android:layout_height="36dp"
-        android:layout_below="@+id/historicalSensorDataTextView"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="309dp"
-        android:layout_marginRight="309dp"
-        android:layout_marginBottom="567dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center_horizontal|center_vertical"
         android:text="GRAPH"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView10"
+        app:layout_constraintBottom_toTopOf="@+id/sensorGraph"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lowTempEditText"
-        app:layout_constraintVertical_bias="0.933" />
+        app:layout_constraintTop_toBottomOf="@+id/historicalSensorDataTextView"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView8"
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/sensorGraph"
         android:layout_width="match_parent"
-        android:layout_height="191dp"
-        android:layout_above="@+id/cardView10"
-        android:layout_below="@+id/historicalSensorDataTextView"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="53dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginBottom="91dp"
-        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.jjoe64.graphview.GraphView
-            android:id="@+id/graph"
-            android:layout_width="match_parent"
-            android:layout_height="155dp" />
-    </android.support.v7.widget.CardView>
+        android:layout_height="312dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="52dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <TextView
         android:id="@+id/textView24"
-        android:layout_width="wrap_content"
-        android:layout_height="31dp"
-        android:layout_below="@+id/cardView8"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="6dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginTop="-44dp"
-        android:layout_marginEnd="310dp"
-        android:layout_marginRight="310dp"
-        android:layout_marginBottom="297dp"
+        android:layout_width="53dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center_horizontal|center_vertical"
         android:text="TABLE"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/cardView10"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView23"
-        app:layout_constraintTop_toBottomOf="@+id/highTempEditText"
-        app:layout_constraintVertical_bias="0.976" />
-
+        app:layout_constraintStart_toStartOf="parent" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView10"
-        android:layout_width="408dp"
-        android:layout_height="144dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_marginBottom="141dp"
-        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_width="337dp"
+        android:layout_height="128dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
 
         <TableLayout
@@ -217,4 +179,4 @@
     </android.support.v7.widget.CardView>
 
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
