@@ -1,7 +1,5 @@
 package com.example.igro;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -306,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
                             // Get temperature from weather response
                             int temperature = response.getJSONObject("main").getInt("temp");
-                            cityWeatherMessage.setText("Montreal " + temperature + "°");
+                            cityWeatherMessage.setText("Montreal " + temperature + "°C");
 
                         } catch (Exception e) {
                             Log.w(MAIN_LOG_TAG, "Attempt to parse JSON Object failed");
