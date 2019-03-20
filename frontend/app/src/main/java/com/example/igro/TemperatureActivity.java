@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
 import com.example.igro.Models.SensorData.Range;
+import com.example.igro.Models.SensorData.Temperature;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -52,7 +53,7 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView tempControlTextView;
     TextView indoorTempTextView;
     Switch tempSwitch;
-    private  String tempRange;
+
 
     DatabaseReference databaseRange=FirebaseDatabase.getInstance().getReference("Ranges");
     private FirebaseUser currentUser;
@@ -69,8 +70,6 @@ public class TemperatureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
-        FirebaseUser rangeT=FirebaseAuth.getInstance().getCurrentUser();
-        tempRange=rangeT.getUid();
 
         tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
@@ -90,36 +89,33 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 setTempRange();
 
-                
+
             }
         });
 
         databaseRange.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-              // checkTempRange(dataSnapshot);
+               checkTempRange(dataSnapshot);
 
             }
-
-
-
-
-
+            
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
 
-
     }
 
 private void checkTempRange(DataSnapshot dataSnapshot) {
-    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+    // Get a reference to the database service
 
+
+        dataSnapshot.child("lowTempValue");
         Range range = new Range();
-        range.setLowTempValue(ds.child(tempRange).getValue(Range.class).getLowTempValue()); //set the name
-        range.setHighTempValue(ds.child(tempRange).getValue(Range.class).getHighTempValue()); //set the name
+        range.setLowTempValue(dataSnapshot.child("Temperature").getValue(Range.class).getLowTempValue()); //set low value
+        range.setHighTempValue(dataSnapshot.child("Temperature").getValue(Range.class).getHighTempValue()); //set the high value
         if (!(Integer.parseInt(indoorTempTextView.getText().toString()) > Integer.parseInt(range.getLowTempValue())
                 && Integer.parseInt(indoorTempTextView.getText().toString()) < Integer.parseInt(range.getHighTempValue()))) {
 
@@ -129,7 +125,7 @@ private void checkTempRange(DataSnapshot dataSnapshot) {
 
                 indoorTempTextView.setTextColor(Color.GREEN);
             }
-        }
+
 
 }
     public void setTempRange(){
