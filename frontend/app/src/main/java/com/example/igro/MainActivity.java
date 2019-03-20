@@ -15,14 +15,22 @@ import android.widget.TextView;
 
 
 import com.example.igro.Controller.Helper;
-import com.example.igro.Models.SensorData.Temperature;
+import com.example.igro.Models.SensorData.SensorData;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private Button temperatureTitleButton;
@@ -33,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private Button uvTitleButton;
     private Button uvNumberButton;
 
-    private boolean celcius_pressed=true;
-    private boolean fahrenheit_pressed=false;
+    private boolean celcius_pressed = true;
+    private boolean fahrenheit_pressed = false;
 
     private Button moistureNumberButton;
     private Button moistureTitleButton;
@@ -50,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     protected TextView userWelcomeMessage;
     private FirebaseUser currentUser;
 
+    private List<SensorData> sensorDataList = new ArrayList<>();
 
     /**
      * On create
@@ -69,7 +78,10 @@ public class MainActivity extends AppCompatActivity {
         String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
         userWelcomeMessage.setText(welcomeMessage);
         getHumData("1");
-        getTempData("1");
+//        getTempData("1");
+        retrieveTemp();
+
+        temperatureNumberButton.setText(sensorDataList.size()+"");
 
         //Temperature Celsius Button listener
         temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         temperatureNumberButton.setText(Double.toString(a));
                     }
                     celcius_pressed = true;
-                    fahrenheit_pressed=false;
+                    fahrenheit_pressed = false;
                 }
             }
         });
@@ -244,6 +256,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    void retrieveTemp(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    Log.d("FIREBASE", sensorData.getTime()+"");
+                    temperatureNumberButton.setText(sensorData.getTemperatureC()+"");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+
+    }
+
 
     public int humD;
 
