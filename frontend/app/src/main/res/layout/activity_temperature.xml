@@ -21,7 +21,7 @@
         app:layout_constraintBottom_toTopOf="@+id/highTempEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView"
-        app:layout_constraintVertical_bias="0.384" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/lowTempRangeTextView"
@@ -29,13 +29,12 @@
         android:layout_height="22dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="LOW"
         android:textAlignment="center"
         app:layout_constraintEnd_toStartOf="@+id/highTempRangeTextView"
-        app:layout_constraintHorizontal_bias="0.079"
+        app:layout_constraintHorizontal_bias="0.078"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
 
@@ -49,7 +48,7 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/celciusghButton"
         app:layout_constraintHorizontal_bias="0.953"
-        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
+        app:layout_constraintStart_toEndOf="@+id/indoorTempTextView"
         app:layout_constraintStart_toStartOf="@+id/celciusghButton"
         app:layout_constraintTop_toBottomOf="@+id/celciusghButton" />
 
@@ -64,13 +63,13 @@
         android:layout_marginBottom="8dp"
         android:text="ͦC"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/ghTempTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/indoorTempTextView"
         app:layout_constraintEnd_toStartOf="@+id/outdoorTempTextView"
         app:layout_constraintHorizontal_bias="0.008"
-        app:layout_constraintStart_toEndOf="@+id/ghTempTextView" />
+        app:layout_constraintStart_toEndOf="@+id/indoorTempTextView" />
 
     <TextView
-        android:id="@+id/ghTempTextView"
+        android:id="@+id/indoorTempTextView"
         android:layout_width="67dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -81,6 +80,7 @@
         android:inputType="numberSigned"
         android:text="24"
         android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="45sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
@@ -98,8 +98,8 @@
         android:text="18"
         android:textAlignment="center"
         android:textSize="45sp"
-        app:layout_constraintBottom_toBottomOf="@+id/ghTempTextView"
-        app:layout_constraintStart_toEndOf="@+id/ghTempTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/indoorTempTextView"
+        app:layout_constraintStart_toEndOf="@+id/indoorTempTextView"
         app:layout_constraintTop_toBottomOf="@+id/outdoorTextView"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -241,7 +241,7 @@
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
@@ -275,7 +275,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="40dp"
@@ -291,7 +291,7 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/cardView8"
         app:layout_constraintEnd_toEndOf="@+id/lowTempRangeTextView"
-        app:layout_constraintHorizontal_bias="0.384"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lowTempRangeTextView"
         app:layout_constraintVertical_bias="0.0"
@@ -342,7 +342,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="264dp"
+        android:layout_marginTop="240dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="VIEW HEATER USE HISTORY"
@@ -363,9 +363,23 @@
         android:text="VIEW TEMPERATURE SENSOR HISTORY"
         app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView"
-        app:layout_constraintVertical_bias="0.722" />
+        app:layout_constraintVertical_bias="0.936" />
+
+    <Button
+        android:id="@+id/setRangeTempButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="SET RANGE"
+        app:layout_constraintEnd_toStartOf="@+id/highTempEditText"
+        app:layout_constraintStart_toEndOf="@+id/lowTempEditText"
+        app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
 
 </android.support.constraint.ConstraintLayout>
