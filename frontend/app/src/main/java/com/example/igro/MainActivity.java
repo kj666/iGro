@@ -14,18 +14,13 @@ import android.util.Log;
 import android.widget.TextView;
 
 
-<<<<<<< HEAD
 import com.example.igro.Controller.Helper;
-import com.example.igro.Models.SensorData.Temperature;
-=======
-import com.android.volley.Cache;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
->>>>>>> weatherApiRequest
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
