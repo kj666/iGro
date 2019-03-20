@@ -14,8 +14,18 @@ import android.util.Log;
 import android.widget.TextView;
 
 
+<<<<<<< HEAD
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.SensorData.Temperature;
+=======
+import com.android.volley.Cache;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+>>>>>>> weatherApiRequest
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +34,12 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final String MAIN_LOG_TAG = "MAIN_ACTIVITY_LOG_TAG";
+
     private Button temperatureTitleButton;
     private Button temperatureNumberButton;
     private Button temperatureCelsiusButton;
@@ -46,15 +61,12 @@ public class MainActivity extends AppCompatActivity {
 
     public int tempD;
 
-    private FirebaseAuth mAuth; // authentication instance
-    protected TextView userWelcomeMessage;
+    private TextView userWelcomeMessage;
     private FirebaseUser currentUser;
 
+    private RequestQueue queue;
+    private TextView cityWeatherMessage;
 
-    /**
-     * On create
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,12 +80,15 @@ public class MainActivity extends AppCompatActivity {
         userWelcomeMessage = findViewById(R.id.welcomeMessageText);
         String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
         userWelcomeMessage.setText(welcomeMessage);
+        cityWeatherMessage = findViewById(R.id.cityWeatherTextView);
+        queue = Volley.newRequestQueue(this);
+        requestWeather();
+
         getHumData("1");
         getTempData("1");
 
         //Temperature Celsius Button listener
         temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
 
@@ -88,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         // convert temperatureCelsiusButton to temperatureFahrenheitButton
         temperatureFahrenheitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 helper.goToActivity(TemperatureActivity.class);
             }
         });
+
         //opening the Temperature view when the temperature number is clicked
         temperatureNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,18 +202,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         helper.checkAuthentication();
+        requestWeather();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         helper.checkAuthentication();
+        requestWeather();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         helper.checkAuthentication();
+        requestWeather();
     }
 
     @Override
@@ -268,5 +288,42 @@ public class MainActivity extends AppCompatActivity {
                 humidityNumberButton.setText(humD+"");
             }
         });
+    }
+
+    void requestWeather() {
+        // TODO: 2019-03-18
+        // Make this function capable of pulling data for any city as per user request
+
+        // Get weather for Montreal
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=Montreal&units=metric&APPID=b4840319c97c4629912dc391ed164bcb";
+        // Make request
+        JsonObjectRequest weatherRequest = new JsonObjectRequest(
+                Request.Method.GET, url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(MAIN_LOG_TAG, "response: " + response);
+                        try {
+                            // Get description from weather response
+                            //String description = response.getJSONArray("weather").getJSONObject(0).getString("main");
+                            //descriptionTextView.setText(description);
+
+                            // Get temperature from weather response
+                            int temperature = response.getJSONObject("main").getInt("temp");
+                            cityWeatherMessage.setText("Montreal " + temperature + "°");
+
+                        } catch (Exception e) {
+                            Log.w(MAIN_LOG_TAG, "Attempt to parse JSON Object failed");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(MAIN_LOG_TAG, "JSON Request has failed");
+                    }
+                });
+        queue.add(weatherRequest);
     }
 }
