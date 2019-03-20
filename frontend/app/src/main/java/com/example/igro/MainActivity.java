@@ -185,18 +185,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         checkAuthentication();
+        requestWeather();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkAuthentication();
+        requestWeather();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         checkAuthentication();
+        requestWeather();
     }
 
     @Override
@@ -306,9 +309,9 @@ public class MainActivity extends AppCompatActivity {
     void requestWeather() {
         // TODO: 2019-03-18
         // Make this function capable of pulling data for any city as per user request
-        // Get weather for Montreal
-        final String url = "http://api.openweathermap.org/data/2.5/weather?q=Montreal&units=metric&APPID=9208dccec4431655d17d8dfa3d4fabc7";
 
+        // Get weather for Montreal
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=Montreal&units=metric&APPID=b4840319c97c4629912dc391ed164bcb";
         // Make request
         JsonObjectRequest weatherRequest = new JsonObjectRequest(
                 Request.Method.GET, url,
@@ -324,17 +327,17 @@ public class MainActivity extends AppCompatActivity {
 
                             // Get temperature from weather response
                             int temperature = response.getJSONObject("main").getInt("temp");
-                            cityWeatherMessage.setText("Montreal" + temperature + "°");
+                            cityWeatherMessage.setText("Montreal " + temperature + "°");
 
                         } catch (Exception e) {
-                            Log.w(MAIN_LOG_TAG, "THIS SHIT AINT WORKING");
+                            Log.w(MAIN_LOG_TAG, "Attempt to parse JSON Object failed");
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Called when there is an error making the request
+                        Log.e(MAIN_LOG_TAG, "JSON Request has failed");
                     }
                 });
         queue.add(weatherRequest);
