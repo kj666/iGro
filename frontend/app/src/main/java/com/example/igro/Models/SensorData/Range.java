@@ -1,23 +1,23 @@
 package com.example.igro.Models.SensorData;
 
-public class TemperatureRange {
-    private String tempId;
+public class Range {
+
     private String lowTempValue;
     private String highTempValue;
 
+    public Range(){
 
-    public TemperatureRange(String tempId,String lowTempValue, String highTempValue){
+    }
+
+
+    public Range(String lowTempValue, String highTempValue){
 
         this.lowTempValue=lowTempValue;
         this.highTempValue=highTempValue;
-        this.tempId=tempId;
-
 
     }
 
-    public String getTempId() {
-        return tempId;
-    }
+
 
     public String getLowTempValue() {
         return lowTempValue;
@@ -27,9 +27,7 @@ public class TemperatureRange {
         return highTempValue;
     }
 
-    public void setTempId(String tempId) {
-        this.tempId = tempId;
-    }
+
 
     public void setLowTempValue(String lowTempValue) {
         this.lowTempValue = lowTempValue;

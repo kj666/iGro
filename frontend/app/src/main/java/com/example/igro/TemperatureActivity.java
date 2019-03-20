@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
-import com.example.igro.Models.SensorData.TemperatureRange;
+import com.example.igro.Models.SensorData.Range;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -31,13 +31,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -54,7 +52,9 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView tempControlTextView;
     TextView indoorTempTextView;
     Switch tempSwitch;
-    DatabaseReference databaseRange;
+    private  String tempRange;
+
+    DatabaseReference databaseRange=FirebaseDatabase.getInstance().getReference("Ranges");
     private FirebaseUser currentUser;
     public Boolean lastHeaterState = false;
     //log tag to test the on/off state on changeState event of heaterSwitch
@@ -69,80 +69,92 @@ public class TemperatureActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
-
-        databaseRange=FirebaseDatabase.getInstance().getReference("Ranges");
+        FirebaseUser rangeT=FirebaseAuth.getInstance().getCurrentUser();
+        tempRange=rangeT.getUid();
 
         tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
         tempSwitch.setClickable(true);
-
+        indoorTempTextView=(TextView)findViewById(R.id.indoorTempTextView);
         //Get the values from the user
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
         setRangeTempButton=(Button)findViewById(R.id.setRangeTempButton);
-        indoorTempTextView=(TextView)findViewById(R.id.indoorTempTextView);
+
         currentUser = helper.checkAuthentication();
         setRangeTempButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setRange();
-                //tempOutOfRange();
+
+                setTempRange();
+
+                
             }
         });
 
+        databaseRange.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+              // checkTempRange(dataSnapshot);
+
+            }
+
+
+
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
-//Checks if the temperature inside the green house is outside of range
-    public void tempOutOfRange(){
-    String lowTemp=lowTempEditText.getText().toString();
-        String highTemp=highTempEditText.getText().toString();
-        if(!(Integer.parseInt(indoorTempTextView.toString())>Integer.parseInt(lowTemp)
-                &&Integer.parseInt(indoorTempTextView.toString())<Integer.parseInt(highTemp))) {
+
+private void checkTempRange(DataSnapshot dataSnapshot) {
+    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
+        Range range = new Range();
+        range.setLowTempValue(ds.child(tempRange).getValue(Range.class).getLowTempValue()); //set the name
+        range.setHighTempValue(ds.child(tempRange).getValue(Range.class).getHighTempValue()); //set the name
+        if (!(Integer.parseInt(indoorTempTextView.getText().toString()) > Integer.parseInt(range.getLowTempValue())
+                && Integer.parseInt(indoorTempTextView.getText().toString()) < Integer.parseInt(range.getHighTempValue()))) {
+
             indoorTempTextView.setTextColor(Color.RED);
         }
-          else{
-                indoorTempTextView.setTextColor(Color.GREEN);
-              }
+        else{
 
+                indoorTempTextView.setTextColor(Color.GREEN);
+            }
         }
 
-    public void setRange(){
+}
+    public void setTempRange(){
 
         String lowTemp=lowTempEditText.getText().toString();
         String highTemp=highTempEditText.getText().toString();
         //check if the ranges are empty or not
-
-        if(lastHeaterState) {
             if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
                 if (Integer.parseInt(lowTemp.toString()) < Integer.parseInt(highTemp.toString())) {
-                    //get Unique Id for range
-                    String rangeId = databaseRange.push().getKey();
-                    TemperatureRange temperatureRange = new TemperatureRange(rangeId, lowTemp, highTemp);
-                    databaseRange.child(rangeId).setValue(temperatureRange);
+
+                    Range temperatureRange = new Range(lowTemp, highTemp);
+                    databaseRange.child("Temperature").setValue(temperatureRange);
                     Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+
+
+
                 } else {
                     Toast.makeText(this, "HIGH VALUES SHOULD BE GREATER THAN LOW VALUES!!!", Toast.LENGTH_LONG).show();
                 }
             } else {
                 Toast.makeText(this, "YOU SHOULD ENTER LOW AND HIGH VALUES!!!", Toast.LENGTH_LONG).show();
             }
-        }
-        else{
-            Toast.makeText(this, "PLEASE SWITCH ON THE HEATER CONTROL FIRST", Toast.LENGTH_LONG).show();
-        }
-        /*databaseRange.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                TemperatureActivity temperatureActivity = dataSnapshot.getValue(TemperatureActivity.class);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                }
 
 
-        });*/
+
     }
 
     @Override
@@ -241,7 +253,6 @@ public class TemperatureActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         final boolean switchState = tempSwitch.isChecked();
             heaterSwitchStateFromRecord();
             
