@@ -59,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
 
     private List<SensorData> sensorDataList = new ArrayList<>();
-
+    //create heater database reference
+   // DatabaseReference DB = FirebaseDatabase.getInstance().getReference("data");
     /**
      * On create
      * @param savedInstanceState
@@ -77,8 +78,9 @@ public class MainActivity extends AppCompatActivity {
         userWelcomeMessage = findViewById(R.id.welcomeMessageText);
         String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
         userWelcomeMessage.setText(welcomeMessage);
-        getHumData("1");
+      //  getHumData("1");
 //        getTempData("1");
+        retrieveHum();
         retrieveTemp();
 
         temperatureNumberButton.setText(sensorDataList.size()+"");
@@ -234,28 +236,8 @@ public class MainActivity extends AppCompatActivity {
 
     //Todo have to change this to real time database format
     //Get document from firestore
-    public void getTempData(String id){
-        //Reference to collection in firestore
-        CollectionReference tempRef = FirebaseFirestore.getInstance().collection("temperature");
 
-        tempRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        tempD = Integer.parseInt(document.getString("temp"));
 
-                        Log.d("WORKING", ""+tempD);
-                    }
-                    else{
-                        Log.d("ERROR", "Cannot get Temperature");
-                    }
-                }
-                temperatureNumberButton.setText(tempD+"");
-            }
-        });
-    }
 
     void retrieveTemp(){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
@@ -283,25 +265,27 @@ public class MainActivity extends AppCompatActivity {
     public int humD;
 
     //Get humidity document from firestore
-    public void getHumData(String id){
+    public void retrieveHum(){
         //Reference to humidity collection in firestore
-        CollectionReference humRef = FirebaseFirestore.getInstance().collection("humidity");
-        humRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+        ValueEventListener eventListener = new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        humD = Integer.parseInt(document.getString("humValue"));
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    Log.d("FIREBASE", sensorData.getHumidity()+"");
+                    humidityNumberButton.setText(sensorData.getHumidity()+"");
 
-                        Log.d("SUCCESS", ""+humD);
-                    }
-                    else{
-                        Log.d("ERROR", "Cannot Retreave Humidity");
-                    }
                 }
-                humidityNumberButton.setText(humD+"");
             }
-        });
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+
     }
+
 }
