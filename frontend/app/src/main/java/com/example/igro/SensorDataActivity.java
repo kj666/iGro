@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,14 +44,12 @@ public class SensorDataActivity extends AppCompatActivity {
 
     //UI components
     TextView historicalSensorDataTextView;
-    GraphView graphView;
     ListView listView;
 
-    ConstraintLayout constraintLayout;
-    //Graph
-    LineGraphSeries<DataPoint> series;
+
     //Array of data
     List<SensorData> sensorDataList = new ArrayList<>();
+
 
     //boolean to decide if its table/graph
     boolean tableMode = false;
@@ -58,6 +58,12 @@ public class SensorDataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_data);
+
+        //Sensor data graph fragment
+        SensorGraphFragment sensorGraphFragment = new SensorGraphFragment();
+        FragmentManager fragmentManager =  getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorGraphFragment);
+        fragmentTransaction.commit();
 
         historicalSensorDataTextView = (TextView) findViewById(R.id.historicalSensorDataTextView);
 
@@ -82,7 +88,6 @@ public class SensorDataActivity extends AppCompatActivity {
             Toast.makeText(this, "ERROR: unKnown sensor type ", Toast.LENGTH_LONG ).show();
         }
 
-
     }
 
     @Override
@@ -99,7 +104,6 @@ public class SensorDataActivity extends AppCompatActivity {
                 if(tableMode) {
                     tableMode = false;
                     item.setChecked(false);
-                    setupGraphUI();
                 }
                 else {
                     tableMode = true;
@@ -113,53 +117,13 @@ public class SensorDataActivity extends AppCompatActivity {
 
     }
 
-    void initializeGraphUI(){
-        graphView = (GraphView) findViewById(R.id.sensorGraph);
-    }
 
     void initializeTableUI(){
         listView = findViewById(R.id.sensorDataTable);
     }
 
-    void setupGraphUI(){
-        constraintLayout = (ConstraintLayout) findViewById(R.id.sensorHistoryConstraintLayout);
-        graphView = new GraphView(getApplicationContext());
-        constraintLayout.removeView(graphView);
-        populateGraph();
-    }
-
     void setupTableUI(){
 
-    }
-
-    /**
-     * Populate with data
-     */
-    void populateGraph(){
-        initializeGraphUI();
-
-        series = new LineGraphSeries<>();
-
-        for(SensorData data: sensorDataList){
-            long t = data.getTime();
-            Date time = new Date(t);
-
-            Log.d("FIREBASE", data.getTime()+"");
-
-            double y = data.getTemperatureC();
-            series.appendData(new DataPoint(time.getTime(),y), true, 500);
-        }
-        graphView.addSeries(series);
-
-        //Use time as x-axis
-        graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getApplication(),new SimpleDateFormat("dd-MM HH:mm")));
-
-        //make the graph scrollable and scalable
-        graphView.getViewport().setYAxisBoundsManual(true);
-        graphView.getViewport().setXAxisBoundsManual(true);
-        graphView.getViewport().setScrollable(true);
-        graphView.getViewport().setScrollableY(true);
-        graphView.getViewport().setScalable(true);
     }
 
     void populateTable(){
@@ -184,7 +148,6 @@ public class SensorDataActivity extends AppCompatActivity {
                     Log.d("FIREBASE", sensorData.getTime()+"");
                     sensorDataList.add(sensorData);
                 }
-                populateGraph();
                 populateTable();
             }
 
