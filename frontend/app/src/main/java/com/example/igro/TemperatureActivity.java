@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
 import com.example.igro.Models.SensorData.Range;
-import com.example.igro.Models.SensorData.Temperature;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
