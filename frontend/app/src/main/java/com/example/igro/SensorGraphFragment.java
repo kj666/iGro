@@ -1,6 +1,5 @@
 package com.example.igro;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,8 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.database.DataSnapshot;
@@ -30,16 +28,25 @@ import java.util.List;
 
 
 public class SensorGraphFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String PARAM = "type";
 
+    private String sensorType;
     GraphView graphView;
     LineGraphSeries<DataPoint> series;
+    TextView sensorTypeTextView;
     private List<SensorData> sensorDataList = new ArrayList<>();
 
 
     public SensorGraphFragment() {
         // Required empty public constructor
+    }
+
+    public static SensorGraphFragment newInstance(String sensorType){
+        SensorGraphFragment fragment = new SensorGraphFragment();
+        Bundle passData = new Bundle();
+        passData.putString(PARAM, sensorType);
+        fragment.sensorType = sensorType;
+        return fragment;
     }
 
 
@@ -59,14 +66,11 @@ public class SensorGraphFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sensor_graph, container, false);
         graphView = (GraphView) view.findViewById(R.id.sensorDataGraph);
 
+        sensorTypeTextView = view.findViewById(R.id.graphTypeTextView);
+        sensorTypeTextView.setText(sensorType);
+
         retrieveSensorDataFromDB();
         return view;
-    }
-
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     /**
@@ -80,9 +84,16 @@ public class SensorGraphFragment extends Fragment {
             long t = data.getTime();
             Date time = new Date(t);
 
-            Log.d("FIREBASE", data.getTime()+"");
+            double y = 0;
+            if(sensorType.equals("TEMPERATURE"))
+                y = data.getTemperatureC();
+            else if(sensorType.equals("UV"))
+                y = data.getUv();
+            else if(sensorType.equals("HUMIDITY"))
+                y = data.getHumidity();
+            else if(sensorType.equals("MOISTURE"))
+                y = data.getSoilMoisture();
 
-            double y = data.getTemperatureC();
             series.appendData(new DataPoint(time.getTime(),y), true, 500);
         }
         graphView.addSeries(series);

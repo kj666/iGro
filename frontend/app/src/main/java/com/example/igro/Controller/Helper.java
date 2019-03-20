@@ -69,10 +69,6 @@ public class Helper {
     public static String convertTime(long timestamp){
 
         String dateReadable = new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date(timestamp));
-
-//        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
-//        String heatOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
-
         return dateReadable;
     }
 }

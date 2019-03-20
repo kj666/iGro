@@ -53,6 +53,7 @@ public class SensorDataActivity extends AppCompatActivity {
 
     //boolean to decide if its table/graph
     boolean tableMode = false;
+    String sensorType;
 
     //Fragments
     SensorGraphFragment sensorGraphFragment;
@@ -67,31 +68,31 @@ public class SensorDataActivity extends AppCompatActivity {
 
         fragmentManager =  getSupportFragmentManager();
 
-        createGraphFrag();
-
         historicalSensorDataTextView = (TextView) findViewById(R.id.historicalSensorDataTextView);
 
         Intent intent = getIntent();
-        String sensorType = intent.getStringExtra("SensorType");
+        sensorType = intent.getStringExtra("SensorType");
         String pageTitle = "HISTORICAL " + sensorType + " SENSOR DATA";
+
+        createGraphFrag(sensorType);
 
         historicalSensorDataTextView.setText(pageTitle);
 
-        if(sensorType=="TEMPERATURE"){
+        if(sensorType.equals("TEMPERATURE")){
 
-        } else if (sensorType == "HUMIDITY") {
+        } else if (sensorType.equals("HUMIDITY")) {
 
-        }else if(sensorType=="MOISTURE"){
+        }else if(sensorType.equals("MOISTURE")){
 
-        }else if(sensorType=="UV"){
+        }else if(sensorType.equals("UV")){
 
         }else{
             Toast.makeText(this, "ERROR: unKnown sensor type ", Toast.LENGTH_LONG ).show();
         }
 
     }
-    void createGraphFrag(){
-        sensorGraphFragment = new SensorGraphFragment();
+    void createGraphFrag(String type){
+        sensorGraphFragment = SensorGraphFragment.newInstance(type);
         fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorGraphFragment);
         fragmentTransaction.addToBackStack("graph");
         fragmentTransaction.commit();
@@ -101,8 +102,8 @@ public class SensorDataActivity extends AppCompatActivity {
         fragmentManager.popBackStack("graph",1);
     }
 
-    void createTableFrag(){
-        sensorDataTableFragment = new SensorDataTableFragment();
+    void createTableFrag(String type){
+        sensorDataTableFragment = SensorDataTableFragment.newInstance(type);
         fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorDataTableFragment);
         fragmentTransaction.addToBackStack("table");
         fragmentTransaction.commit();
@@ -127,14 +128,14 @@ public class SensorDataActivity extends AppCompatActivity {
                     tableMode = false;
                     item.setChecked(false);
                     removeTableFrag();
-                    createGraphFrag();
+                    createGraphFrag(sensorType);
 
                 }
                 else {
                     tableMode = true;
                     item.setChecked(true);
                     removeGraphFrag();
-                    createTableFrag();
+                    createTableFrag(sensorType);
                 }
                 return true;
         }

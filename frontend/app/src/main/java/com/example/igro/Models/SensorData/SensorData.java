@@ -8,6 +8,7 @@ public class SensorData {
     private double temperatureC;
     private double pressure;
     private double temperatureF;
+    private double soilMoisture;
     private int uv;
     private long time;
 
@@ -68,5 +69,13 @@ public class SensorData {
 
     public void setTemperatureF(double temperatureF) {
         this.temperatureF = temperatureF;
+    }
+
+    public double getSoilMoisture() {
+        return soilMoisture;
+    }
+
+    public void setSoilMoisture(double soilMoisture) {
+        this.soilMoisture = soilMoisture;
     }
 }

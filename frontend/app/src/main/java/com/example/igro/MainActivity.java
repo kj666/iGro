@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 
 import com.example.igro.Controller.Helper;
-import com.example.igro.Models.SensorData.Temperature;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

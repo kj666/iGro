@@ -25,7 +25,9 @@ import java.util.List;
 
 
 public class SensorDataTableFragment extends Fragment {
+    private static final String PARAM = "type";
 
+    private String sensorType;
     ListView listView;
     private List<SensorData> sensorDataList = new ArrayList<>();
 
@@ -33,6 +35,13 @@ public class SensorDataTableFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static SensorDataTableFragment newInstance(String sensorType){
+        SensorDataTableFragment fragment = new SensorDataTableFragment();
+        Bundle passData = new Bundle();
+        passData.putString(PARAM, sensorType);
+        fragment.sensorType = sensorType;
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,13 +61,8 @@ public class SensorDataTableFragment extends Fragment {
         return view;
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     void populateTable(){
-        SensorDataListAdapter sensorDataListAdapter = new SensorDataListAdapter(sensorDataList);
+        SensorDataListAdapter sensorDataListAdapter = new SensorDataListAdapter(sensorDataList, sensorType);
         listView.setAdapter(sensorDataListAdapter);
     }
     void retrieveSensorDataFromDB(){
@@ -86,9 +90,11 @@ public class SensorDataTableFragment extends Fragment {
     class SensorDataListAdapter extends BaseAdapter {
 
         private List<SensorData> sensorDataList;
+        private String sensorType;
 
-        public SensorDataListAdapter(List<SensorData> sensorDataList) {
+        public SensorDataListAdapter(List<SensorData> sensorDataList, String sensorType) {
             this.sensorDataList = sensorDataList;
+            this.sensorType = sensorType;
         }
 
         @Override
@@ -113,7 +119,15 @@ public class SensorDataTableFragment extends Fragment {
             TextView sensorData = convertView.findViewById(R.id.sensorDataTextView);
 
             sensorDate.setText(Helper.convertTime(sensorDataList.get(position).getTime()));
-            sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
+
+            if(sensorType.equals("TEMPERATURE"))
+                sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
+            else if(sensorType.equals("UV"))
+                sensorData.setText(sensorDataList.get(position).getUv()+"");
+            else if(sensorType.equals("HUMIDITY"))
+                sensorData.setText(sensorDataList.get(position).getHumidity()+"");
+            else if(sensorType.equals("MOISTURE"))
+                sensorData.setText(sensorDataList.get(position).getSoilMoisture()+"");
 
             return convertView;
         }
