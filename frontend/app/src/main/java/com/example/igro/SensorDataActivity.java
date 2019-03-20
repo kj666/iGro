@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,29 +48,28 @@ public class SensorDataActivity extends AppCompatActivity {
     TextView historicalSensorDataTextView;
     ListView listView;
 
-
     //Array of data
     List<SensorData> sensorDataList = new ArrayList<>();
 
-
     //boolean to decide if its table/graph
     boolean tableMode = false;
+
+    //Fragments
+    SensorGraphFragment sensorGraphFragment;
+    SensorDataTableFragment sensorDataTableFragment;
+    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_data);
 
-        //Sensor data graph fragment
-        SensorGraphFragment sensorGraphFragment = new SensorGraphFragment();
-        FragmentManager fragmentManager =  getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorGraphFragment);
-        fragmentTransaction.commit();
+        fragmentManager =  getSupportFragmentManager();
+
+        createGraphFrag();
 
         historicalSensorDataTextView = (TextView) findViewById(R.id.historicalSensorDataTextView);
-
-        retrieveSensorDataFromDB();
-
 
         Intent intent = getIntent();
         String sensorType = intent.getStringExtra("SensorType");
@@ -89,6 +90,27 @@ public class SensorDataActivity extends AppCompatActivity {
         }
 
     }
+    void createGraphFrag(){
+        sensorGraphFragment = new SensorGraphFragment();
+        fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorGraphFragment);
+        fragmentTransaction.addToBackStack("graph");
+        fragmentTransaction.commit();
+    }
+
+    void removeGraphFrag(){
+        fragmentManager.popBackStack("graph",1);
+    }
+
+    void createTableFrag(){
+        sensorDataTableFragment = new SensorDataTableFragment();
+        fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorDataTableFragment);
+        fragmentTransaction.addToBackStack("table");
+        fragmentTransaction.commit();
+    }
+
+    void removeTableFrag(){
+        fragmentManager.popBackStack("table",1);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,96 +126,19 @@ public class SensorDataActivity extends AppCompatActivity {
                 if(tableMode) {
                     tableMode = false;
                     item.setChecked(false);
+                    removeTableFrag();
+                    createGraphFrag();
+
                 }
                 else {
                     tableMode = true;
                     item.setChecked(true);
-                    setupTableUI();
+                    removeGraphFrag();
+                    createTableFrag();
                 }
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
 
-    }
-
-
-    void initializeTableUI(){
-        listView = findViewById(R.id.sensorDataTable);
-    }
-
-    void setupTableUI(){
-
-    }
-
-    void populateTable(){
-
-        initializeTableUI();
-        SensorDataListAdapter sensorDataListAdapter = new SensorDataListAdapter(sensorDataList);
-        listView.setAdapter(sensorDataListAdapter);
-    }
-
-    /**
-     * Retrieve sensor data from Firebase database
-     */
-    void retrieveSensorDataFromDB(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    Log.d("FIREBASE", sensorData.getTime()+"");
-                    sensorDataList.add(sensorData);
-                }
-                populateTable();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(SensorDataActivity.this, "Failed to loead",Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        db.addValueEventListener(eventListener);
-    }
-
-    //Used for the listView
-    class SensorDataListAdapter extends BaseAdapter{
-
-        private List<SensorData> sensorDataList;
-
-        public SensorDataListAdapter(List<SensorData> sensorDataList) {
-            this.sensorDataList = sensorDataList;
-        }
-
-        @Override
-        public int getCount() {
-            return sensorDataList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = getLayoutInflater().inflate(R.layout.sensor_data_list_view,null);
-            TextView sensorDate = convertView.findViewById(R.id.sensorDateTextView);
-            TextView sensorData = convertView.findViewById(R.id.sensorDataTextView);
-
-            sensorDate.setText(Helper.convertTime(sensorDataList.get(position).getTime()));
-            sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
-
-            return convertView;
-        }
     }
 }

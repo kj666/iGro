@@ -1,6 +1,5 @@
 package com.example.igro;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,36 +8,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.example.igro.Controller.Helper;
 import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
-public class SensorGraphFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class SensorDataTableFragment extends Fragment {
 
-    GraphView graphView;
-    LineGraphSeries<DataPoint> series;
+    ListView listView;
     private List<SensorData> sensorDataList = new ArrayList<>();
 
-
-    public SensorGraphFragment() {
+    public SensorDataTableFragment() {
         // Required empty public constructor
     }
 
@@ -47,59 +38,29 @@ public class SensorGraphFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_sensor_graph, container, false);
-        graphView = (GraphView) view.findViewById(R.id.sensorDataGraph);
+        View view =  inflater.inflate(R.layout.fragment_sensor_data_table, container, false);
+        listView = view.findViewById(R.id.sensorDataListView);
 
         retrieveSensorDataFromDB();
         return view;
     }
-
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
-    /**
-     * Populate with data
-     */
-    void populateGraph(){
-
-        series = new LineGraphSeries<>();
-
-        for(SensorData data: sensorDataList){
-            long t = data.getTime();
-            Date time = new Date(t);
-
-            Log.d("FIREBASE", data.getTime()+"");
-
-            double y = data.getTemperatureC();
-            series.appendData(new DataPoint(time.getTime(),y), true, 500);
-        }
-        graphView.addSeries(series);
-
-        //Use time as x-axis
-        graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getContext(),new SimpleDateFormat("dd-MM HH:mm")));
-        graphView.getGridLabelRenderer().setHorizontalLabelsAngle(90);
-        graphView.getGridLabelRenderer().setLabelHorizontalHeight(200);
-
-        //make the graph scrollable and scalable
-        graphView.getViewport().setYAxisBoundsManual(true);
-        graphView.getViewport().setXAxisBoundsManual(true);
-        graphView.getViewport().setScrollable(true);
-        graphView.getViewport().setScrollableY(true);
-        graphView.getViewport().setScalable(true);
+    void populateTable(){
+        SensorDataListAdapter sensorDataListAdapter = new SensorDataListAdapter(sensorDataList);
+        listView.setAdapter(sensorDataListAdapter);
     }
-
     void retrieveSensorDataFromDB(){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
 
@@ -112,7 +73,7 @@ public class SensorGraphFragment extends Fragment {
                     Log.d("FIREBASE", sensorData.getTime()+"");
                     sensorDataList.add(sensorData);
                 }
-                populateGraph();
+                populateTable();
             }
 
             @Override
@@ -120,5 +81,41 @@ public class SensorGraphFragment extends Fragment {
             }
         };
         db.addValueEventListener(eventListener);
+    }
+
+    class SensorDataListAdapter extends BaseAdapter {
+
+        private List<SensorData> sensorDataList;
+
+        public SensorDataListAdapter(List<SensorData> sensorDataList) {
+            this.sensorDataList = sensorDataList;
+        }
+
+        @Override
+        public int getCount() {
+            return sensorDataList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = getLayoutInflater().inflate(R.layout.sensor_data_list_view,null);
+            TextView sensorDate = convertView.findViewById(R.id.sensorDateTextView);
+            TextView sensorData = convertView.findViewById(R.id.sensorDataTextView);
+
+            sensorDate.setText(Helper.convertTime(sensorDataList.get(position).getTime()));
+            sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
+
+            return convertView;
+        }
     }
 }
