@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     public int tempD;
-    public double UV;
 
     private FirebaseAuth mAuth; // authentication instance
     protected TextView userWelcomeMessage;
@@ -83,8 +82,6 @@ public class MainActivity extends AppCompatActivity {
 //        getTempData("1");
         retrieveHum();
         retrieveTemp();
-        retrieveSM();
-        retrieveUV();
 
         temperatureNumberButton.setText(sensorDataList.size()+"");
 
@@ -265,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public double humD;
+    public int humD;
 
     //Get humidity document from firestore
     public void retrieveHum(){
@@ -279,50 +276,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("FIREBASE", sensorData.getHumidity()+"");
                     humidityNumberButton.setText(sensorData.getHumidity()+"");
 
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
-
-    }
-    void retrieveUV(){
-       DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    Log.d("FIREBASE", sensorData.getUv()+"");
-
-                  uvNumberButton.setText(sensorData.getUv()+"");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
-
-    }
-
-    void retrieveSM(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    Log.d("FIREBASE", sensorData.getSoilMoisture()+"");
-                    moistureNumberButton.setText(sensorData.getSoilMoisture()+"");
                 }
             }
 

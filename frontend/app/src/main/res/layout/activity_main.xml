@@ -40,7 +40,7 @@
         <Button
             android:id="@+id/uvNumberButton"
             android:layout_width="80dp"
-            android:layout_height="75dp"
+            android:layout_height="80dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="45dp"
             android:layout_marginBottom="20dp"
