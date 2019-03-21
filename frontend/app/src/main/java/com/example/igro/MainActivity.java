@@ -35,14 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
     private Button temperatureTitleButton;
     private Button temperatureNumberButton;
-    private Button temperatureCelsiusButton;
-    private Button temperatureFahrenheitButton;
+
+    Button celsiusFahrenheitSwitchButton;
+    boolean celsiusOrFahrenheit = true; // default is celsius
 
     private Button uvTitleButton;
     private Button uvNumberButton;
-
-    private boolean celcius_pressed=true;
-    private boolean fahrenheit_pressed=false;
 
     private Button moistureNumberButton;
     private Button moistureTitleButton;
@@ -80,37 +78,10 @@ public class MainActivity extends AppCompatActivity {
         getHumData("1");
         getTempData("1");
 
-        //Temperature Celsius Button listener
-        temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
+        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(fahrenheit_pressed) {
-                    for(int i=0;i<1;i++) {
-                        Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
-                        Double a = (degrees - 32) * 5 / 9;
-                        temperatureNumberButton.setText(Double.toString(a));
-                    }
-                    celcius_pressed = true;
-                    fahrenheit_pressed=false;
-                }
-            }
-        });
-
-        // convert temperatureCelsiusButton to temperatureFahrenheitButton
-        temperatureFahrenheitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(celcius_pressed) {
-                    for(int i=0;i<1;i++) {
-                        Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
-                        Double a = degrees * 9 / 5 + 32;
-                        temperatureNumberButton.setText(Double.toString(a));
-                    }
-                    fahrenheit_pressed = true;
-                    celcius_pressed=false;
-                }
+                celsiusFahrenheitSwitch();
             }
         });
 
@@ -171,12 +142,13 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    // TODO 2019-03-21
+    // Switch the fixed value given for temperature below to sensor data when available
     protected void initializeUI(){
         //Temperature View initialization
         temperatureTitleButton = (Button) findViewById(R.id.temp_button);
         temperatureNumberButton = (Button) findViewById(R.id.tempNumberView);
-        temperatureCelsiusButton = (Button) findViewById(R.id.celciusOutButton);
-        temperatureFahrenheitButton = (Button) findViewById(R.id.fahrenheitOutButton);
+        celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
 
         //UV view initialization
         uvTitleButton = (Button) findViewById(R.id.uvButton);
@@ -318,5 +290,30 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         queue.add(weatherRequest);
+    }
+
+    /*
+     * Function that will convert all necessary parameters between celsius and fahrenheit
+     */
+    void celsiusFahrenheitSwitch(){
+        temperatureNumberButton.setText(
+                celsiusFahrenheitConversion(temperatureNumberButton.getText().toString()));
+        celsiusOrFahrenheit = !celsiusOrFahrenheit;
+    }
+
+    /*
+     * Function that handles the mathematical aspect of the celsius <-> fahrenheit process
+     */
+    String celsiusFahrenheitConversion(String valueToBeConverted) {
+        Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
+        if (celsiusOrFahrenheit) { // number currently in celsius
+            numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            return numberToBeConverted.toString();
+        } else { //number currently in fahrenheit
+            numberToBeConverted = (5.0/9.0) * (numberToBeConverted - 32.0);
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            return numberToBeConverted.toString();
+        }
     }
 }
