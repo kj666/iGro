@@ -48,10 +48,13 @@ import java.util.Calendar;
 // TODO 2019-03-20
 // One button to switch between celsius and fahrenheit
 // put the default values here as opposed to being declared in the layout
+// change the tempswitch to something more appropriate
+// check how to switch between Fahrenheit and Celsius on pre-existing temperature data
 
 public class TemperatureActivity extends AppCompatActivity {
     private static final String TEMPERATURE_LOG_TAG = "TEMP_ACTIVITY_LOG_TAG";
-
+    Button celsiusFahrenheitSwitchButton;
+    boolean celisusOrFahrenheit = true; // default is celsius
 
     //initialize the layout fields
     Button tempHistoryButton;
@@ -59,9 +62,10 @@ public class TemperatureActivity extends AppCompatActivity {
     EditText lowTempEditText;
     EditText highTempEditText;
     TextView tempControlTextView;
-    Switch tempSwitch;
+    Switch tempSwitch; // Confusing name, its heater control switch but it looks like its temperature switch
 
     TextView outdoorTemperatureTextView;
+    TextView greenhouseTemperatureTextView;
     private RequestQueue queue;
 
     private FirebaseUser currentUser;
@@ -93,13 +97,22 @@ public class TemperatureActivity extends AppCompatActivity {
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
 
         outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
+        greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
+
+        Double fixedGreenhouseValue = 20.0; // Switch this to sensor data when available
+        greenhouseTemperatureTextView.setText(fixedGreenhouseValue.toString());
         queue = Volley.newRequestQueue(this);
         requestWeather();
 
+        celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
+        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                celsiusFahrenheitSwitch();
+            }
+        });
+
         currentUser = helper.checkAuthentication();
-
-
-
     }
 
 
@@ -349,5 +362,33 @@ public class TemperatureActivity extends AppCompatActivity {
         queue.add(weatherRequest);
     }
 
+
+    /*
+    * Function that will convert all necessary parameters between celsius and fahrenheit
+     */
+    void celsiusFahrenheitSwitch(){
+        outdoorTemperatureTextView.setText(
+                celsiusFahrenheitConversion(outdoorTemperatureTextView.getText().toString()));
+        greenhouseTemperatureTextView.setText(
+                celsiusFahrenheitConversion(greenhouseTemperatureTextView.getText().toString()));
+        celisusOrFahrenheit = !celisusOrFahrenheit;
     }
+
+    /*
+    * Function that handles the mathematical aspect of the celsius <-> fahrenheit process
+     */
+    String celsiusFahrenheitConversion(String valueToBeConverted) {
+        Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
+        if (celisusOrFahrenheit) { // number currently in celsius
+            numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            return numberToBeConverted.toString();
+        } else { //number currently in fahrenheit
+            numberToBeConverted = (5.0/9.0) * (numberToBeConverted - 32.0);
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            return numberToBeConverted.toString();
+        }
+    }
+
+}
 
