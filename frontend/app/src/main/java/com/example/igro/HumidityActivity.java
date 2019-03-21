@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igro.Models.ActuatorControl.HumidControlEvents;
+import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +31,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,6 +46,7 @@ public class HumidityActivity extends AppCompatActivity {
     //initialize the layout fields
     EditText lowHumEditText;
     EditText highHumEditText;
+    TextView humTextView;
     TextView humControlTextView;
     Switch humSwitch;
 
@@ -64,10 +67,11 @@ public class HumidityActivity extends AppCompatActivity {
         humControlTextView = (TextView) findViewById(R.id.humControlTextView);
         humSwitch = (Switch) findViewById(R.id.humSwitch);
         humSwitch.setClickable(true);
+        humTextView = (TextView) findViewById(R.id.ghHumTextView);
 
         lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
         highHumEditText = (EditText) findViewById(R.id.highHumEditText);
-
+retrieveSensorData();
 
         double y, x;
         x = -5;
@@ -251,6 +255,33 @@ public class HumidityActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    void retrieveSensorData() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.00");
+
+
+                    //Humidity
+                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 }
 

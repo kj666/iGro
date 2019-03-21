@@ -20,34 +20,33 @@
         <Button
             android:id="@+id/indexButton"
             android:layout_width="60dp"
-            android:layout_height="35dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="105dp"
             android:layout_marginTop="80dp"
             android:text="index"
             android:textAlignment="center"
-            android:textSize="9sp" />
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/nmButton"
             android:layout_width="60dp"
-            android:layout_height="35dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="105dp"
             android:layout_marginTop="45dp"
             android:text="nm"
             android:textAlignment="center"
-            android:textSize="8sp" />
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/uvNumberButton"
-            android:layout_width="80dp"
+            android:layout_width="97dp"
             android:layout_height="80dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="45dp"
             android:layout_marginBottom="20dp"
             android:background="@null"
             android:ems="10"
             android:inputType="number"
-            android:text="320"
             android:textAlignment="center"
             android:textSize="45sp" />
 
@@ -55,7 +54,8 @@
             android:id="@+id/uvButton"
             android:layout_width="112dp"
             android:layout_height="38dp"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:text="UV INDEX"
             android:textColor="@color/colorPrimaryDark" />
     </android.support.v7.widget.CardView>
@@ -112,14 +112,13 @@
 
         <Button
             android:id="@+id/humidityPercentView"
-            android:layout_width="100dp"
+            android:layout_width="123dp"
             android:layout_height="80dp"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="45dp"
             android:background="@null"
             android:ems="50"
             android:inputType="number"
-            android:text="90%"
             android:textAlignment="center"
             android:textSize="50sp" />
     </android.support.v7.widget.CardView>
@@ -154,15 +153,14 @@
 
         <Button
             android:id="@+id/tempNumberView"
-            android:layout_width="100dp"
+            android:layout_width="121dp"
             android:layout_height="80dp"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="45dp"
             android:layout_marginBottom="20dp"
             android:background="@null"
             android:ems="10"
             android:inputType="number"
-            android:text="32"
             android:textAlignment="center"
             android:textSize="45sp" />
 
@@ -170,16 +168,16 @@
             android:id="@+id/celciusOutButton"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="120dp"
+            android:layout_marginLeft="130dp"
             android:layout_marginTop="40dp"
-            android:text="ͦC"
+            android:text="°C"
             android:textAlignment="center" />
 
         <Button
             android:id="@+id/fahrenheitOutButton"
-            android:layout_width="39dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="120dp"
+            android:layout_marginLeft="130dp"
             android:layout_marginTop="90dp"
             android:text="F"
             android:textAlignment="center" />
@@ -202,14 +200,13 @@
 
         <Button
             android:id="@+id/moisturePercentView"
-            android:layout_width="100dp"
-            android:layout_height="70dp"
+            android:layout_width="112dp"
+            android:layout_height="80dp"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="45dp"
             android:background="@null"
             android:ems="50"
             android:inputType="number"
-            android:text="95%"
             android:textAlignment="center"
             android:textSize="50sp" />
 

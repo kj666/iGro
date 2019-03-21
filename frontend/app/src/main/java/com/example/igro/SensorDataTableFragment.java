@@ -127,7 +127,7 @@ public class SensorDataTableFragment extends Fragment {
             else if(sensorType.equals("HUMIDITY"))
                 sensorData.setText(sensorDataList.get(position).getHumidity()+"");
             else if(sensorType.equals("MOISTURE"))
-                sensorData.setText(sensorDataList.get(position).getSoilMoisture()+"");
+                sensorData.setText(sensorDataList.get(position).getSoil()+"");
 
             return convertView;
         }

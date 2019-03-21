@@ -35,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private Button uvTitleButton;
     private Button uvNumberButton;
 
-    private boolean celcius_pressed = true;
-    private boolean fahrenheit_pressed = false;
+    private boolean celsius_pressed = true;
+    private Double tempDegree;
 
     private Button moistureNumberButton;
     private Button moistureTitleButton;
@@ -61,19 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
-    public int tempD;
+    protected TextView userWelcomeMessage;
 
-    private TextView userWelcomeMessage;
     private FirebaseUser currentUser;
 
+    DecimalFormat df = new DecimalFormat("####0.00");
     private RequestQueue queue;
     private TextView cityWeatherMessage;
-    private List<SensorData> sensorDataList = new ArrayList<>();
 
-    /**
-     * On create
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,25 +87,19 @@ public class MainActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         requestWeather();
 
-        getHumData("1");
-//        getTempData("1");
-        retrieveTemp();
 
-        temperatureNumberButton.setText(sensorDataList.size()+"");
+        //Retrieve data from DB
+        retrieveSensorData();
 
         //Temperature Celsius Button listener
         temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(fahrenheit_pressed) {
-                    for(int i=0;i<1;i++) {
-                        Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
-                        Double a = (degrees - 32) * 5 / 9;
-                        temperatureNumberButton.setText(Double.toString(a));
-                    }
-                    celcius_pressed = true;
-                    fahrenheit_pressed = false;
+                if(!celsius_pressed) {
+                    temperatureNumberButton.setText(tempDegree+"");
+                    celsius_pressed = true;
+                    temperatureCelsiusButton.setPressed(true);
                 }
             }
         });
@@ -119,14 +109,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(celcius_pressed) {
-                    for(int i=0;i<1;i++) {
-                        Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
-                        Double a = degrees * 9 / 5 + 32;
-                        temperatureNumberButton.setText(Double.toString(a));
-                    }
-                    fahrenheit_pressed = true;
-                    celcius_pressed=false;
+                if(celsius_pressed) {
+                    Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
+                    Double a = tempDegree * 9 / 5 + 32;
+                    temperatureNumberButton.setText(df.format(a)+"");
+                    celsius_pressed=false;
                 }
             }
         });
@@ -155,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ////opening the uvTitleButton view when the uvTitleButton number is clicked
+        //opening the uvTitleButton view when the uvTitleButton number is clicked
         uvNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,32 +237,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //Todo have to change this to real time database format
-    //Get document from firestore
-    public void getTempData(String id){
-        //Reference to collection in firestore
-        CollectionReference tempRef = FirebaseFirestore.getInstance().collection("temperature");
-
-        tempRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        tempD = Integer.parseInt(document.getString("temp"));
-
-                        Log.d("WORKING", ""+tempD);
-                    }
-                    else{
-                        Log.d("ERROR", "Cannot get Temperature");
-                    }
-                }
-                temperatureNumberButton.setText(tempD+"");
-            }
-        });
-    }
-
-    void retrieveTemp(){
+    void retrieveSensorData(){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
 
         ValueEventListener eventListener = new ValueEventListener() {
@@ -283,8 +245,19 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
                     SensorData sensorData = snap.getValue(SensorData.class);
-                    Log.d("FIREBASE", sensorData.getTime()+"");
-                    temperatureNumberButton.setText(sensorData.getTemperatureC()+"");
+
+                    //Temperature
+                    temperatureNumberButton.setText(df.format(sensorData.getTemperatureC())+"");
+                    tempDegree = Double.parseDouble(temperatureNumberButton.getText().toString());
+
+                    //Humidity
+                    humidityNumberButton.setText(df.format(sensorData.getHumidity())+"");
+
+                    //UVIndex
+                    uvNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getUv())+"");
+
+                    //SoilMoisture
+                    moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getSoil())+"");
                 }
             }
 
@@ -294,33 +267,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
-
-    }
-
-
-    public int humD;
-
-    //Get humidity document from firestore
-    public void getHumData(String id){
-        //Reference to humidity collection in firestore
-        CollectionReference humRef = FirebaseFirestore.getInstance().collection("humidity");
-        humRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        humD = Integer.parseInt(document.getString("humValue"));
-
-                        Log.d("SUCCESS", ""+humD);
-                    }
-                    else{
-                        Log.d("ERROR", "Cannot Retreave Humidity");
-                    }
-                }
-                humidityNumberButton.setText(humD+"");
-            }
-        });
     }
 
     void requestWeather() {

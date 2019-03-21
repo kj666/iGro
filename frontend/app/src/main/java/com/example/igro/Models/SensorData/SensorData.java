@@ -6,19 +6,19 @@ package com.example.igro.Models.SensorData;
 public class SensorData {
     private double humidity;
     private double temperatureC;
-    private double pressure;
     private double temperatureF;
-    private double soilMoisture;
+    private double soil;
     private int uv;
     private long time;
 
     public SensorData(){
     }
 
-    public SensorData(double humidity, double temperatureC, int uv, long time) {
+    public SensorData(double humidity, double temperatureC, int uv, double soil, long time) {
         this.humidity = humidity;
         this.temperatureC = temperatureC;
         this.uv = uv;
+        this.soil = soil;
         this.time = time;
 
     }
@@ -55,13 +55,6 @@ public class SensorData {
         this.time = time;
     }
 
-    public double getPressure() {
-        return pressure;
-    }
-
-    public void setPressure(double pressure) {
-        this.pressure = pressure;
-    }
 
     public double getTemperatureF() {
         return temperatureF;
@@ -71,11 +64,11 @@ public class SensorData {
         this.temperatureF = temperatureF;
     }
 
-    public double getSoilMoisture() {
-        return soilMoisture;
+    public double getSoil() {
+        return soil;
     }
 
-    public void setSoilMoisture(double soilMoisture) {
-        this.soilMoisture = soilMoisture;
+    public void setSoil(double soilMoisture) {
+        this.soil = soilMoisture;
     }
 }
