@@ -230,6 +230,9 @@ public class MainActivity extends AppCompatActivity {
 
                     //Humidity
                     humidityNumberButton.setText(df.format(sensorData.getHumidity())+"");
+                    //UVindex
+                    uvNumberButton.setText(df.format(sensorData.getUv())+"");
+
 
                 }
             }

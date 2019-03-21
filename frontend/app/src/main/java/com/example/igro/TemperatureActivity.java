@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
+import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -28,12 +29,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -44,6 +47,11 @@ public class TemperatureActivity extends AppCompatActivity {
 
     //initialize the layout fields
     Button tempHistoryButton;
+    private TextView TempTextView;
+    private double ghtempDegree;
+    private boolean ghcelsius_pressed = true;
+    private Button ghtemperatureCelsiusButton;
+    private Button ghtemperatureFahrenheitButton;
     Button heaterUseHistoryButton;
     EditText lowTempEditText;
     EditText highTempEditText;
@@ -69,10 +77,14 @@ public class TemperatureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
 
+        ghtemperatureCelsiusButton= (Button)findViewById(R.id.celciusghButton);
+        ghtemperatureFahrenheitButton = (Button)findViewById(R.id.fahrenheitghButton);
+
         tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
+        TempTextView = (TextView)findViewById(R.id.ghTempTextView) ;
         tempSwitch.setClickable(true);
 
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
@@ -81,6 +93,32 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
         currentUser = helper.checkAuthentication();
+        retrieveSensorData();
+
+        ghtemperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(ghcelsius_pressed) {
+                   TempTextView.setText(ghtempDegree+"");
+                   ghcelsius_pressed = true;
+                }
+            }
+        });
+
+       ghtemperatureFahrenheitButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+            public void onClick(View v) {
+
+               if(ghcelsius_pressed) {
+                  Double degrees = Double.parseDouble(TempTextView.getText().toString());
+                   Double a = degrees * 9 / 5 + 32;
+                   TempTextView.setText(Double.toString(a));
+
+                    ghcelsius_pressed=false;
+                }
+            }
+        });
 
 
 
@@ -296,5 +334,34 @@ public class TemperatureActivity extends AppCompatActivity {
 
         }
 
+    void retrieveSensorData(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.00");
+                    //Temperature
+                    TempTextView.setText(df.format(sensorData.getTemperatureC())+"");
+
+                  ghtempDegree = Double.parseDouble(TempTextView.getText().toString());
+
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
+
+
+}
 
