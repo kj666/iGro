@@ -91,7 +91,7 @@ public class SensorGraphFragment extends Fragment {
             else if(sensorType.equals("HUMIDITY"))
                 y = data.getHumidity();
             else if(sensorType.equals("MOISTURE"))
-                y = data.getSoilMoisture();
+                y = data.getSoil();
 
             series.appendData(new DataPoint(time.getTime(),y), true, 500);
         }

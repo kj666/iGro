@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     protected TextView userWelcomeMessage;
     private FirebaseUser currentUser;
 
+    DecimalFormat df = new DecimalFormat("####0.00");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +83,11 @@ public class MainActivity extends AppCompatActivity {
                 if(!celsius_pressed) {
                     temperatureNumberButton.setText(tempDegree+"");
                     celsius_pressed = true;
+                    temperatureCelsiusButton.setPressed(true);
                 }
             }
         });
+
         // convert temperatureCelsiusButton to temperatureFahrenheitButton
         temperatureFahrenheitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,9 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(celsius_pressed) {
                     Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
-                    Double a = degrees * 9 / 5 + 32;
-                    temperatureNumberButton.setText(Double.toString(a));
-
+                    Double a = tempDegree * 9 / 5 + 32;
+                    temperatureNumberButton.setText(df.format(a)+"");
                     celsius_pressed=false;
                 }
             }
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ////opening the uvTitleButton view when the uvTitleButton number is clicked
+        //opening the uvTitleButton view when the uvTitleButton number is clicked
         uvNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,17 +225,19 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
                     SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
+
                     //Temperature
                     temperatureNumberButton.setText(df.format(sensorData.getTemperatureC())+"");
                     tempDegree = Double.parseDouble(temperatureNumberButton.getText().toString());
 
                     //Humidity
                     humidityNumberButton.setText(df.format(sensorData.getHumidity())+"");
-                    //UVindex
-                    uvNumberButton.setText(df.format(sensorData.getUv())+"");
 
+                    //UVIndex
+                    uvNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getUv())+"");
 
+                    //SoilMoisture
+                    moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getSoil())+"");
                 }
             }
 
