@@ -57,7 +57,7 @@ public class TemperatureActivity extends AppCompatActivity {
     Switch tempSwitch;
 
 
-    DatabaseReference databaseRange=FirebaseDatabase.getInstance().getReference("Ranges");
+    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
     private FirebaseUser currentUser;
     public Boolean lastHeaterState = false;
     //log tag to test the on/off state on changeState event of heaterSwitch
@@ -108,18 +108,40 @@ public class TemperatureActivity extends AppCompatActivity {
             }
         });
 
-        databaseRange.addValueEventListener(new ValueEventListener() {
+        retrieveRange();
+
+    }
+
+    void retrieveRange(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
+        DatabaseReference tempRange = db.child("Temperature");
+
+        ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               checkTempRange(dataSnapshot);
 
+                lowTempEditText.setText(dataSnapshot.child("lowTempValue").getValue().toString());
+                Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
+
+                highTempEditText.setText(dataSnapshot.child("highTempValue").getValue().toString());
+                Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+                if (!(tempDegree > lowRange)
+                        && tempDegree < highRange) {
+
+                    indoorTempTextView.setTextColor(Color.RED);
+                }
+                else{
+                    indoorTempTextView.setTextColor(Color.GREEN);
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        tempRange.addValueEventListener(eventListener);
 
     }
 
@@ -366,23 +388,7 @@ public class TemperatureActivity extends AppCompatActivity {
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
-    private void checkTempRange(DataSnapshot dataSnapshot) {
-        // Get a reference to the database service
 
-        dataSnapshot.child("lowTempValue");
-        Range range = new Range();
-        range.setLowTempValue(dataSnapshot.child("Temperature").getValue(Range.class).getLowTempValue()); //set low value
-        range.setHighTempValue(dataSnapshot.child("Temperature").getValue(Range.class).getHighTempValue()); //set the high value
-        if (!(tempDegree > Integer.parseInt(range.getLowTempValue())
-                && tempDegree < Integer.parseInt(range.getHighTempValue()))) {
-
-            indoorTempTextView.setTextColor(Color.RED);
-        }
-        else{
-            indoorTempTextView.setTextColor(Color.GREEN);
-        }
-
-    }
     public void setTempRange(){
 
         String lowTemp=lowTempEditText.getText().toString();
