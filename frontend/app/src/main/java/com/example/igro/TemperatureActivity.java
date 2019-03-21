@@ -46,8 +46,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 // TODO 2019-03-20
-// One button to switch between celsius and fahrenheit
-// put the default values here as opposed to being declared in the layout
 // change the tempswitch to something more appropriate
 // check how to switch between Fahrenheit and Celsius on pre-existing temperature data
 
