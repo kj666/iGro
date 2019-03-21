@@ -29,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,19 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
-    protected SensorData mainActivitySensorData;
-
-    private FirebaseAuth mAuth; // authentication instance
     protected TextView userWelcomeMessage;
     private FirebaseUser currentUser;
 
-    private List<SensorData> sensorDataList = new ArrayList<>();
-    //create heater database reference
-   // DatabaseReference DB = FirebaseDatabase.getInstance().getReference("data");
-    /**
-     * On create
-     * @param savedInstanceState
-     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,10 +71,9 @@ public class MainActivity extends AppCompatActivity {
         String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
         userWelcomeMessage.setText(welcomeMessage);
 
-        
+        //Retrieve data from DB
         retrieveSensorData();
-
-
+        
         //Temperature Celsius Button listener
         temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,12 +223,13 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
                     SensorData sensorData = snap.getValue(SensorData.class);
-                    Log.d("FIREBASE", sensorData.getTime()+"");
-                    mainActivitySensorData = sensorData;
-                    temperatureNumberButton.setText(sensorData.getTemperatureC()+"");
+                    DecimalFormat df = new DecimalFormat("####0.00");
+                    //Temperature
+                    temperatureNumberButton.setText(df.format(sensorData.getTemperatureC())+"");
                     tempDegree = Double.parseDouble(temperatureNumberButton.getText().toString());
 
-                    humidityNumberButton.setText(sensorData.getHumidity()+"");
+                    //Humidity
+                    humidityNumberButton.setText(df.format(sensorData.getHumidity())+"");
 
                 }
             }
