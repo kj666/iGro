@@ -63,15 +63,12 @@ public class MainActivity extends AppCompatActivity {
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     protected TextView userWelcomeMessage;
-    public int tempD;
 
-    private TextView userWelcomeMessage;
     private FirebaseUser currentUser;
 
     DecimalFormat df = new DecimalFormat("####0.00");
     private RequestQueue queue;
     private TextView cityWeatherMessage;
-    private List<SensorData> sensorDataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +87,6 @@ public class MainActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         requestWeather();
 
-        getHumData("1");
-//        getTempData("1");
-        retrieveTemp();
 
         //Retrieve data from DB
         retrieveSensorData();
@@ -273,32 +267,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
-    }
-
-
-    public int humD;
-
-    //Get humidity document from firestore
-    public void getHumData(String id){
-        //Reference to humidity collection in firestore
-        CollectionReference humRef = FirebaseFirestore.getInstance().collection("humidity");
-        humRef.document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        humD = Integer.parseInt(document.getString("humValue"));
-
-                        Log.d("SUCCESS", ""+humD);
-                    }
-                    else{
-                        Log.d("ERROR", "Cannot Retreave Humidity");
-                    }
-                }
-                humidityNumberButton.setText(humD+"");
-            }
-        });
     }
 
     void requestWeather() {
