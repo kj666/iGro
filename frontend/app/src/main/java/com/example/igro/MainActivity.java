@@ -29,6 +29,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private Button uvTitleButton;
     private Button uvNumberButton;
 
-    private boolean celcius_pressed = true;
-    private boolean fahrenheit_pressed = false;
+    private boolean celsius_pressed = true;
+    private Double tempDegree;
 
     private Button moistureNumberButton;
     private Button moistureTitleButton;
@@ -52,20 +53,17 @@ public class MainActivity extends AppCompatActivity {
 
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
+
     public int tempD;
-    public double UV;
+    //public double UV;
 
     private FirebaseAuth mAuth; // authentication instance
+
+
     protected TextView userWelcomeMessage;
     private FirebaseUser currentUser;
 
-    private List<SensorData> sensorDataList = new ArrayList<>();
-    //create heater database reference
-   // DatabaseReference DB = FirebaseDatabase.getInstance().getReference("data");
-    /**
-     * On create
-     * @param savedInstanceState
-     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,29 +77,27 @@ public class MainActivity extends AppCompatActivity {
         userWelcomeMessage = findViewById(R.id.welcomeMessageText);
         String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
         userWelcomeMessage.setText(welcomeMessage);
-      //  getHumData("1");
-//        getTempData("1");
+
+
         retrieveHum();
         retrieveTemp();
         retrieveSM();
         retrieveUV();
 
-        temperatureNumberButton.setText(sensorDataList.size()+"");
+        temperatureNumberButton.setText(sensorDataList.size() + "");
+
+
+        //Retrieve data from DB
+        retrieveSensorData();
 
         //Temperature Celsius Button listener
         temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
 
-                if(fahrenheit_pressed) {
-                    for(int i=0;i<1;i++) {
-                        Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
-                        Double a = (degrees - 32) * 5 / 9;
-                        temperatureNumberButton.setText(Double.toString(a));
-                    }
-                    celcius_pressed = true;
-                    fahrenheit_pressed = false;
+                if (!celsius_pressed) {
+                    temperatureNumberButton.setText(tempDegree + "");
+                    celsius_pressed = true;
                 }
             }
         });
@@ -110,14 +106,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(celcius_pressed) {
-                    for(int i=0;i<1;i++) {
-                        Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
-                        Double a = degrees * 9 / 5 + 32;
-                        temperatureNumberButton.setText(Double.toString(a));
-                    }
-                    fahrenheit_pressed = true;
-                    celcius_pressed=false;
+                if (celsius_pressed) {
+                    Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
+                    Double a = degrees * 9 / 5 + 32;
+                    temperatureNumberButton.setText(Double.toString(a));
+
+                    celsius_pressed = false;
                 }
             }
         });
@@ -164,9 +158,9 @@ public class MainActivity extends AppCompatActivity {
                 helper.goToActivity(HumidityActivity.class);
             }
         });
-        moistureTitleButton.setOnClickListener(new View.OnClickListener(){
+        moistureTitleButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick (View v2){
+            public void onClick(View v2) {
                 helper.goToActivity(MoistureActivity.class);
             }
         });
@@ -178,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    protected void initializeUI(){
+    protected void initializeUI() {
         //Temperature View initialization
         temperatureTitleButton = (Button) findViewById(R.id.temp_button);
         temperatureNumberButton = (Button) findViewById(R.id.tempNumberView);
@@ -187,10 +181,10 @@ public class MainActivity extends AppCompatActivity {
 
         //UV view initialization
         uvTitleButton = (Button) findViewById(R.id.uvButton);
-        uvNumberButton = (Button)findViewById(R.id.uvNumberButton);
+        uvNumberButton = (Button) findViewById(R.id.uvNumberButton);
 
         //Humidity view initialization
-        humidityTitleButton = (Button)findViewById(R.id.humidityButton);
+        humidityTitleButton = (Button) findViewById(R.id.humidityButton);
         humidityNumberButton = (TextView) findViewById(R.id.humidityPercentView);
 
         //Moisture view initialization
@@ -219,14 +213,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
+        inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.sign_out:
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
@@ -237,21 +231,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //Todo have to change this to real time database format
-    //Get document from firestore
-
-
-
-    void retrieveTemp(){
+    void retrieveSensorData() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     SensorData sensorData = snap.getValue(SensorData.class);
-                    Log.d("FIREBASE", sensorData.getTime()+"");
-                    temperatureNumberButton.setText(sensorData.getTemperatureC()+"");
+
+                    Log.d("FIREBASE", sensorData.getTime() + "");
+                    temperatureNumberButton.setText(sensorData.getTemperatureC() + "");
                 }
             }
 
@@ -267,20 +257,19 @@ public class MainActivity extends AppCompatActivity {
 
     public double humD;
 
-    //Get humidity document from firestore
-    public void retrieveHum(){
-        //Reference to humidity collection in firestore
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    Log.d("FIREBASE", sensorData.getHumidity()+"");
-                    humidityNumberButton.setText(sensorData.getHumidity()+"");
+    DecimalFormat df = new DecimalFormat("####0.00");
+    //Temperature
+                    temperatureNumberButton.setText(df.format(sensorData.getTemperatureC())+"");
+    tempDegree =Double.parseDouble(temperatureNumberButton.getText().
 
-                }
-            }
+    toString());
+
+
+    //Humidity
+                    humidityNumberButton.setText(df.format(sensorData.getHumidity())+"");
+
+}}
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -288,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
-
     }
     void retrieveUV(){
        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
