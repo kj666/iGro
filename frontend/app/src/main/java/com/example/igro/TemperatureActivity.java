@@ -19,6 +19,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,13 +39,18 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+// TODO 2019-03-20
+// One button to switch between celsius and fahrenheit
+// put the default values here as opposed to being declared in the layout
 
 public class TemperatureActivity extends AppCompatActivity {
-
+    private static final String TEMPERATURE_LOG_TAG = "TEMP_ACTIVITY_LOG_TAG";
 
 
     //initialize the layout fields
@@ -49,6 +60,9 @@ public class TemperatureActivity extends AppCompatActivity {
     EditText highTempEditText;
     TextView tempControlTextView;
     Switch tempSwitch;
+
+    TextView outdoorTemperatureTextView;
+    private RequestQueue queue;
 
     private FirebaseUser currentUser;
 
@@ -78,7 +92,9 @@ public class TemperatureActivity extends AppCompatActivity {
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
 
-
+        outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
+        queue = Volley.newRequestQueue(this);
+        requestWeather();
 
         currentUser = helper.checkAuthentication();
 
@@ -295,6 +311,43 @@ public class TemperatureActivity extends AppCompatActivity {
             }
 
         }
+
+    void requestWeather() {
+        // TODO: 2019-03-18
+        // Make this function capable of pulling data for any city as per user request
+
+        // Get weather for Montreal
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=Montreal&units=metric&APPID=b4840319c97c4629912dc391ed164bcb";
+        // Make request
+        JsonObjectRequest weatherRequest = new JsonObjectRequest(
+                Request.Method.GET, url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TEMPERATURE_LOG_TAG, "response: " + response);
+                        try {
+                            // Get description from weather response
+                            //String description = response.getJSONArray("weather").getJSONObject(0).getString("main");
+                            //descriptionTextView.setText(description);
+
+                            // Get temperature from weather response
+                            Integer temperature = response.getJSONObject("main").getInt("temp");
+                            outdoorTemperatureTextView.setText(temperature.toString());
+
+                        } catch (Exception e) {
+                            Log.w(TEMPERATURE_LOG_TAG, "Attempt to parse JSON Object failed");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TEMPERATURE_LOG_TAG, "JSON Request has failed");
+                    }
+                });
+        queue.add(weatherRequest);
+    }
 
     }
 
