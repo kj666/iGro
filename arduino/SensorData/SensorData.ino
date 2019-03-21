@@ -14,11 +14,8 @@
 #define WIFI_SSID "Karthi"
 #define WIFI_PASSWORD "karthi666"
 
-int uv_ain=A0;
-int ad_value;
-
-int soil_ain;
-int soil_val;
+int uv_value;
+int soil_value;
 
 BME280 mySensor;
 
@@ -27,6 +24,8 @@ int poll = 0;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(D0, OUTPUT);
+  pinMode(D7, OUTPUT);
 
   // connect to wifi.
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -45,8 +44,6 @@ void setup() {
   Serial.println("Reading basic values from BME280");
 
 //Use only for esp
-//  Wire.begin(0,2);
-//  Wire.setClock(100000);
   if (mySensor.beginI2C() == false) //Begin communication over I2C
   {
     Serial.println("The sensor did not respond. Please check wiring.");
@@ -56,52 +53,55 @@ void setup() {
 
 
 void loop() {
+
   
   poll = Firebase.getInt("config/poll");
   delay(100);
   t = Firebase.getInt("config/lastID");
- 
-  //BME Sensor
-  //Temperature
   t++;
+
   
-  //Send temperature data to firebase Celcius
+  //TemperatureC
   Firebase.setFloat("data/"+String(t)+"/temperatureC", mySensor.readTempC());
+  Serial.print(" temp: "+ String(mySensor.readTempC()));
   if (Firebase.failed()) {
-      Serial.print("temperatureC/ failed:");
+      Serial.println("temperatureC/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
-  //Send temperature data to firebase
+  //TemperatureF
   Firebase.setFloat("data/"+String(t)+"/temperatureF", mySensor.readTempF());
   if (Firebase.failed()) {
-      Serial.print("temperatureF/ failed:");
+      Serial.println("temperatureF/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
   
-  //Send humidity data to firebase
+  //Humidity
   Firebase.setFloat("data/"+String(t)+"/humidity", mySensor.readFloatHumidity());
+  Serial.print(" hum: "+ String(mySensor.readFloatHumidity()));
   if (Firebase.failed()) {
-      Serial.print("humidity/ failed:");
+      Serial.println("humidity/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
 
-  //Send Pressure data to firebase
-  Firebase.setFloat("data/"+String(t)+"/pressure", mySensor.readFloatPressure());
+  //UV
+  uv_value = readUV();
+  Firebase.setFloat("data/"+String(t)+"/uv",uv_value);
+  Serial.print(" UV: "+ String(uv_value));
   if (Firebase.failed()) {
-      Serial.print("pressure/ failed:");
+      Serial.println("uv/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
 
-  ad_value=analogRead(uv_ain);
-  Serial.println(ad_value);
-  //Send UV data to firebase
-  Firebase.setFloat("data/"+String(t)+"/uv",ad_value);
+  //Soil Moisture
+  soil_value = readSoil();
+  Firebase.setFloat("data/"+String(t)+"/soil",soil_value);
+  Serial.println(" soil: "+ String(soil_value));
   if (Firebase.failed()) {
-      Serial.print("uv/ failed:");
+      Serial.print("soil/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
@@ -114,19 +114,24 @@ void loop() {
       return;
   }
 
-
-  Serial.print("poll: ");
-  Serial.print(poll);
-  Serial.println();
+  Serial.println("poll: " + poll);
 
   delay(poll);
   
 }
-
+//
 int readSoil(){
-  digitalWrite(soilPower, HIGH);
+  digitalWrite(D7, HIGH);
   delay(10);
-  val = analogRead(soilPin);
-  digitalWrite(soilPower, LOW);
+  int val = analogRead(A0);
+  digitalWrite(D7, LOW);
+  return val;
+}
+
+int readUV(){
+  digitalWrite(D0, HIGH);
+  delay(1000);
+  int val = analogRead(A0);
+  digitalWrite(D0, LOW);
   return val;
 }
