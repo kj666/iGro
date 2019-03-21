@@ -70,7 +70,7 @@
 
     <TextView
         android:id="@+id/indoorTempTextView"
-        android:layout_width="67dp"
+        android:layout_width="116dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
@@ -89,8 +89,8 @@
         android:id="@+id/outdoorTempTextView"
         android:layout_width="67dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="172dp"
-        android:layout_marginLeft="172dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginLeft="140dp"
         android:layout_marginTop="8dp"
         android:background="@null"
         android:ems="10"
