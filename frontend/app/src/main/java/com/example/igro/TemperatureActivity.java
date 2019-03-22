@@ -244,9 +244,12 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 Context context = TemperatureActivity.this ;
                 Intent i = new Intent(context, SensorDataActivity.class);
-                i.putExtra("SensorType", "TEMPERATURE");
+                if (celisusOrFahrenheit) { //Celsius
+                    i.putExtra("SensorType", "TEMPERATURE-C");
+                } else { //Fahrenheit
+                    i.putExtra("SensorType", "TEMPERATURE-F");
+                }
                 context.startActivity(i);
-
             }
         });
 
