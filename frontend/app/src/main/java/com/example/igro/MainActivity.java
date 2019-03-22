@@ -209,6 +209,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
+            case R.id.settings:
+                helper.goToActivity(SettingsActivity.class);
+                return true;
             case R.id.about:
                 helper.goToActivity(AboutActivity.class);
                 return true;
@@ -216,7 +219,6 @@ public class MainActivity extends AppCompatActivity {
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }

@@ -4,23 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AboutActivity">
+    tools:context=".SettingsActivity">
 
     <TextView
-        android:id="@+id/aboutActivityTextView"
-        android:layout_width="328dp"
-        android:layout_height="115dp"
+        android:id="@+id/settingsActivityTextView"
+        android:layout_width="283dp"
+        android:layout_height="167dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:text="This is the about page, potential things to include: software version, link to read me, link to submit feedback"
+        android:text="This is the settings page. Potential things to include: Option to set Celsius or Fahrenheit from here."
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.061" />
+        app:layout_constraintVertical_bias="0.083" />
 </android.support.constraint.ConstraintLayout>
