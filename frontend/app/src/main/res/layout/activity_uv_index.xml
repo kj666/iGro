@@ -21,6 +21,17 @@
         app:layout_constraintStart_toEndOf="@+id/tempRangeTextView"
         app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView"
         app:layout_constraintVertical_bias="1.0" />
+    <Button
+        android:id="@+id/setUvRange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="SET RANGE"
+        app:layout_constraintBottom_toTopOf="@+id/cardView10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
 
     <TextView
         android:id="@+id/lowUvRangeTextView"
