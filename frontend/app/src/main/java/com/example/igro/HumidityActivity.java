@@ -196,8 +196,8 @@ public class HumidityActivity extends AppCompatActivity {
                 Double lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
 
 
-                if (!(ghHumidity > lowRange)
-                        && ghHumidity< highRange) {
+                if (!((ghHumidity > lowRange)
+                        && (ghHumidity< highRange))) {
 
                     humTextView.setTextColor(Color.RED);
                     Toast.makeText(HumidityActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
