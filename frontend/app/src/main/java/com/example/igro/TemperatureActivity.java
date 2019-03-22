@@ -60,9 +60,7 @@ public class TemperatureActivity extends AppCompatActivity {
     //initialize the layout fields
     Button tempHistoryButton;
     double tempDegree;
-    boolean celsius_pressed = true;
-    Button temperatureCelsiusButton;
-    Button temperatureFahrenheitButton;
+
     Button heaterUseHistoryButton;
     Button setRangeTempButton;
     EditText lowTempEditText;
@@ -73,8 +71,6 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView outdoorTemperatureTextView;
     TextView greenhouseTemperatureTextView;
     private RequestQueue queue;
-    TextView indoorTempTextView;
-    Switch tempSwitch;
 
 
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
@@ -107,27 +103,6 @@ public class TemperatureActivity extends AppCompatActivity {
             }
         });
 
-        temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!celsius_pressed) {
-                    indoorTempTextView.setText(tempDegree+"");
-                    celsius_pressed = true;
-                }
-            }
-        });
-
-        temperatureFahrenheitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(celsius_pressed) {
-                    Double a = tempDegree * 9 / 5 + 32;
-                    indoorTempTextView.setText(new DecimalFormat("####0.00").format(a)+"");
-                    celsius_pressed=false;
-                }
-            }
-        });
-
         retrieveRange();
 
     }
@@ -148,10 +123,10 @@ public class TemperatureActivity extends AppCompatActivity {
                 if (!(tempDegree > lowRange)
                         && tempDegree < highRange) {
 
-                    indoorTempTextView.setTextColor(Color.RED);
+                    greenhouseTemperatureTextView.setTextColor(Color.RED);
                 }
                 else{
-                    indoorTempTextView.setTextColor(Color.GREEN);
+                    greenhouseTemperatureTextView.setTextColor(Color.GREEN);
                 }
             }
 
@@ -166,24 +141,19 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
     void initializeUI(){
-        temperatureCelsiusButton= (Button)findViewById(R.id.celciusghButton);
-        temperatureFahrenheitButton = (Button)findViewById(R.id.fahrenheitghButton);
 
         tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
 
-        indoorTempTextView=(TextView)findViewById(R.id.indoorTempTextView);
         //Get the values from the user
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
 
         outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
-        greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
+        greenhouseTemperatureTextView = findViewById(R.id.indoorTempTextView);
 
-        Double fixedGreenhouseValue = 20.0; // Switch this to sensor data when available
-        greenhouseTemperatureTextView.setText(fixedGreenhouseValue.toString());
         queue = Volley.newRequestQueue(this);
         requestWeather();
 
@@ -264,7 +234,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
         final boolean switchState = tempSwitch.isChecked();
-            heaterSwitchStateFromRecord();
+        heaterSwitchStateFromRecord();
 
 
         if(lastHeaterState){
@@ -307,7 +277,6 @@ public class TemperatureActivity extends AppCompatActivity {
                 heaterSwitchEvent(tempSwitchState);
             }
         });
-
     }
 
 
@@ -402,18 +371,18 @@ public class TemperatureActivity extends AppCompatActivity {
 
         }
 
-    void retrieveSensorData(){
+    void retrieveSensorData() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     SensorData sensorData = snap.getValue(SensorData.class);
                     DecimalFormat df = new DecimalFormat("####0.00");
                     //Temperature
-                    indoorTempTextView.setText(df.format(sensorData.getTemperatureC())+"");
-                    tempDegree = Double.parseDouble(indoorTempTextView.getText().toString());
+                    greenhouseTemperatureTextView.setText(df.format(sensorData.getTemperatureC()) + "");
+                    tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
 
                 }
             }
@@ -424,6 +393,7 @@ public class TemperatureActivity extends AppCompatActivity {
             }
         };
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+    }
     void requestWeather() {
         // TODO: 2019-03-18
         // Make this function capable of pulling data for any city as per user request
@@ -482,8 +452,6 @@ public class TemperatureActivity extends AppCompatActivity {
         }
 
     }
-
-}
 
 
     /*

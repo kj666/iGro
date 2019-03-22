@@ -14,18 +14,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         android:text="ͦC/F"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintEnd_toStartOf="@+id/outdoorTempTextView"
+        app:layout_constraintHorizontal_bias="0.397"
+        app:layout_constraintStart_toEndOf="@+id/indoorTempTextView"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
 
     <TextView
         android:id="@+id/highTempRangeTextView"
@@ -56,36 +53,6 @@
         app:layout_constraintHorizontal_bias="0.078"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
-
-    <Button
-        android:id="@+id/fahrenheitghButton"
-        android:layout_width="43dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="21dp"
-        android:layout_marginLeft="21dp"
-        android:text="F"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="@+id/celciusghButton"
-        app:layout_constraintHorizontal_bias="0.953"
-        app:layout_constraintStart_toEndOf="@+id/indoorTempTextView"
-        app:layout_constraintStart_toStartOf="@+id/celciusghButton"
-        app:layout_constraintTop_toBottomOf="@+id/celciusghButton" />
-
-    <Button
-        android:id="@+id/celciusghButton"
-        android:layout_width="43dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="ͦC"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/indoorTempTextView"
-        app:layout_constraintEnd_toStartOf="@+id/outdoorTempTextView"
-        app:layout_constraintHorizontal_bias="0.008"
-        app:layout_constraintStart_toEndOf="@+id/indoorTempTextView" />
 
     <TextView
         android:id="@+id/indoorTempTextView"

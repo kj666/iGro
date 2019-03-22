@@ -140,7 +140,7 @@
             android:id="@+id/temp_button"
             android:layout_width="112dp"
             android:layout_height="38dp"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="28dp"
             android:text="TEMPERATURE"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -153,10 +153,10 @@
 
         <Button
             android:id="@+id/tempNumberView"
-            android:layout_width="121dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="45dp"
+            android:layout_width="149dp"
+            android:layout_height="51dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"
             android:background="@null"
             android:ems="10"
@@ -167,9 +167,9 @@
         <Button
             android:id="@+id/celsiusFahrenheitSwitchButton"
             android:layout_width="47dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="130dp"
-            android:layout_marginTop="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="95dp"
             android:text="C/F"
             android:textAlignment="center" />
 
@@ -191,15 +191,15 @@
 
         <Button
             android:id="@+id/moisturePercentView"
-            android:layout_width="112dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="30dp"
+            android:layout_width="149dp"
+            android:layout_height="51dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="45dp"
             android:background="@null"
             android:ems="50"
             android:inputType="number"
             android:textAlignment="center"
-            android:textSize="50sp" />
+            android:textSize="45sp" />
 
         <Button
             android:id="@+id/moistureButton"

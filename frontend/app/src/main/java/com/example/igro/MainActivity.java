@@ -10,8 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.util.Log;
 import android.widget.TextView;
-
-
 import com.example.igro.Controller.Helper;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,8 +18,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.SensorData.SensorData;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,31 +25,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONObject;
-
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String MAIN_LOG_TAG = "MAIN_ACTIVITY_LOG_TAG";
 
+    //Temperature layout item
     private Button temperatureTitleButton;
     private Button temperatureNumberButton;
-
     Button celsiusFahrenheitSwitchButton;
     boolean celsiusOrFahrenheit = true; // default is celsius
 
     private Button uvTitleButton;
     private Button uvNumberButton;
 
-    private boolean celsius_pressed = true;
-    private Double tempDegree;
 
     private Button moistureNumberButton;
     private Button moistureTitleButton;
@@ -93,90 +81,84 @@ public class MainActivity extends AppCompatActivity {
         retrieveSensorData();
 
         //Temperature Celsius Button listener
-        temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(!celsius_pressed) {
-                    temperatureNumberButton.setText(tempDegree+"");
-                    celsius_pressed = true;
-                    temperatureCelsiusButton.setPressed(true);
-                }
-            }
-        });
-
-        // convert temperatureCelsiusButton to temperatureFahrenheitButton
-        temperatureFahrenheitButton.setOnClickListener(new View.OnClickListener() {
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if(celsius_pressed) {
-                    Double degrees = Double.parseDouble(temperatureNumberButton.getText().toString());
-                    Double a = tempDegree * 9 / 5 + 32;
-                    temperatureNumberButton.setText(df.format(a)+"");
-                    celsius_pressed=false;
-                }
                 celsiusFahrenheitSwitch();
             }
         });
 
-        //opening the Temperature view when the temperature text is clicked
-        temperatureTitleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+            //opening the Temperature view when the temperature text is clicked
+        temperatureTitleButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
                 helper.goToActivity(TemperatureActivity.class);
             }
-        });
+            });
 
-        //opening the Temperature view when the temperature number is clicked
-        temperatureNumberButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            //opening the Temperature view when the temperature number is clicked
+        temperatureNumberButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
                 helper.goToActivity(TemperatureActivity.class);
             }
-        });
+            });
 
-        //opening the Uv index view  when the uvTitleButton text is clicked
-        uvTitleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            //opening the Uv index view  when the uvTitleButton text is clicked
+        uvTitleButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
                 helper.goToActivity(UvIndexActivity.class);
             }
-        });
+            });
 
-        //opening the uvTitleButton view when the uvTitleButton number is clicked
-        uvNumberButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            //opening the uvTitleButton view when the uvTitleButton number is clicked
+        uvNumberButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
                 helper.goToActivity(UvIndexActivity.class);
             }
-        });
-        humidityTitleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            });
+        humidityTitleButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
                 helper.goToActivity(HumidityActivity.class);
             }
-        });
-        humidityNumberButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            });
+        humidityNumberButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
                 helper.goToActivity(HumidityActivity.class);
             }
-        });
+            });
         moistureTitleButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View v2){
+                @Override
+                public void onClick (View v2){
+                    helper.goToActivity(MoistureActivity.class);
+            }
+
+            });
+        moistureNumberButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick (View v){
                 helper.goToActivity(MoistureActivity.class);
             }
-        });
-        moistureNumberButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                helper.goToActivity(MoistureActivity.class);
-            }
-        });
-    }
+            });
+        }
 
     // TODO 2019-03-21
     // Switch the fixed value given for temperature below to sensor data when available
@@ -241,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //Retrieve data from the database and store it as Sensor Data
     void retrieveSensorData(){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
 
@@ -252,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
 
                     //Temperature
                     temperatureNumberButton.setText(df.format(sensorData.getTemperatureC())+"");
-                    tempDegree = Double.parseDouble(temperatureNumberButton.getText().toString());
 
                     //Humidity
                     humidityNumberButton.setText(df.format(sensorData.getHumidity())+"");
