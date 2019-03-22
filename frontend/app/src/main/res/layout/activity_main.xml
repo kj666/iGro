@@ -18,35 +18,26 @@
         app:layout_constraintTop_toBottomOf="@+id/humidityView">
 
         <Button
-            android:id="@+id/indexButton"
-            android:layout_width="60dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="105dp"
-            android:layout_marginTop="80dp"
-            android:text="index"
-            android:textAlignment="center"
-            android:textSize="12sp" />
-
-        <Button
             android:id="@+id/nmButton"
-            android:layout_width="60dp"
+            android:layout_width="90dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="105dp"
-            android:layout_marginTop="45dp"
-            android:text="nm"
+            android:layout_marginLeft="43dp"
+            android:layout_marginTop="95dp"
+            android:text="nm/index"
             android:textAlignment="center"
             android:textSize="12sp" />
 
         <Button
             android:id="@+id/uvNumberButton"
-            android:layout_width="97dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="45dp"
+            android:layout_width="149dp"
+            android:layout_height="51dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"
             android:background="@null"
             android:ems="10"
             android:inputType="number"
+            android:text="300.00"
             android:textAlignment="center"
             android:textSize="45sp" />
 
@@ -104,7 +95,7 @@
             android:id="@+id/humidityButton"
             android:layout_width="wrap_content"
             android:layout_height="38dp"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="45dp"
             android:text="HUMIDITY"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
@@ -112,15 +103,15 @@
 
         <Button
             android:id="@+id/humidityPercentView"
-            android:layout_width="123dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="45dp"
+            android:layout_width="149dp"
+            android:layout_height="51dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="40dp"
             android:background="@null"
             android:ems="50"
             android:inputType="number"
             android:textAlignment="center"
-            android:textSize="50sp" />
+            android:textSize="45sp" />
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -140,7 +131,7 @@
             android:id="@+id/temp_button"
             android:layout_width="112dp"
             android:layout_height="38dp"
-            android:layout_marginLeft="25dp"
+            android:layout_marginLeft="28dp"
             android:text="TEMPERATURE"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -153,10 +144,10 @@
 
         <Button
             android:id="@+id/tempNumberView"
-            android:layout_width="121dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="45dp"
+            android:layout_width="149dp"
+            android:layout_height="51dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"
             android:background="@null"
             android:ems="10"
@@ -165,21 +156,12 @@
             android:textSize="45sp" />
 
         <Button
-            android:id="@+id/celciusOutButton"
-            android:layout_width="40dp"
+            android:id="@+id/celsiusFahrenheitSwitchButton"
+            android:layout_width="53dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="130dp"
-            android:layout_marginTop="40dp"
-            android:text="°C"
-            android:textAlignment="center" />
-
-        <Button
-            android:id="@+id/fahrenheitOutButton"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="130dp"
-            android:layout_marginTop="90dp"
-            android:text="F"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="95dp"
+            android:text="°C/F"
             android:textAlignment="center" />
 
     </android.support.v7.widget.CardView>
@@ -200,15 +182,15 @@
 
         <Button
             android:id="@+id/moisturePercentView"
-            android:layout_width="112dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="45dp"
+            android:layout_width="149dp"
+            android:layout_height="51dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="40dp"
             android:background="@null"
             android:ems="50"
             android:inputType="number"
             android:textAlignment="center"
-            android:textSize="50sp" />
+            android:textSize="45sp" />
 
         <Button
             android:id="@+id/moistureButton"
