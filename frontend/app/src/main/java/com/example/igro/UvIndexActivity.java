@@ -123,7 +123,6 @@ public class UvIndexActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();

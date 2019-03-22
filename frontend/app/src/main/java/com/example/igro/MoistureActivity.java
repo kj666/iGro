@@ -17,16 +17,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igro.Models.ActuatorControl.MoistureControlEvents;
+import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -38,6 +41,7 @@ public class MoistureActivity extends AppCompatActivity {
     EditText lowMoistureEditText;
     EditText highMoistureEditText;
     TextView waterControlTextView;
+    TextView moistureDataTextView;
     Switch moistureSwitch;
     Button moistureHistoryButton;
     Button irrigationUseButton;
@@ -84,6 +88,8 @@ public class MoistureActivity extends AppCompatActivity {
 
         final Boolean switchState = moistureSwitch.isChecked();
         moistureSwitchStateFromRecord();
+
+        retrieveSensorData();
 
         moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
@@ -151,6 +157,7 @@ public class MoistureActivity extends AppCompatActivity {
 
         moistureHistoryButton = findViewById(R.id.moistureHistoryButton);
         irrigationUseButton = findViewById(R.id.irrigationUseHistoryButton);
+        moistureDataTextView = findViewById(R.id.numMoistureTextView);
 
     }
 
@@ -246,6 +253,31 @@ public class MoistureActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    void retrieveSensorData(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.0");
+
+                    //UVindex
+                    moistureDataTextView.setText(df.format(sensorData.getSoil())+"");
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
 }
