@@ -13,16 +13,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igro.Models.ActuatorControl.UvControlEvents;
+import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -37,6 +40,7 @@ public class UvIndexActivity extends AppCompatActivity {
     EditText highUvEditText;
     TextView uvControlTextView;
     Switch uvSwitch;
+    TextView uvTextView;
 
     public Boolean lastUvState = false;
 
@@ -52,6 +56,8 @@ public class UvIndexActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uv_index);
+        uvTextView = (TextView)findViewById(R.id.ghUvTextView);
+
 
         uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
         uvSwitch = (Switch)findViewById(R.id.uvSwitch);
@@ -59,7 +65,7 @@ public class UvIndexActivity extends AppCompatActivity {
 
         lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
         highUvEditText = (EditText)findViewById(R.id.highUvEditText);
-
+retrieveSensorData();
 
         double y,x;
         x=-5;
@@ -231,4 +237,31 @@ public class UvIndexActivity extends AppCompatActivity {
 
     }
 
+    void retrieveSensorData(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.00");
+
+                    //UVindex
+                    uvTextView.setText(df.format(sensorData.getUv())+"");
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+    }
+
 }
+
+

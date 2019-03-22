@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +28,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
+import com.example.igro.Models.SensorData.Range;
+import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -34,14 +37,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
-
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -56,7 +57,12 @@ public class TemperatureActivity extends AppCompatActivity {
 
     //initialize the layout fields
     Button tempHistoryButton;
+    double tempDegree;
+    boolean celsius_pressed = true;
+    Button temperatureCelsiusButton;
+    Button temperatureFahrenheitButton;
     Button heaterUseHistoryButton;
+    Button setRangeTempButton;
     EditText lowTempEditText;
     EditText highTempEditText;
     TextView tempControlTextView;
@@ -66,16 +72,13 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView greenhouseTemperatureTextView;
     private RequestQueue queue;
 
+    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
     private FirebaseUser currentUser;
-
     public Boolean lastHeaterState = false;
-
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
-
     //create heater database reference
     DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("HeaterControlLog");
-
     //Get current user using the Helper class
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
@@ -85,14 +88,19 @@ public class TemperatureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
 
-        tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
-        heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
-        tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
-        tempSwitch = (Switch)findViewById(R.id.tempSwitch);
+        initializeUI();
+
         tempSwitch.setClickable(true);
 
-        lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
-        highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+        currentUser = helper.checkAuthentication();
+        retrieveSensorData();
+
+        setRangeTempButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTempRange();
+            }
+        });
 
         outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
         greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
@@ -111,6 +119,55 @@ public class TemperatureActivity extends AppCompatActivity {
         });
 
         currentUser = helper.checkAuthentication();
+
+        retrieveRange();
+
+    }
+
+    void retrieveRange(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
+        DatabaseReference tempRange = db.child("Temperature");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                lowTempEditText.setText(dataSnapshot.child("lowTempValue").getValue().toString());
+                Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
+
+                highTempEditText.setText(dataSnapshot.child("highTempValue").getValue().toString());
+                Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+                if (!(tempDegree > lowRange)
+                        && tempDegree < highRange) {
+
+                    greenhouseTemperatureTextView.setTextColor(Color.RED);
+                }
+                else{
+                    greenhouseTemperatureTextView.setTextColor(Color.GREEN);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        tempRange.addValueEventListener(eventListener);
+
+    }
+
+    void initializeUI(){
+        tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
+        heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
+        tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
+        tempSwitch = (Switch)findViewById(R.id.tempSwitch);
+
+        greenhouseTemperatureTextView=(TextView)findViewById(R.id.ghTempTextView);
+        //Get the values from the user
+        lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
+        highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+        setRangeTempButton=(Button)findViewById(R.id.setRangeTempButton);
     }
 
 
@@ -135,13 +192,7 @@ public class TemperatureActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
-        heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
-        tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
-        tempSwitch = (Switch)findViewById(R.id.tempSwitch);
-
-        lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
-        highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+        initializeUI();
 
         String lowTempLimit = lowTempEditText.getText().toString();
         String highTempLimit = lowTempEditText.getText().toString();
@@ -150,7 +201,7 @@ public class TemperatureActivity extends AppCompatActivity {
             Integer lowTemp = Integer.parseInt(lowTempLimit);
             Integer highTemp = Integer.parseInt(highTempLimit);
         }else{
-  //          Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
+          Toast.makeText(this, "Please enter a valid number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
         }
 
         //opening the HistoricalApplianceActivity view when the HeaterUseHistory button is clicked
@@ -163,8 +214,10 @@ public class TemperatureActivity extends AppCompatActivity {
                 i.putExtra("ApplianceType", "HEATER");
                 context.startActivity(i);
 
+
             }
         });
+
 
         //opening the SensorDataActivity on history sensor data button click
         tempHistoryButton.setOnClickListener(new View.OnClickListener() {
@@ -208,7 +261,6 @@ public class TemperatureActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         final boolean switchState = tempSwitch.isChecked();
             heaterSwitchStateFromRecord();
             
@@ -228,7 +280,6 @@ public class TemperatureActivity extends AppCompatActivity {
         });
 
     }
-
 
 
     private void heaterSwitchStateFromRecord() {
@@ -281,8 +332,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
     }
 
-
-        private void heaterSwitchEvent(boolean tempSwitchState) {
+    private void heaterSwitchEvent(boolean tempSwitchState) {
 
             //record the time of the click
             //DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
@@ -388,5 +438,50 @@ public class TemperatureActivity extends AppCompatActivity {
         }
     }
 
+    void retrieveSensorData(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.00");
+                    //Temperature
+                    greenhouseTemperatureTextView.setText(df.format(sensorData.getTemperatureC())+"");
+                    tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+    }
+
+
+    public void setTempRange(){
+
+        String lowTemp=lowTempEditText.getText().toString();
+        String highTemp=highTempEditText.getText().toString();
+        //check if the ranges are empty or not
+        if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
+            if (Integer.parseInt(lowTemp.toString()) < Integer.parseInt(highTemp.toString())) {
+
+                Range temperatureRange = new Range(lowTemp, highTemp);
+                databaseRange.child("Temperature").setValue(temperatureRange);
+                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(this, "HIGH VALUES SHOULD BE GREATER THAN LOW VALUES!!!", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "YOU SHOULD ENTER LOW AND HIGH VALUES!!!", Toast.LENGTH_LONG).show();
+        }
+
+    }
 }
 
