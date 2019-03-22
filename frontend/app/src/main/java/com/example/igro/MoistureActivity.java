@@ -133,6 +133,7 @@ public class MoistureActivity extends AppCompatActivity {
                         && ghMoisture< highRange) {
 
                     ghMoistureTextView.setTextColor(Color.RED);
+                    Toast.makeText(MoistureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
                 else{
                     ghMoistureTextView.setTextColor(Color.GREEN);
