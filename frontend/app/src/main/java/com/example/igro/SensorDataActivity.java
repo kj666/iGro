@@ -90,7 +90,7 @@ public class SensorDataActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
 
-            case R.id.polling:
+            case R.id.polling_menu:
                 openDialog();
                 return true;
 

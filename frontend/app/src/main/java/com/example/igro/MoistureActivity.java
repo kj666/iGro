@@ -288,7 +288,7 @@ public class MoistureActivity extends AppCompatActivity {
                 helper.goToActivity(LoginActivity.class);
                 return true;
 
-            case R.id.polling:
+            case R.id.polling_menu:
                 openDialog();
                 return true;
 

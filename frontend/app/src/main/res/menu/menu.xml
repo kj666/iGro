@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/polling"
+        android:id="@+id/polling_menu"
         android:title="@string/polling_freq">
         app:showAsAction:"never">
     </item>
