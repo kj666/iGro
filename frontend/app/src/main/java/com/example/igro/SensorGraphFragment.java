@@ -84,8 +84,10 @@ public class SensorGraphFragment extends Fragment {
             Date time = new Date(t);
 
             double y = 0;
-            if(sensorType.equals("TEMPERATURE"))
+            if(sensorType.equals("TEMPERATURE-C"))
                 y = data.getTemperatureC();
+            else if (sensorType.equals("TEMPERATURE-F"))
+                y = data.getTemperatureF();
             else if(sensorType.equals("UV"))
                 y = data.getUv();
             else if(sensorType.equals("HUMIDITY"))

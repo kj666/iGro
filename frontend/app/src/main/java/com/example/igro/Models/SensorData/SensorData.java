@@ -14,9 +14,11 @@ public class SensorData {
     public SensorData(){
     }
 
-    public SensorData(double humidity, double temperatureC, int uv, double soil, long time) {
+    public SensorData(double humidity, double temperatureC, double temperatureF
+            ,int uv, double soil, long time) {
         this.humidity = humidity;
         this.temperatureC = temperatureC;
+        this.temperatureF = temperatureF;
         this.uv = uv;
         this.soil = soil;
         this.time = time;

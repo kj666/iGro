@@ -44,7 +44,9 @@ public class SensorDataActivity extends AppCompatActivity {
 
         historicalSensorDataTextView.setText(pageTitle);
 
-        if(sensorType.equals("TEMPERATURE")){
+        if(sensorType.equals("TEMPERATURE-C")){
+
+        } else if (sensorType.equals("TEMPERATURE-F")){
 
         } else if (sensorType.equals("HUMIDITY")) {
 

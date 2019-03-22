@@ -21,6 +21,13 @@ import android.widget.Button;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.SensorData.UvRange;
 import com.google.firebase.auth.FirebaseAuth;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.ActuatorControl.UvControlEvents;
 import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +41,8 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -42,6 +51,10 @@ import java.util.Calendar;
 import static java.lang.Integer.parseInt;
 
 public class UvIndexActivity extends AppCompatActivity {
+    private static final String UV_ACTIVITY_LOG_TAG = "UV_ACTIVITY_LOG_TAG";
+
+    TextView outdoorUVTextView;
+    private RequestQueue queue;
 
     LineGraphSeries<DataPoint> series;
 
@@ -207,6 +220,10 @@ public class UvIndexActivity extends AppCompatActivity {
         lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
         highUvEditText = (EditText)findViewById(R.id.highUvEditText);
 
+        outdoorUVTextView = findViewById(R.id.outdoorUvTextView);
+        queue = Volley.newRequestQueue(this);
+        requestUVIndex();
+
         uvHistoryButton = findViewById(R.id.uvHistoryButton);
         lightUseButton = findViewById(R.id.lightUseHistoryButton);
         //indoor uv
@@ -356,6 +373,42 @@ public class UvIndexActivity extends AppCompatActivity {
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
+    void requestUVIndex() {
+        // TODO: 2019-03-18
+        // Make this function capable of pulling data for any city as per user request
+
+        // Get weather for Montreal
+        String url = "https://api.openweathermap.org/data/2.5/uvi?lat=45&lon=-73&appid=b4840319c97c4629912dc391ed164bcb";
+        // Make request
+        JsonObjectRequest weatherRequest = new JsonObjectRequest(
+                Request.Method.GET, url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(UV_ACTIVITY_LOG_TAG, "response: " + response);
+                        try {
+                            // Get description from weather response
+                            //String description = response.getJSONArray("weather").getJSONObject(0).getString("main");
+                            //descriptionTextView.setText(description);
+
+                            // Get temperature from weather response
+                            Double uv = response.getDouble("value");
+                            outdoorUVTextView.setText(uv.toString());
+
+                        } catch (Exception e) {
+                            Log.w(UV_ACTIVITY_LOG_TAG, "Attempt to parse JSON Object failed");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(UV_ACTIVITY_LOG_TAG, "JSON Request has failed");
+                    }
+                });
+        queue.add(weatherRequest);
+    }
 }
 
 
