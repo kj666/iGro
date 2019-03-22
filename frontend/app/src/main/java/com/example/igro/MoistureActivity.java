@@ -129,8 +129,8 @@ public class MoistureActivity extends AppCompatActivity {
                 Double lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
 
 
-                if (!(ghMoisture > lowRange)
-                        && ghMoisture< highRange) {
+                if (!((ghMoisture > lowRange)
+                        && (ghMoisture< highRange))) {
 
                     ghMoistureTextView.setTextColor(Color.RED);
                     Toast.makeText(MoistureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
