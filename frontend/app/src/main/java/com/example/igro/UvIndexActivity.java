@@ -5,23 +5,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.UvControlEvents;
-import com.example.igro.Models.SensorData.HumidityRange;
 import com.example.igro.Models.SensorData.SensorData;
-import com.example.igro.Models.SensorData.UvRange;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,11 +41,6 @@ public class UvIndexActivity extends AppCompatActivity {
     TextView uvControlTextView;
     Switch uvSwitch;
     TextView uvTextView;
-    Button setUvRange;
-    TextView ghUvTextView;
-    Double ghUv;
-    private FirebaseUser currentUser;
-    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     public Boolean lastUvState = false;
 
@@ -62,8 +49,7 @@ public class UvIndexActivity extends AppCompatActivity {
 
     //create heater database reference
     DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("UVControlLog");
-    //create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -71,19 +57,15 @@ public class UvIndexActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uv_index);
         uvTextView = (TextView)findViewById(R.id.ghUvTextView);
-        initializeUI();
-        currentUser = helper.checkAuthentication();
-        retrieveSensorData();
-       retrieveRange();
-        setUvRange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setUvRange();
-            }
-        });
 
 
-        retrieveSensorData();
+        uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
+        uvSwitch = (Switch)findViewById(R.id.uvSwitch);
+        uvSwitch.setClickable(true);
+
+        lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
+        highUvEditText = (EditText)findViewById(R.id.highUvEditText);
+retrieveSensorData();
 
         double y,x;
         x=-5;
@@ -97,80 +79,20 @@ public class UvIndexActivity extends AppCompatActivity {
         }
         graph.addSeries(series);
     }
-    void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference uvRange = db.child("UV");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                lowUvEditText.setText(dataSnapshot.child("lowUvValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowUvValue").getValue().toString());
-                highUvEditText.setText(dataSnapshot.child("highUvValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highUvValue").getValue().toString());
 
 
-
-
-                if (!(ghUv > lowRange)
-                        && ghUv< highRange) {
-
-                    ghUvTextView.setTextColor(Color.RED);
-                    Toast.makeText(UvIndexActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    ghUvTextView.setTextColor(Color.GREEN);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
-        uvRange.addValueEventListener(eventListener);
-
-    }
-
-    void initializeUI() {
-
-        //Initialization
-        ghUvTextView = (TextView) findViewById(R.id.ghUvTextView);
-        lowUvEditText = (EditText) findViewById(R.id.lowUvEditText);
-        highUvEditText = (EditText) findViewById(R.id.highUvEditText);
-        setUvRange = (Button) findViewById(R.id.setUvRange);
-        uvControlTextView= (TextView) findViewById(R.id.uvControlTextView);
-        uvSwitch = (Switch) findViewById(R.id.uvSwitch);
-        uvSwitch.setClickable(true);
-    }
-    public void setUvRange() {
-
-        String lowUv = lowUvEditText.getText().toString();
-        String highUv = highUvEditText.getText().toString();
-        //check if the ranges are empty or not
-        if (!TextUtils.isEmpty(lowUv) && !TextUtils.isEmpty(highUv)) {
-            if (Integer.parseInt(lowUv.toString()) < Integer.parseInt(highUv.toString())) {
-
-                UvRange UvRange = new UvRange(lowUv, highUv);
-                databaseRange.child("UV").setValue(UvRange);
-                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
-
-            } else {
-                Toast.makeText(this, "HIGH VALUES SHOULD BE GREATER THAN LOW VALUES!!!", Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Toast.makeText(this, "YOU SHOULD ENTER LOW AND HIGH VALUES!!!", Toast.LENGTH_LONG).show();
-        }
-
-    }
     @Override
     protected void onStart() {
         super.onStart();
-        initializeUI();
+
+        uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
+        uvSwitch = (Switch)findViewById(R.id.uvSwitch);
+
+        lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
+        highUvEditText = (EditText)findViewById(R.id.highUvEditText);
 
         String lowUvLimit = lowUvEditText.getText().toString();
-        String highUvLimit = highUvEditText.getText().toString();
+        String highUvLimit = lowUvEditText.getText().toString();
 
         if((lowUvLimit.matches(".*[0-9].*"))&&(highUvLimit.matches(".*[0-9].*"))){
             int lowUv = parseInt(lowUvLimit);
@@ -327,7 +249,6 @@ public class UvIndexActivity extends AppCompatActivity {
 
                     //UVindex
                     uvTextView.setText(df.format(sensorData.getUv())+"");
-                    ghUv= Double.parseDouble(uvTextView.getText().toString());
 
 
                 }

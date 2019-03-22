@@ -69,10 +69,10 @@
 
     <TextView
         android:id="@+id/ghUvTextView"
-        android:layout_width="130dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginLeft="3dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:background="@null"
         android:ems="10"
@@ -458,17 +458,5 @@
         android:id="@+id/group2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/setUvRange"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="SET RANGE"
-        app:layout_constraintBottom_toTopOf="@+id/cardView10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
 
 </android.support.constraint.ConstraintLayout>
