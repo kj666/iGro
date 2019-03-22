@@ -58,9 +58,7 @@ public class TemperatureActivity extends AppCompatActivity {
     //initialize the layout fields
     Button tempHistoryButton;
     double tempDegree;
-    boolean celsius_pressed = true;
-    Button temperatureCelsiusButton;
-    Button temperatureFahrenheitButton;
+
     Button heaterUseHistoryButton;
     Button setRangeTempButton;
     EditText lowTempEditText;
@@ -101,7 +99,6 @@ public class TemperatureActivity extends AppCompatActivity {
                 setTempRange();
             }
         });
-
         outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
         greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
 
@@ -119,7 +116,6 @@ public class TemperatureActivity extends AppCompatActivity {
         });
 
         currentUser = helper.checkAuthentication();
-
         retrieveRange();
 
     }
@@ -167,6 +163,22 @@ public class TemperatureActivity extends AppCompatActivity {
         //Get the values from the user
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+
+        outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
+        greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
+
+        queue = Volley.newRequestQueue(this);
+        requestWeather();
+
+        celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
+        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                celsiusFahrenheitSwitch();
+            }
+        });
+
+        currentUser = helper.checkAuthentication();
         setRangeTempButton=(Button)findViewById(R.id.setRangeTempButton);
     }
 
@@ -235,7 +247,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
         final boolean switchState = tempSwitch.isChecked();
-            heaterSwitchStateFromRecord();
+        heaterSwitchStateFromRecord();
 
 
         if(lastHeaterState){
@@ -278,7 +290,6 @@ public class TemperatureActivity extends AppCompatActivity {
                 heaterSwitchEvent(tempSwitchState);
             }
         });
-
     }
 
 
@@ -373,6 +384,30 @@ public class TemperatureActivity extends AppCompatActivity {
 
         }
 
+    void retrieveSensorData() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.00");
+                    //Temperature
+                    greenhouseTemperatureTextView.setText(df.format(sensorData.getTemperatureC()) + "");
+                    tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+    }
+
     void requestWeather() {
         // TODO: 2019-03-18
         // Make this function capable of pulling data for any city as per user request
@@ -411,6 +446,28 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
 
+    public void setTempRange(){
+
+        String lowTemp=lowTempEditText.getText().toString();
+        String highTemp=highTempEditText.getText().toString();
+        //check if the ranges are empty or not
+        if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
+            if (Integer.parseInt(lowTemp.toString()) < Integer.parseInt(highTemp.toString())) {
+
+                Range temperatureRange = new Range(lowTemp, highTemp);
+                databaseRange.child("Temperature").setValue(temperatureRange);
+                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(this, "HIGH VALUES SHOULD BE GREATER THAN LOW VALUES!!!", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "YOU SHOULD ENTER LOW AND HIGH VALUES!!!", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+
     /*
     * Function that will convert all necessary parameters between celsius and fahrenheit
      */
@@ -436,52 +493,6 @@ public class TemperatureActivity extends AppCompatActivity {
             numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
             return numberToBeConverted.toString();
         }
-    }
-
-    void retrieveSensorData(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
-                    //Temperature
-                    greenhouseTemperatureTextView.setText(df.format(sensorData.getTemperatureC())+"");
-                    tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
-    }
-
-
-    public void setTempRange(){
-
-        String lowTemp=lowTempEditText.getText().toString();
-        String highTemp=highTempEditText.getText().toString();
-        //check if the ranges are empty or not
-        if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
-            if (Integer.parseInt(lowTemp.toString()) < Integer.parseInt(highTemp.toString())) {
-
-                Range temperatureRange = new Range(lowTemp, highTemp);
-                databaseRange.child("Temperature").setValue(temperatureRange);
-                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
-
-            } else {
-                Toast.makeText(this, "HIGH VALUES SHOULD BE GREATER THAN LOW VALUES!!!", Toast.LENGTH_LONG).show();
-            }
-        } else {
-            Toast.makeText(this, "YOU SHOULD ENTER LOW AND HIGH VALUES!!!", Toast.LENGTH_LONG).show();
-        }
-
     }
 }
 

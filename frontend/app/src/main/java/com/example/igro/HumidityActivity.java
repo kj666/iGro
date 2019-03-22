@@ -274,6 +274,33 @@ public class HumidityActivity extends AppCompatActivity {
 
     }
 
+    void retrieveSensorData() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.00");
+
+
+                    //Humidity
+                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+    }
+
     void requestHumidity() {
         // TODO: 2019-03-18
         // Make this function capable of pulling data for any city as per user request
@@ -309,32 +336,6 @@ public class HumidityActivity extends AppCompatActivity {
                     }
                 });
         queue.add(humidityRequest);
-    }
-    void retrieveSensorData() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
-
-
-                    //Humidity
-                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
-
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 }
 
