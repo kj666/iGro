@@ -32,12 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.collection.LLRBNode;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 
 import org.json.JSONObject;
@@ -46,7 +41,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import static java.lang.Integer.parseInt;
 
@@ -64,6 +58,7 @@ public class HumidityActivity extends AppCompatActivity {
     TextView humControlTextView;
     Switch humSwitch;
     Button humidityHistoryButton;
+    Button humidifierUseButton;
 
     public Boolean lastHumidState = false;
 
@@ -145,6 +140,16 @@ public class HumidityActivity extends AppCompatActivity {
             }
         });
 
+        humidifierUseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = HumidityActivity.this ;
+                Intent i = new Intent(context, HistoricalApplianceActivity.class);
+                i.putExtra("ApplianceType", "HUMIDIFIER");
+                context.startActivity(i);
+            }
+        });
+
     }
 
 
@@ -184,6 +189,7 @@ public class HumidityActivity extends AppCompatActivity {
         outdoorHumidityTextView = findViewById(R.id.outdoorHumTextView);
 
         humidityHistoryButton = findViewById(R.id.humidityHistoryButton);
+        humidifierUseButton = findViewById(R.id.humidifierUseHistoryButton);
     }
 
     private void humidSwitchStateFromRecord() {

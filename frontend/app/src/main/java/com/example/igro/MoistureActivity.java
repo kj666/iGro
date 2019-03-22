@@ -40,6 +40,7 @@ public class MoistureActivity extends AppCompatActivity {
     TextView waterControlTextView;
     Switch moistureSwitch;
     Button moistureHistoryButton;
+    Button irrigationUseButton;
 
     public Boolean lastMoistureState = false;
 
@@ -103,6 +104,17 @@ public class MoistureActivity extends AppCompatActivity {
             }
         });
 
+        irrigationUseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = MoistureActivity.this ;
+                Intent i = new Intent(context, HistoricalApplianceActivity.class);
+                i.putExtra("ApplianceType", "IRRIGATION");
+                context.startActivity(i);
+            }
+        });
+
+
     }
 
 
@@ -138,6 +150,7 @@ public class MoistureActivity extends AppCompatActivity {
         highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
 
         moistureHistoryButton = findViewById(R.id.moistureHistoryButton);
+        irrigationUseButton = findViewById(R.id.irrigationUseHistoryButton);
 
     }
 

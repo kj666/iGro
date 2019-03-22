@@ -72,11 +72,16 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         if(applianceType=="HEATER"){
             loadHeaterOnOffList();
         } else if (applianceType == "HUMIDIFIER") {
+            //todo change
+            loadHeaterOnOffList();
 
         }else if(applianceType=="IRRIGATION"){
+            //todo change
+            loadHeaterOnOffList();
 
         }else if(applianceType=="LIGHTS"){
-
+            //todo change
+            loadHeaterOnOffList();
         }else{
             Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG ).show();
         }

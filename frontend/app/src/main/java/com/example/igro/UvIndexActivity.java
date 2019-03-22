@@ -46,6 +46,7 @@ public class UvIndexActivity extends AppCompatActivity {
     Switch uvSwitch;
     TextView uvTextView;
     Button uvHistoryButton;
+    Button lightUseButton;
 
     public Boolean lastUvState = false;
 
@@ -110,6 +111,16 @@ public class UvIndexActivity extends AppCompatActivity {
             }
         });
 
+        lightUseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = UvIndexActivity.this ;
+                Intent i = new Intent(context, HistoricalApplianceActivity.class);
+                i.putExtra("ApplianceType", "LIGHTS");
+                context.startActivity(i);
+            }
+        });
+
     }
 
 
@@ -145,6 +156,7 @@ public class UvIndexActivity extends AppCompatActivity {
         highUvEditText = (EditText)findViewById(R.id.highUvEditText);
 
         uvHistoryButton = findViewById(R.id.uvHistoryButton);
+        lightUseButton = findViewById(R.id.lightUseHistoryButton);
     }
 
     private void uvSwitchStateFromRecord() {
@@ -251,7 +263,7 @@ public class UvIndexActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
                     SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
+                    DecimalFormat df = new DecimalFormat("####0.0");
 
                     //UVindex
                     uvTextView.setText(df.format(sensorData.getUv())+"");
