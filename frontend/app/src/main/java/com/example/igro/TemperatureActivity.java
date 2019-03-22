@@ -20,6 +20,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
 import com.example.igro.Models.SensorData.Range;
@@ -33,29 +39,36 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+// TODO 2019-03-20
+// change the tempswitch to something more appropriate
+// check how to switch between Fahrenheit and Celsius on pre-existing temperature data
 
 public class TemperatureActivity extends AppCompatActivity {
-
+    private static final String TEMPERATURE_LOG_TAG = "TEMP_ACTIVITY_LOG_TAG";
+    Button celsiusFahrenheitSwitchButton;
+    boolean celisusOrFahrenheit = true; // default is celsius
 
     //initialize the layout fields
     Button tempHistoryButton;
     double tempDegree;
-    boolean celsius_pressed = true;
-    Button temperatureCelsiusButton;
-    Button temperatureFahrenheitButton;
+
     Button heaterUseHistoryButton;
     Button setRangeTempButton;
     EditText lowTempEditText;
     EditText highTempEditText;
     TextView tempControlTextView;
-    TextView indoorTempTextView;
-    Switch tempSwitch;
+    Switch tempSwitch; // Confusing name, its heater control switch but it looks like its temperature switch
 
+    TextView outdoorTemperatureTextView;
+    TextView greenhouseTemperatureTextView;
+    private RequestQueue queue;
 
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
     private FirebaseUser currentUser;
@@ -86,28 +99,23 @@ public class TemperatureActivity extends AppCompatActivity {
                 setTempRange();
             }
         });
+        outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
+        greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
 
-        temperatureCelsiusButton.setOnClickListener(new View.OnClickListener() {
+        Double fixedGreenhouseValue = 20.0; // Switch this to sensor data when available
+        greenhouseTemperatureTextView.setText(fixedGreenhouseValue.toString());
+        queue = Volley.newRequestQueue(this);
+        requestWeather();
+
+        celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
+        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!celsius_pressed) {
-                    indoorTempTextView.setText(tempDegree+"");
-                    celsius_pressed = true;
-                }
+                celsiusFahrenheitSwitch();
             }
         });
 
-        temperatureFahrenheitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(celsius_pressed) {
-                    Double a = tempDegree * 9 / 5 + 32;
-                    indoorTempTextView.setText(new DecimalFormat("####0.00").format(a)+"");
-                    celsius_pressed=false;
-                }
-            }
-        });
-
+        currentUser = helper.checkAuthentication();
         retrieveRange();
 
     }
@@ -128,10 +136,10 @@ public class TemperatureActivity extends AppCompatActivity {
                 if (!(tempDegree > lowRange)
                         && tempDegree < highRange) {
 
-                    indoorTempTextView.setTextColor(Color.RED);
+                    greenhouseTemperatureTextView.setTextColor(Color.RED);
                 }
                 else{
-                    indoorTempTextView.setTextColor(Color.GREEN);
+                    greenhouseTemperatureTextView.setTextColor(Color.GREEN);
                 }
             }
 
@@ -146,18 +154,31 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
     void initializeUI(){
-        temperatureCelsiusButton= (Button)findViewById(R.id.celciusghButton);
-        temperatureFahrenheitButton = (Button)findViewById(R.id.fahrenheitghButton);
-
         tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
         tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
         tempSwitch = (Switch)findViewById(R.id.tempSwitch);
 
-        indoorTempTextView=(TextView)findViewById(R.id.indoorTempTextView);
+        greenhouseTemperatureTextView=(TextView)findViewById(R.id.ghTempTextView);
         //Get the values from the user
         lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
         highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+
+        outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
+        greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
+
+        queue = Volley.newRequestQueue(this);
+        requestWeather();
+
+        celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
+        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                celsiusFahrenheitSwitch();
+            }
+        });
+
+        currentUser = helper.checkAuthentication();
         setRangeTempButton=(Button)findViewById(R.id.setRangeTempButton);
     }
 
@@ -226,7 +247,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
         final boolean switchState = tempSwitch.isChecked();
-            heaterSwitchStateFromRecord();
+        heaterSwitchStateFromRecord();
 
 
         if(lastHeaterState){
@@ -269,7 +290,6 @@ public class TemperatureActivity extends AppCompatActivity {
                 heaterSwitchEvent(tempSwitchState);
             }
         });
-
     }
 
 
@@ -364,18 +384,18 @@ public class TemperatureActivity extends AppCompatActivity {
 
         }
 
-    void retrieveSensorData(){
+    void retrieveSensorData() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     SensorData sensorData = snap.getValue(SensorData.class);
                     DecimalFormat df = new DecimalFormat("####0.00");
                     //Temperature
-                    indoorTempTextView.setText(df.format(sensorData.getTemperatureC())+"");
-                    tempDegree = Double.parseDouble(indoorTempTextView.getText().toString());
+                    greenhouseTemperatureTextView.setText(df.format(sensorData.getTemperatureC()) + "");
+                    tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
 
                 }
             }
@@ -386,6 +406,43 @@ public class TemperatureActivity extends AppCompatActivity {
             }
         };
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+    }
+
+    void requestWeather() {
+        // TODO: 2019-03-18
+        // Make this function capable of pulling data for any city as per user request
+
+        // Get weather for Montreal
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=Montreal&units=metric&APPID=b4840319c97c4629912dc391ed164bcb";
+        // Make request
+        JsonObjectRequest weatherRequest = new JsonObjectRequest(
+                Request.Method.GET, url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TEMPERATURE_LOG_TAG, "response: " + response);
+                        try {
+                            // Get description from weather response
+                            //String description = response.getJSONArray("weather").getJSONObject(0).getString("main");
+                            //descriptionTextView.setText(description);
+
+                            // Get temperature from weather response
+                            Integer temperature = response.getJSONObject("main").getInt("temp");
+                            outdoorTemperatureTextView.setText(temperature.toString());
+
+                        } catch (Exception e) {
+                            Log.w(TEMPERATURE_LOG_TAG, "Attempt to parse JSON Object failed");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TEMPERATURE_LOG_TAG, "JSON Request has failed");
+                    }
+                });
+        queue.add(weatherRequest);
     }
 
 
@@ -410,5 +467,32 @@ public class TemperatureActivity extends AppCompatActivity {
 
     }
 
+
+    /*
+    * Function that will convert all necessary parameters between celsius and fahrenheit
+     */
+    void celsiusFahrenheitSwitch(){
+        outdoorTemperatureTextView.setText(
+                celsiusFahrenheitConversion(outdoorTemperatureTextView.getText().toString()));
+        greenhouseTemperatureTextView.setText(
+                celsiusFahrenheitConversion(greenhouseTemperatureTextView.getText().toString()));
+        celisusOrFahrenheit = !celisusOrFahrenheit;
+    }
+
+    /*
+    * Function that handles the mathematical aspect of the celsius <-> fahrenheit process
+     */
+    String celsiusFahrenheitConversion(String valueToBeConverted) {
+        Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
+        if (celisusOrFahrenheit) { // number currently in celsius
+            numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            return numberToBeConverted.toString();
+        } else { //number currently in fahrenheit
+            numberToBeConverted = (5.0/9.0) * (numberToBeConverted - 32.0);
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            return numberToBeConverted.toString();
+        }
+    }
 }
 
