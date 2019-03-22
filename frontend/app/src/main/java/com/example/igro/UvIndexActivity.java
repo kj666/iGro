@@ -8,6 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -28,8 +31,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.UvControlEvents;
 import com.example.igro.Models.SensorData.SensorData;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -79,6 +84,7 @@ public class UvIndexActivity extends AppCompatActivity {
 
     //create heater database reference
     DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("UVControlLog");
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
     //create database reference for ranges
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
 
@@ -212,6 +218,30 @@ public class UvIndexActivity extends AppCompatActivity {
 
     }
     //Initialization
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.sign_out:
+                helper.signout();
+                helper.goToActivity(LoginActivity.class);
+                return true;
+
+            case R.id.polling_menu:
+                openDialog();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     void initializeUI(){
         uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
         uvSwitch = (Switch)findViewById(R.id.uvSwitch);
@@ -409,6 +439,11 @@ public class UvIndexActivity extends AppCompatActivity {
                 });
         queue.add(weatherRequest);
     }
+    public void openDialog(){
+        PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
+        dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+
 }
 
 

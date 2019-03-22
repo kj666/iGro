@@ -203,6 +203,16 @@ public class TemperatureActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.sign_out:
+                helper.signout();
+                helper.goToActivity(LoginActivity.class);
+                return true;
+
+            case R.id.polling_menu:
+                openDialog();
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -502,6 +512,10 @@ public class TemperatureActivity extends AppCompatActivity {
             numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
             return numberToBeConverted.toString();
         }
+    }
+    public void openDialog(){
+        PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
+        dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
 }
 

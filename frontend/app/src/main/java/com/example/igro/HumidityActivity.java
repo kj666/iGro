@@ -214,8 +214,23 @@ public class HumidityActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.sign_out:
+                helper.signout();
+                helper.goToActivity(LoginActivity.class);
+                return true;
+
+            case R.id.polling_menu:
+                openDialog();
+                return true;
+
+
+        }
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
     @Override
@@ -421,6 +436,10 @@ public class HumidityActivity extends AppCompatActivity {
                     }
                 });
         queue.add(humidityRequest);
+    }
+    public void openDialog(){
+        PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
+        dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
 }
 
