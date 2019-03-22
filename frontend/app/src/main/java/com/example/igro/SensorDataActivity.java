@@ -89,6 +89,12 @@ public class SensorDataActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
+
+            case R.id.polling:
+                openDialog();
+                return true;
+
+
             case R.id.tableGraph_switch:
                 if(tableMode) {
                     tableMode = false;
@@ -105,7 +111,13 @@ public class SensorDataActivity extends AppCompatActivity {
                 }
                 return true;
         }
+
         return super.onOptionsItemSelected(item);
 
+    }
+
+    public void openDialog(){
+        PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
+        dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
 }
