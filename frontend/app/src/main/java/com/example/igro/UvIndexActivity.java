@@ -1,11 +1,15 @@
 package com.example.igro;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -41,6 +45,7 @@ public class UvIndexActivity extends AppCompatActivity {
     TextView uvControlTextView;
     Switch uvSwitch;
     TextView uvTextView;
+    Button uvHistoryButton;
 
     public Boolean lastUvState = false;
 
@@ -58,26 +63,11 @@ public class UvIndexActivity extends AppCompatActivity {
         setContentView(R.layout.activity_uv_index);
         uvTextView = (TextView)findViewById(R.id.ghUvTextView);
 
-
-        uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
-        uvSwitch = (Switch)findViewById(R.id.uvSwitch);
+        initializeUI();
         uvSwitch.setClickable(true);
 
-        lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
-        highUvEditText = (EditText)findViewById(R.id.highUvEditText);
-retrieveSensorData();
+        retrieveSensorData();
 
-        double y,x;
-        x=-5;
-
-        GraphView graph =findViewById(R.id.graph);
-        series=new LineGraphSeries<>();
-        for(int i=0; i<500; i++){
-            x=x+0.1;
-            y=Math.sin(x);
-            series.appendData(new DataPoint(x,y),true,500);
-        }
-        graph.addSeries(series);
     }
 
 
@@ -85,11 +75,7 @@ retrieveSensorData();
     protected void onStart() {
         super.onStart();
 
-        uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
-        uvSwitch = (Switch)findViewById(R.id.uvSwitch);
-
-        lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
-        highUvEditText = (EditText)findViewById(R.id.highUvEditText);
+        initializeUI();
 
         String lowUvLimit = lowUvEditText.getText().toString();
         String highUvLimit = lowUvEditText.getText().toString();
@@ -111,6 +97,16 @@ retrieveSensorData();
 
                 //Call heaterSwitchEvent function
                 uvSwitchEvent(SwitchState);
+            }
+        });
+
+        uvHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = UvIndexActivity.this;
+                Intent i = new Intent(context, SensorDataActivity.class);
+                i.putExtra("SensorType", "UV");
+                context.startActivity(i);
             }
         });
 
@@ -139,6 +135,16 @@ retrieveSensorData();
             }
         });
 
+    }
+
+    void initializeUI(){
+        uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
+        uvSwitch = (Switch)findViewById(R.id.uvSwitch);
+
+        lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
+        highUvEditText = (EditText)findViewById(R.id.highUvEditText);
+
+        uvHistoryButton = findViewById(R.id.uvHistoryButton);
     }
 
     private void uvSwitchStateFromRecord() {

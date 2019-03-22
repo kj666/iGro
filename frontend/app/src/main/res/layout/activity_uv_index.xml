@@ -6,6 +6,40 @@
     android:layout_height="match_parent"
     tools:context=".UvIndexActivity">
 
+    <Button
+        android:id="@+id/uvHistoryButton"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="VIEW UV SENSOR HISTORY"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setRangeHumidityButton"
+        app:layout_constraintVertical_bias="0.936" />
+
+    <Button
+        android:id="@+id/lightUseHistoryButton"
+        android:layout_width="299dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="240dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="VIEW LIGHT USE HISTORY"
+        app:layout_constraintBottom_toTopOf="@+id/tempRangeTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
+
     <TextView
         android:id="@+id/highUvRangeTextView"
         android:layout_width="82dp"
@@ -200,12 +234,11 @@
         android:paddingTop="8dp"
         android:text="UV CONTROL"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/lowUvRangeTextView"
+        app:layout_constraintBottom_toTopOf="@+id/lightUseHistoryButton"
         app:layout_constraintEnd_toStartOf="@+id/uvSwitch"
         app:layout_constraintHorizontal_bias="0.079"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/outdoorUvTextView"
-        app:layout_constraintVertical_bias="0.488" />
+        app:layout_constraintTop_toBottomOf="@+id/ghUvTextView" />
 
     <Switch
         android:id="@+id/uvSwitch"
@@ -222,7 +255,7 @@
         android:textOff="OFF"
         android:textOn="ON"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/highUvRangeTextView"
+        app:layout_constraintBottom_toTopOf="@+id/lightUseHistoryButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/outdoorUvTextView" />
 
@@ -232,17 +265,14 @@
         android:layout_height="27dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="244dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         android:text="UV RANGE"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uvIndexTitleTextView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/uvIndexTitleTextView" />
 
     <ImageView
         android:id="@+id/logoBottomImageView"
@@ -259,141 +289,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/igro_justleaf" />
 
-    <TextView
-        android:id="@+id/textView23"
-        android:layout_width="78dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginBottom="8dp"
-        android:text="GRAPH"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView10"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView24"
-        android:layout_width="85dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="200dp"
-        android:layout_marginLeft="200dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="TABLE"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/cardView10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView23" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView8"
-        android:layout_width="180dp"
-        android:layout_height="124dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.jjoe64.graphview.GraphView
-            android:id="@+id/graph"
-            android:layout_width="180dp"
-            android:layout_height="124dp" />
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView10"
-        android:layout_width="210dp"
-        android:layout_height="124dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
-        app:layout_constraintEnd_toEndOf="parent">
-
-
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="Date"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="°C"
-                    android:textSize="20dp" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="20/02/2019"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="22°C"
-                    android:textSize="20dp" />
-
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="21/02/2019"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="19°C"
-                    android:textSize="20dp" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="22/02/2019"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="23°C"
-                    android:textSize="20dp" />
-            </TableRow>
-
-
-        </TableLayout>
-    </android.support.v7.widget.CardView>
-
     <EditText
         android:id="@+id/lowUvEditText"
         android:layout_width="79dp"
@@ -402,7 +297,6 @@
         android:layout_marginLeft="20dp"
         android:layout_marginEnd="211dp"
         android:layout_marginRight="211dp"
-        android:layout_marginBottom="8dp"
         android:contentDescription="lowerUvLimit"
         android:ems="20"
         android:gravity="bottom|center|center_horizontal|center_vertical"
@@ -413,11 +307,9 @@
         android:textIsSelectable="true"
         android:textSize="12sp"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/cardView8"
         app:layout_constraintEnd_toStartOf="@+id/highUvEditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lowUvRangeTextView"
-        app:layout_constraintVertical_bias="0.032"
         tools:textColor="@color/colorPrimary" />
 
     <EditText
@@ -428,7 +320,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="8dp"
         android:contentDescription="highUvLimit"
         android:ems="20"
         android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
@@ -440,12 +331,10 @@
         android:textColor="@color/colorAccent"
         android:textIsSelectable="true"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/cardView10"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/lowUvEditText"
         app:layout_constraintTop_toTopOf="@+id/lowUvEditText"
-        app:layout_constraintVertical_bias="0.0"
         tools:textColor="@color/colorAccent" />
 
 
