@@ -322,7 +322,6 @@ public class HumidityActivity extends AppCompatActivity {
 
                 }
 
-
             }
 
             @Override
