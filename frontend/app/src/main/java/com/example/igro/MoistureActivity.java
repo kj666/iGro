@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +17,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.MoistureControlEvents;
 import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.SensorData.MoistureRange;
+import com.example.igro.Models.SensorData.TempRange;
+import com.example.igro.Models.SensorData.SensorData;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,14 +53,21 @@ public class MoistureActivity extends AppCompatActivity {
     Button moistureHistoryButton;
     Button irrigationUseButton;
 
+    Button setRangeMoistureButton;
+    Double ghMoisture;
+    TextView ghMoistureTextView;
+    private FirebaseUser currentUser;
     public Boolean lastMoistureState = false;
+    //Get current user using the Helper class
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "IrrigationIsOnTag";
 
     //create heater database reference
     DatabaseReference moistureSwitchEventDB = FirebaseDatabase.getInstance().getReference("SoilMoistureControlLog");
-
+    //create database reference for ranges
+    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
 
 
     @Override
@@ -61,18 +75,125 @@ public class MoistureActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moisture);
+        initializeUI();
+        currentUser = helper.checkAuthentication();
+        retrieveSensorData();
+        retrieveRange();
 
-        initiliazeUI();
         moistureSwitch.setClickable(true);
 
+        setRangeMoistureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMoistureRange();
+            }
+        });
+
+    }
+    public void setMoistureRange(){
+
+        String lowMoisture=lowMoistureEditText.getText().toString();
+        String highMoisture=highMoistureEditText.getText().toString();
+        //check if the ranges are empty or not
+        if (!TextUtils.isEmpty(lowMoisture) && !TextUtils.isEmpty(highMoisture)) {
+            if (Integer.parseInt(lowMoisture.toString()) < Integer.parseInt(highMoisture.toString())) {
+
+                MoistureRange moistureTempRange = new MoistureRange(lowMoisture, highMoisture);
+                databaseRange.child("Moisture").setValue(moistureTempRange);
+                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(this, "HIGH VALUES SHOULD BE GREATER THAN LOW VALUES!!!", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "YOU SHOULD ENTER LOW AND HIGH VALUES!!!", Toast.LENGTH_LONG).show();
+        }
+
+    }
+    void retrieveRange(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
+        DatabaseReference moistureRange = db.child("Moisture");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                highMoistureEditText.setText(dataSnapshot.child("highMoistureValue").getValue().toString());
+                Double highRange = Double.parseDouble(dataSnapshot.child("highMoistureValue").getValue().toString());
+
+                lowMoistureEditText.setText(dataSnapshot.child("lowMoistureValue").getValue().toString());
+                Double lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
+
+
+                if (!(ghMoisture > lowRange)
+                        && ghMoisture< highRange) {
+
+                    ghMoistureTextView.setTextColor(Color.RED);
+                    Toast.makeText(MoistureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    ghMoistureTextView.setTextColor(Color.GREEN);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        moistureRange.addValueEventListener(eventListener);
+
+    }
+    void retrieveSensorData(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.00");
+                    //Moisture
+                    ghMoistureTextView.setText(df.format(sensorData.getSoil())+"");
+                    ghMoisture = Double.parseDouble(ghMoistureTextView.getText().toString());
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
+    void initializeUI(){
 
+        //Initialization
+        ghMoistureTextView = (TextView)findViewById(R.id.numMoistureTextView);
+        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
+        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
+        setRangeMoistureButton=(Button)findViewById(R.id.setRangeMoistureButton);
+        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
+        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
+        moistureSwitch.setClickable(true);
+
+        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
+        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
+
+        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
+        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
+
+        moistureHistoryButton = findViewById(R.id.moistureHistoryButton);
+        irrigationUseButton = findViewById(R.id.irrigationUseHistoryButton);
+        moistureDataTextView = findViewById(R.id.numMoistureTextView);
+    }
     @Override
     protected void onStart() {
         super.onStart();
+        initializeUI();
 
-        initiliazeUI();
 
         String lowMoistureLimit = lowMoistureEditText.getText().toString();
         String highMoistureLimit = lowMoistureEditText.getText().toString();
@@ -148,18 +269,6 @@ public class MoistureActivity extends AppCompatActivity {
 
     }
 
-    void initiliazeUI(){
-        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
-        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
-
-        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
-        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
-
-        moistureHistoryButton = findViewById(R.id.moistureHistoryButton);
-        irrigationUseButton = findViewById(R.id.irrigationUseHistoryButton);
-        moistureDataTextView = findViewById(R.id.numMoistureTextView);
-
-    }
 
     private void moistureSwitchStateFromRecord() {
 
@@ -253,31 +362,6 @@ public class MoistureActivity extends AppCompatActivity {
 
         }
 
-    }
-
-    void retrieveSensorData(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.0");
-
-                    //UVindex
-                    moistureDataTextView.setText(df.format(sensorData.getSoil())+"");
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
 }

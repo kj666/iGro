@@ -28,7 +28,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
-import com.example.igro.Models.SensorData.Range;
+import com.example.igro.Models.SensorData.TempRange;
 import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -70,6 +70,7 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView greenhouseTemperatureTextView;
     private RequestQueue queue;
 
+    // create database reference for ranges
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
     private FirebaseUser currentUser;
     public Boolean lastHeaterState = false;
@@ -137,6 +138,7 @@ public class TemperatureActivity extends AppCompatActivity {
                         && tempDegree < highRange) {
 
                     greenhouseTemperatureTextView.setTextColor(Color.RED);
+                    Toast.makeText(TemperatureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
                 else{
                     greenhouseTemperatureTextView.setTextColor(Color.GREEN);
@@ -191,6 +193,12 @@ public class TemperatureActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+  /*  //Create option menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }*/
 
 
     @Override
@@ -452,8 +460,8 @@ public class TemperatureActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
             if (Integer.parseInt(lowTemp.toString()) < Integer.parseInt(highTemp.toString())) {
 
-                Range temperatureRange = new Range(lowTemp, highTemp);
-                databaseRange.child("Temperature").setValue(temperatureRange);
+                TempRange temperatureTempRange = new TempRange(lowTemp, highTemp);
+                databaseRange.child("Temperature").setValue(temperatureTempRange);
                 Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
             } else {
