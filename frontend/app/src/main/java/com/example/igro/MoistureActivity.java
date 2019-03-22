@@ -1,5 +1,7 @@
 package com.example.igro;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.MoistureControlEvents;
+import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.MoistureRange;
 import com.example.igro.Models.SensorData.TempRange;
 import com.example.igro.Models.SensorData.SensorData;
@@ -41,13 +44,15 @@ import static java.lang.Integer.parseInt;
 
 public class MoistureActivity extends AppCompatActivity {
 
-    LineGraphSeries<DataPoint> series;
-
     //initialize the layout fields
     EditText lowMoistureEditText;
     EditText highMoistureEditText;
     TextView waterControlTextView;
+    TextView moistureDataTextView;
     Switch moistureSwitch;
+    Button moistureHistoryButton;
+    Button irrigationUseButton;
+
     Button setRangeMoistureButton;
     Double ghMoisture;
     TextView ghMoistureTextView;
@@ -75,24 +80,14 @@ public class MoistureActivity extends AppCompatActivity {
         retrieveSensorData();
         retrieveRange();
 
+        moistureSwitch.setClickable(true);
+
         setRangeMoistureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setMoistureRange();
             }
         });
-        double y,x;
-        x=-5;
-
-        GraphView graph =findViewById(R.id.graph);
-        series=new LineGraphSeries<>();
-        for(int i=0; i<500; i++){
-            x=x+0.1;
-            y=Math.sin(x);
-            series.appendData(new DataPoint(x,y),true,500);
-        }
-        graph.addSeries(series);
-
 
     }
     public void setMoistureRange(){
@@ -176,13 +171,23 @@ public class MoistureActivity extends AppCompatActivity {
     void initializeUI(){
 
         //Initialization
-        ghMoistureTextView = (TextView)findViewById(R.id.ghMoistureTextView);
+        ghMoistureTextView = (TextView)findViewById(R.id.numMoistureTextView);
         lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
         highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
         setRangeMoistureButton=(Button)findViewById(R.id.setRangeMoistureButton);
         waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
         moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
         moistureSwitch.setClickable(true);
+
+        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
+        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
+
+        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
+        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
+
+        moistureHistoryButton = findViewById(R.id.moistureHistoryButton);
+        irrigationUseButton = findViewById(R.id.irrigationUseHistoryButton);
+        moistureDataTextView = findViewById(R.id.numMoistureTextView);
     }
     @Override
     protected void onStart() {
@@ -205,6 +210,8 @@ public class MoistureActivity extends AppCompatActivity {
         final Boolean switchState = moistureSwitch.isChecked();
         moistureSwitchStateFromRecord();
 
+        retrieveSensorData();
+
         moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
 
@@ -213,6 +220,27 @@ public class MoistureActivity extends AppCompatActivity {
 
             }
         });
+
+        moistureHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = MoistureActivity.this;
+                Intent i = new Intent(context, SensorDataActivity.class);
+                i.putExtra("SensorType", "MOISTURE");
+                context.startActivity(i);
+            }
+        });
+
+        irrigationUseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = MoistureActivity.this ;
+                Intent i = new Intent(context, HistoricalApplianceActivity.class);
+                i.putExtra("ApplianceType", "IRRIGATION");
+                context.startActivity(i);
+            }
+        });
+
 
     }
 
@@ -240,6 +268,7 @@ public class MoistureActivity extends AppCompatActivity {
         });
 
     }
+
 
     private void moistureSwitchStateFromRecord() {
 

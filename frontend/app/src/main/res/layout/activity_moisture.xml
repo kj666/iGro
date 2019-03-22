@@ -8,6 +8,40 @@
     tools:context=".MoistureActivity">
 
 
+    <Button
+        android:id="@+id/moistureHistoryButton"
+        android:layout_width="320dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="VIEW MOISTURE SENSOR HISTORY"
+        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setRangeHumidityButton"
+        app:layout_constraintVertical_bias="0.936" />
+
+    <Button
+        android:id="@+id/irrigationUseHistoryButton"
+        android:layout_width="299dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="240dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="VIEW IRRIGATION USE HISTORY"
+        app:layout_constraintBottom_toTopOf="@+id/moistureRangeTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureTitleTextView" />
+
     <TextView
         android:id="@+id/highMoistureRangeTextView"
         android:layout_width="82dp"
@@ -49,14 +83,14 @@
         android:layout_marginTop="8dp"
         android:text="%"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="@+id/ghMoistureTextView"
-        app:layout_constraintStart_toEndOf="@+id/ghMoistureTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/numMoistureTextView"
+        app:layout_constraintStart_toEndOf="@+id/numMoistureTextView"
         app:layout_constraintTop_toBottomOf="@+id/greenhouseTextView" />
 
 
     <TextView
-        android:id="@+id/ghMoistureTextView"
-        android:layout_width="130dp"
+        android:id="@+id/numMoistureTextView"
+        android:layout_width="109dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="148dp"
         android:layout_marginLeft="148dp"
@@ -134,7 +168,7 @@
         app:layout_constraintEnd_toStartOf="@+id/moistureSwitch"
         app:layout_constraintHorizontal_bias="0.176"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ghMoistureTextView"
+        app:layout_constraintTop_toBottomOf="@+id/numMoistureTextView"
         app:layout_constraintVertical_bias="0.085" />
 
     <Switch
@@ -154,7 +188,7 @@
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/highMoistureRangeTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ghMoistureTextView"
+        app:layout_constraintTop_toBottomOf="@+id/numMoistureTextView"
         app:layout_constraintVertical_bias="0.084" />
 
     <TextView
@@ -163,17 +197,14 @@
         android:layout_height="22dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="248dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         android:text="MOISTURE RANGE"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/moistureTableCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/moistureTitleTextView"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/moistureTitleTextView" />
 
     <ImageView
         android:id="@+id/logoBottomImageView"
@@ -197,13 +228,10 @@
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:text="GRAPH"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/moistureTableCardView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lowMoistureEditText"
-        app:layout_constraintVertical_bias="0.92" />
+        app:layout_constraintTop_toBottomOf="@+id/lowMoistureEditText" />
 
     <TextView
         android:id="@+id/tableTextView"
@@ -214,122 +242,12 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         android:text="TABLE"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/moistureTableCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/graphTextView"
-        app:layout_constraintTop_toBottomOf="@+id/highMoistureEditText"
-        app:layout_constraintVertical_bias="0.92" />
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/moistureGraphCardView"
-        android:layout_width="180dp"
-        android:layout_height="124dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.jjoe64.graphview.GraphView
-            android:id="@+id/graph"
-            android:layout_width="180dp"
-            android:layout_height="124dp" />
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/moistureTableCardView"
-        android:layout_width="210dp"
-        android:layout_height="124dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginBottom="11dp"
-        app:layout_constraintBottom_toTopOf="@+id/logoBottomImageView"
-        app:layout_constraintEnd_toEndOf="parent">
-
-
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="Date"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="%"
-                    android:textSize="20dp" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="20/02/2019"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="22%"
-                    android:textSize="20dp" />
-
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="21/02/2019"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="19°C"
-                    android:textSize="20dp" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:layout_gravity="left"
-                    android:text="22/02/2019"
-                    android:textSize="20dp"
-
-                    />
-
-                <TextView
-                    android:layout_marginLeft="50dp"
-                    android:text="23°C"
-                    android:textSize="20dp" />
-            </TableRow>
-
-
-        </TableLayout>
-    </android.support.v7.widget.CardView>
+        app:layout_constraintTop_toBottomOf="@+id/highMoistureEditText" />
 
     <EditText
         android:id="@+id/lowMoistureEditText"
@@ -340,7 +258,6 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="196dp"
         android:layout_marginRight="196dp"
-        android:layout_marginBottom="8dp"
         android:contentDescription="lowerMoistureLimit"
         android:ems="20"
         android:gravity="bottom|center|center_horizontal|center_vertical"
@@ -352,12 +269,10 @@
         android:textIsSelectable="true"
         android:textSize="12sp"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/moistureGraphCardView"
         app:layout_constraintEnd_toStartOf="@+id/highMoistureEditText"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lowMoistureRangeTextView"
-        app:layout_constraintVertical_bias="0.0"
         tools:textColor="@color/colorPrimary" />
 
     <EditText
@@ -368,7 +283,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="36dp"
         android:layout_marginRight="36dp"
-        android:layout_marginBottom="60dp"
         android:contentDescription="highMoistureLimit"
         android:ems="20"
         android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
@@ -380,12 +294,10 @@
         android:textColor="@color/colorAccent"
         android:textIsSelectable="true"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/moistureTableCardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="@+id/highMoistureRangeTextView"
         app:layout_constraintTop_toTopOf="@+id/lowMoistureEditText"
-        app:layout_constraintVertical_bias="0.0"
         tools:textColor="@color/colorAccent" />
 
 

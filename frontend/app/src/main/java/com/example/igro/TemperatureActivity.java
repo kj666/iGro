@@ -233,8 +233,6 @@ public class TemperatureActivity extends AppCompatActivity {
                 Intent i = new Intent(context, HistoricalApplianceActivity.class);
                 i.putExtra("ApplianceType", "HEATER");
                 context.startActivity(i);
-
-
             }
         });
 

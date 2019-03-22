@@ -1,5 +1,7 @@
 package com.example.igro;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,12 +38,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.collection.LLRBNode;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 
 import org.json.JSONObject;
@@ -50,7 +47,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import static java.lang.Integer.parseInt;
 
@@ -60,14 +56,15 @@ import static java.lang.Integer.parseInt;
 public class HumidityActivity extends AppCompatActivity {
     private static final String HUMIDITY_LOG_TAG = "HUMID_ACTIVITY_LOG_TAG";
 
-    LineGraphSeries<DataPoint> series;
 
     //initialize the layout fields
     EditText lowHumEditText;
     EditText highHumEditText;
+    TextView humTextView;
     TextView humControlTextView;
     Switch humSwitch;
-    TextView humTextView;
+    Button humidityHistoryButton;
+    Button humidifierUseButton;
     Button setHumidityRange;
     Double ghHumidity;
     private FirebaseUser currentUser;
@@ -90,22 +87,19 @@ public class HumidityActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_humidity);
 
-        humControlTextView = (TextView) findViewById(R.id.humControlTextView);
-        humSwitch = (Switch) findViewById(R.id.humSwitch);
-        humSwitch.setClickable(true);
-        humTextView = (TextView) findViewById(R.id.ghHumTextView);
+        initializeUI();
 
         lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
         highHumEditText = (EditText) findViewById(R.id.highHumEditText);
         retrieveSensorData();
 
-        outdoorHumidityTextView = findViewById(R.id.outdoorHumTextView);
         queue = Volley.newRequestQueue(this);
         requestHumidity();
 
         initializeUI();
         currentUser = helper.checkAuthentication();
         retrieveSensorData();
+
         retrieveRange();
         setHumidityRange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,17 +107,6 @@ public class HumidityActivity extends AppCompatActivity {
                 setHumidityRange();
             }
         });
-        double y, x;
-        x = -5;
-
-        GraphView graph = findViewById(R.id.graph);
-        series = new LineGraphSeries<>();
-        for (int i = 0; i < 500; i++) {
-            x = x + 0.1;
-            y = Math.sin(x);
-            series.appendData(new DataPoint(x, y), true, 500);
-        }
-        graph.addSeries(series);
     }
 
     void initializeUI() {
@@ -135,7 +118,11 @@ public class HumidityActivity extends AppCompatActivity {
         setHumidityRange = (Button) findViewById(R.id.setHumidityRange);
         humControlTextView = (TextView) findViewById(R.id.humControlTextView);
         humSwitch = (Switch) findViewById(R.id.humSwitch);
+        outdoorHumidityTextView = findViewById(R.id.outdoorHumTextView);
         humSwitch.setClickable(true);
+
+        humidityHistoryButton = findViewById(R.id.humidityHistoryButton);
+        humidifierUseButton = findViewById(R.id.humidifierUseHistoryButton);
     }
 
     public void setHumidityRange() {
@@ -234,6 +221,7 @@ public class HumidityActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         initializeUI();
         String lowHumLimit = lowHumEditText.getText().toString();
         String highHumLimit = lowHumEditText.getText().toString();
@@ -256,6 +244,26 @@ public class HumidityActivity extends AppCompatActivity {
                 //Call heaterSwitchEvent function
                 humidSwitchEvent(SwitchState);
 
+            }
+        });
+
+        humidityHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = HumidityActivity.this;
+                Intent i = new Intent(context, SensorDataActivity.class);
+                i.putExtra("SensorType", "HUMIDITY");
+                context.startActivity(i);
+            }
+        });
+
+        humidifierUseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = HumidityActivity.this ;
+                Intent i = new Intent(context, HistoricalApplianceActivity.class);
+                i.putExtra("ApplianceType", "HUMIDIFIER");
+                context.startActivity(i);
             }
         });
 
@@ -283,10 +291,8 @@ public class HumidityActivity extends AppCompatActivity {
 
                 //Call heaterSwitchEvent function
                 humidSwitchEvent(SwitchState);
-
             }
         });
-
     }
 
 
@@ -315,7 +321,6 @@ public class HumidityActivity extends AppCompatActivity {
                     Log.d(TAG, "On/Off Status of humidifier can't be null, getHumidEventOnOff points to null");
 
                 }
-
 
             }
 
