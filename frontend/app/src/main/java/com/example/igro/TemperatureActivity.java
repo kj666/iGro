@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
-import com.example.igro.Models.SensorData.Range;
+import com.example.igro.Models.SensorData.TempRange;
 import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -56,7 +56,7 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView indoorTempTextView;
     Switch tempSwitch;
 
-
+    // create database reference for ranges
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
     private FirebaseUser currentUser;
     public Boolean lastHeaterState = false;
@@ -403,8 +403,8 @@ public class TemperatureActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
             if (Integer.parseInt(lowTemp.toString()) < Integer.parseInt(highTemp.toString())) {
 
-                Range temperatureRange = new Range(lowTemp, highTemp);
-                databaseRange.child("Temperature").setValue(temperatureRange);
+                TempRange temperatureTempRange = new TempRange(lowTemp, highTemp);
+                databaseRange.child("Temperature").setValue(temperatureTempRange);
                 Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
             } else {
