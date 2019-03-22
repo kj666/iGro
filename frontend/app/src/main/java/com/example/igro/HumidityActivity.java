@@ -83,27 +83,11 @@ public class HumidityActivity extends AppCompatActivity {
 
         inititalizeUI();
 
-
         retrieveSensorData();
 
         queue = Volley.newRequestQueue(this);
         requestHumidity();
 
-
-
-    }
-
-    void inititalizeUI(){
-        humControlTextView = (TextView) findViewById(R.id.humControlTextView);
-        humSwitch = (Switch) findViewById(R.id.humSwitch);
-        humSwitch.setClickable(true);
-        humTextView = (TextView) findViewById(R.id.ghHumTextView);
-        lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
-        highHumEditText = (EditText) findViewById(R.id.highHumEditText);
-
-        outdoorHumidityTextView = findViewById(R.id.outdoorHumTextView);
-
-        humidityHistoryButton = findViewById(R.id.humidityHistoryButton);
     }
 
 
@@ -185,12 +169,22 @@ public class HumidityActivity extends AppCompatActivity {
 
                 //Call heaterSwitchEvent function
                 humidSwitchEvent(SwitchState);
-
             }
         });
-
     }
 
+    void inititalizeUI(){
+        humControlTextView = (TextView) findViewById(R.id.humControlTextView);
+        humSwitch = (Switch) findViewById(R.id.humSwitch);
+        humSwitch.setClickable(true);
+        humTextView = (TextView) findViewById(R.id.ghHumTextView);
+        lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
+        highHumEditText = (EditText) findViewById(R.id.highHumEditText);
+
+        outdoorHumidityTextView = findViewById(R.id.outdoorHumTextView);
+
+        humidityHistoryButton = findViewById(R.id.humidityHistoryButton);
+    }
 
     private void humidSwitchStateFromRecord() {
 

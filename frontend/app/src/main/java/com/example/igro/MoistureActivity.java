@@ -1,11 +1,15 @@
 package com.example.igro;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -30,13 +34,12 @@ import static java.lang.Integer.parseInt;
 
 public class MoistureActivity extends AppCompatActivity {
 
-    LineGraphSeries<DataPoint> series;
-
     //initialize the layout fields
     EditText lowMoistureEditText;
     EditText highMoistureEditText;
     TextView waterControlTextView;
     Switch moistureSwitch;
+    Button moistureHistoryButton;
 
     public Boolean lastMoistureState = false;
 
@@ -54,25 +57,9 @@ public class MoistureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moisture);
 
-        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
-        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
+        initiliazeUI();
         moistureSwitch.setClickable(true);
 
-        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
-        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
-
-
-        double y,x;
-        x=-5;
-
-        GraphView graph =findViewById(R.id.graph);
-        series=new LineGraphSeries<>();
-        for(int i=0; i<500; i++){
-            x=x+0.1;
-            y=Math.sin(x);
-            series.appendData(new DataPoint(x,y),true,500);
-        }
-        graph.addSeries(series);
     }
 
 
@@ -80,11 +67,7 @@ public class MoistureActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
-        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
-
-        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
-        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
+        initiliazeUI();
 
         String lowMoistureLimit = lowMoistureEditText.getText().toString();
         String highMoistureLimit = lowMoistureEditText.getText().toString();
@@ -107,6 +90,16 @@ public class MoistureActivity extends AppCompatActivity {
                 //Call heaterSwitchEvent function
                 moistureSwitchEvent(SwitchState);
 
+            }
+        });
+
+        moistureHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = MoistureActivity.this;
+                Intent i = new Intent(context, SensorDataActivity.class);
+                i.putExtra("SensorType", "MOISTURE");
+                context.startActivity(i);
             }
         });
 
@@ -134,6 +127,17 @@ public class MoistureActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    void initiliazeUI(){
+        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
+        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
+
+        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
+        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
+
+        moistureHistoryButton = findViewById(R.id.moistureHistoryButton);
 
     }
 
