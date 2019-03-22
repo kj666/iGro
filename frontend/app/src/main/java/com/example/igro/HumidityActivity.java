@@ -41,7 +41,6 @@ import static java.lang.Integer.parseInt;
 
 public class HumidityActivity extends AppCompatActivity {
 
-    LineGraphSeries<DataPoint> series;
 
     //initialize the layout fields
     EditText lowHumEditText;
@@ -71,19 +70,11 @@ public class HumidityActivity extends AppCompatActivity {
 
         lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
         highHumEditText = (EditText) findViewById(R.id.highHumEditText);
-retrieveSensorData();
+        retrieveSensorData();
 
-        double y, x;
-        x = -5;
 
-        GraphView graph = findViewById(R.id.graph);
-        series = new LineGraphSeries<>();
-        for (int i = 0; i < 500; i++) {
-            x = x + 0.1;
-            y = Math.sin(x);
-            series.appendData(new DataPoint(x, y), true, 500);
-        }
-        graph.addSeries(series);
+
+
     }
 
 
