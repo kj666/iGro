@@ -129,6 +129,7 @@ public class TemperatureActivity extends AppCompatActivity {
                         && tempDegree < highRange) {
 
                     indoorTempTextView.setTextColor(Color.RED);
+                    Toast.makeText(TemperatureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
                 else{
                     indoorTempTextView.setTextColor(Color.GREEN);
