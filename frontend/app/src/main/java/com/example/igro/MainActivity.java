@@ -214,6 +214,11 @@ public class MainActivity extends AppCompatActivity {
                 helper.goToActivity(LoginActivity.class);
                 return true;
 
+                case R.id.polling:
+                openDialog();
+                return true;
+
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -312,4 +317,9 @@ public class MainActivity extends AppCompatActivity {
             return numberToBeConverted.toString();
         }
     }
+    public void openDialog(){
+        PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
+        dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+
 }

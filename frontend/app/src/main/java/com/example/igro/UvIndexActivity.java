@@ -8,6 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -16,8 +19,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.UvControlEvents;
 import com.example.igro.Models.SensorData.SensorData;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,7 +60,7 @@ public class UvIndexActivity extends AppCompatActivity {
 
     //create heater database reference
     DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("UVControlLog");
-
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -145,6 +150,31 @@ public class UvIndexActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.sign_out:
+                helper.signout();
+                helper.goToActivity(LoginActivity.class);
+                return true;
+
+            case R.id.polling:
+                openDialog();
+                return true;
+
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     void initializeUI(){
@@ -277,6 +307,11 @@ public class UvIndexActivity extends AppCompatActivity {
             }
         };
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+    }
+
+    public void openDialog(){
+        PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
+        dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
 
 }

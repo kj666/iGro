@@ -9,6 +9,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -269,6 +272,31 @@ public class MoistureActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.sign_out:
+                helper.signout();
+                helper.goToActivity(LoginActivity.class);
+                return true;
+
+            case R.id.polling:
+                openDialog();
+                return true;
+
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void moistureSwitchStateFromRecord() {
 
@@ -362,6 +390,10 @@ public class MoistureActivity extends AppCompatActivity {
 
         }
 
+    }
+    public void openDialog(){
+        PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
+        dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
 
 }
