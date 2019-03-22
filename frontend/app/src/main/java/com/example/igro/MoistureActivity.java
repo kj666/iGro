@@ -188,11 +188,7 @@ public class MoistureActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         initializeUI();
-        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
-        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
 
-        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
-        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
 
         String lowMoistureLimit = lowMoistureEditText.getText().toString();
         String highMoistureLimit = lowMoistureEditText.getText().toString();
