@@ -127,8 +127,8 @@ public class MoistureActivity extends AppCompatActivity {
                 Double lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
 
 
-                if (!(ghMoisture > lowRange)
-                        && ghMoisture< highRange) {
+                if (!((ghMoisture > lowRange)
+                        && (ghMoisture< highRange))) {
 
                     ghMoistureTextView.setTextColor(Color.RED);
                     Toast.makeText(MoistureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
@@ -155,7 +155,7 @@ public class MoistureActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
                     SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
+                    DecimalFormat df = new DecimalFormat("####0.0");
                     //Moisture
                     ghMoistureTextView.setText(df.format(sensorData.getSoil())+"");
                     ghMoisture = Double.parseDouble(ghMoistureTextView.getText().toString());

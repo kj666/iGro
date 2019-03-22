@@ -18,11 +18,24 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import com.example.igro.Controller.Helper;
+import com.example.igro.Models.SensorData.UvRange;
+import com.google.firebase.auth.FirebaseAuth;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.UvControlEvents;
 import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +46,8 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -41,6 +56,10 @@ import java.util.Calendar;
 import static java.lang.Integer.parseInt;
 
 public class UvIndexActivity extends AppCompatActivity {
+    private static final String UV_ACTIVITY_LOG_TAG = "UV_ACTIVITY_LOG_TAG";
+
+    TextView outdoorUVTextView;
+    private RequestQueue queue;
 
     LineGraphSeries<DataPoint> series;
 
@@ -52,6 +71,11 @@ public class UvIndexActivity extends AppCompatActivity {
     TextView uvTextView;
     Button uvHistoryButton;
     Button lightUseButton;
+    Button setUvRange;
+    TextView ghUvTextView;
+    Double ghUv;
+    private FirebaseUser currentUser;
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     public Boolean lastUvState = false;
 
@@ -61,6 +85,8 @@ public class UvIndexActivity extends AppCompatActivity {
     //create heater database reference
     DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("UVControlLog");
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+    //create database reference for ranges
+    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -70,17 +96,57 @@ public class UvIndexActivity extends AppCompatActivity {
         uvTextView = (TextView)findViewById(R.id.ghUvTextView);
 
         initializeUI();
-        uvSwitch.setClickable(true);
-
+        currentUser = helper.checkAuthentication();
+        retrieveSensorData();
+        retrieveRange();
+        setUvRange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setUvRange();
+            }
+        });
         retrieveSensorData();
 
     }
 
+    void retrieveRange(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
+        DatabaseReference uvRange = db.child("UV");
 
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                lowUvEditText.setText(dataSnapshot.child("lowUvValue").getValue().toString());
+                Double lowRange = Double.parseDouble(dataSnapshot.child("lowUvValue").getValue().toString());
+                highUvEditText.setText(dataSnapshot.child("highUvValue").getValue().toString());
+                Double highRange = Double.parseDouble(dataSnapshot.child("highUvValue").getValue().toString());
+
+
+
+
+                if (!((ghUv > lowRange)
+                        && (ghUv< highRange))) {
+
+                    ghUvTextView.setTextColor(Color.RED);
+                    Toast.makeText(UvIndexActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    ghUvTextView.setTextColor(Color.GREEN);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        uvRange.addValueEventListener(eventListener);
+
+    }
     @Override
     protected void onStart() {
         super.onStart();
-
         initializeUI();
 
         String lowUvLimit = lowUvEditText.getText().toString();
@@ -151,6 +217,7 @@ public class UvIndexActivity extends AppCompatActivity {
         });
 
     }
+    //Initialization
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -178,14 +245,42 @@ public class UvIndexActivity extends AppCompatActivity {
     void initializeUI(){
         uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
         uvSwitch = (Switch)findViewById(R.id.uvSwitch);
+        uvSwitch.setClickable(true);
 
         lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
         highUvEditText = (EditText)findViewById(R.id.highUvEditText);
 
+        outdoorUVTextView = findViewById(R.id.outdoorUvTextView);
+        queue = Volley.newRequestQueue(this);
+        requestUVIndex();
+
         uvHistoryButton = findViewById(R.id.uvHistoryButton);
         lightUseButton = findViewById(R.id.lightUseHistoryButton);
+        //indoor uv
+        ghUvTextView = (TextView) findViewById(R.id.ghUvTextView);
+        //set range button
+        setUvRange = (Button) findViewById(R.id.setUvRange);
     }
+    public void setUvRange() {
 
+        String lowUv = lowUvEditText.getText().toString();
+        String highUv = highUvEditText.getText().toString();
+        //check if the ranges are empty or not
+        if (!TextUtils.isEmpty(lowUv) && !TextUtils.isEmpty(highUv)) {
+            if (Integer.parseInt(lowUv.toString()) < Integer.parseInt(highUv.toString())) {
+
+                UvRange UvRange = new UvRange(lowUv, highUv);
+                databaseRange.child("UV").setValue(UvRange);
+                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(this, "HIGH VALUES SHOULD BE GREATER THAN LOW VALUES!!!", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "YOU SHOULD ENTER LOW AND HIGH VALUES!!!", Toast.LENGTH_LONG).show();
+        }
+
+    }
     private void uvSwitchStateFromRecord() {
 
         uvSwitchEventDB.orderByKey().limitToLast(1).addChildEventListener(new ChildEventListener() {
@@ -251,33 +346,33 @@ public class UvIndexActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String uvOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
-       if(!(uvSwitchState==lastUvState)){
+        if(!(uvSwitchState==lastUvState)){
 
-           //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
-           String uvEventId = uvSwitchEventDB.push().getKey();
-
-
-           UvControlEvents uvSwitchClickEvent = new UvControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
-           uvSwitchEventDB.child(uvEventId).setValue(uvSwitchClickEvent);
-
-           if(!(uvEventId == null)) {
+            //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
+            String uvEventId = uvSwitchEventDB.push().getKey();
 
 
-               if (lastUvState) {
+            UvControlEvents uvSwitchClickEvent = new UvControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
+            uvSwitchEventDB.child(uvEventId).setValue(uvSwitchClickEvent);
 
-                   Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
-                   Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
+            if(!(uvEventId == null)) {
 
-               } else {
-                   Log.d(TAG, "Thelights were turned off on " + uvOnTimeStampFormated);
-                   Toast.makeText(this, "The lights were switched OFF on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
-               }
-           }else{
-               Log.d(TAG, "ERROR: uvEventId can't be null");
 
-           }
+                if (lastUvState) {
 
-       }
+                    Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
+                    Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
+
+                } else {
+                    Log.d(TAG, "Thelights were turned off on " + uvOnTimeStampFormated);
+                    Toast.makeText(this, "The lights were switched OFF on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                }
+            }else{
+                Log.d(TAG, "ERROR: uvEventId can't be null");
+
+            }
+
+        }
 
 
     }
@@ -294,6 +389,7 @@ public class UvIndexActivity extends AppCompatActivity {
 
                     //UVindex
                     uvTextView.setText(df.format(sensorData.getUv())+"");
+                    ghUv = Double.parseDouble(uvTextView.getText().toString());
 
 
                 }
@@ -307,6 +403,42 @@ public class UvIndexActivity extends AppCompatActivity {
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
+    void requestUVIndex() {
+        // TODO: 2019-03-18
+        // Make this function capable of pulling data for any city as per user request
+
+        // Get weather for Montreal
+        String url = "https://api.openweathermap.org/data/2.5/uvi?lat=45&lon=-73&appid=b4840319c97c4629912dc391ed164bcb";
+        // Make request
+        JsonObjectRequest weatherRequest = new JsonObjectRequest(
+                Request.Method.GET, url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(UV_ACTIVITY_LOG_TAG, "response: " + response);
+                        try {
+                            // Get description from weather response
+                            //String description = response.getJSONArray("weather").getJSONObject(0).getString("main");
+                            //descriptionTextView.setText(description);
+
+                            // Get temperature from weather response
+                            Double uv = response.getDouble("value");
+                            outdoorUVTextView.setText(uv.toString());
+
+                        } catch (Exception e) {
+                            Log.w(UV_ACTIVITY_LOG_TAG, "Attempt to parse JSON Object failed");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(UV_ACTIVITY_LOG_TAG, "JSON Request has failed");
+                    }
+                });
+        queue.add(weatherRequest);
+    }
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");

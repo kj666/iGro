@@ -120,8 +120,10 @@ public class SensorDataTableFragment extends Fragment {
 
             sensorDate.setText(Helper.convertTime(sensorDataList.get(position).getTime()));
 
-            if(sensorType.equals("TEMPERATURE"))
+            if(sensorType.equals("TEMPERATURE-C"))
                 sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
+            else if (sensorType.equals("TEMPERATURE-F"))
+                sensorData.setText(sensorDataList.get(position).getTemperatureF()+"");
             else if(sensorType.equals("UV"))
                 sensorData.setText(sensorDataList.get(position).getUv()+"");
             else if(sensorType.equals("HUMIDITY"))
