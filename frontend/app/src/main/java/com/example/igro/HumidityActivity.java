@@ -19,6 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.ActuatorControl.HumidControlEvents;
 import com.example.igro.Models.SensorData.HumidityRange;
 import com.example.igro.Models.SensorData.MoistureRange;
@@ -38,6 +44,8 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -46,8 +54,11 @@ import java.util.Date;
 
 import static java.lang.Integer.parseInt;
 
+// TODO 2019-03-20
+// use weather api to collect humidity information
 
 public class HumidityActivity extends AppCompatActivity {
+    private static final String HUMIDITY_LOG_TAG = "HUMID_ACTIVITY_LOG_TAG";
 
     LineGraphSeries<DataPoint> series;
 
@@ -68,6 +79,9 @@ public class HumidityActivity extends AppCompatActivity {
 
     //create heater database reference
     DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("HumidControlLog");
+
+    TextView outdoorHumidityTextView; // displays the humidity in percentage
+    private RequestQueue queue;
     //create database reference for ranges
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
 
@@ -75,6 +89,20 @@ public class HumidityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_humidity);
+
+        humControlTextView = (TextView) findViewById(R.id.humControlTextView);
+        humSwitch = (Switch) findViewById(R.id.humSwitch);
+        humSwitch.setClickable(true);
+        humTextView = (TextView) findViewById(R.id.ghHumTextView);
+
+        lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
+        highHumEditText = (EditText) findViewById(R.id.highHumEditText);
+        retrieveSensorData();
+
+        outdoorHumidityTextView = findViewById(R.id.outdoorHumTextView);
+        queue = Volley.newRequestQueue(this);
+        requestHumidity();
+
         initializeUI();
         currentUser = helper.checkAuthentication();
         retrieveSensorData();
@@ -354,5 +382,68 @@ public class HumidityActivity extends AppCompatActivity {
 
     }
 
+    void retrieveSensorData() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
 
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.00");
+
+
+                    //Humidity
+                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+    }
+
+    void requestHumidity() {
+        // TODO: 2019-03-18
+        // Make this function capable of pulling data for any city as per user request
+
+        // Get weather for Montreal
+        String url = "https://api.openweathermap.org/data/2.5/weather?q=Montreal&units=metric&APPID=b4840319c97c4629912dc391ed164bcb";
+        // Make request
+        JsonObjectRequest humidityRequest = new JsonObjectRequest(
+                Request.Method.GET, url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(HUMIDITY_LOG_TAG, "response: " + response);
+                        try {
+                            // Get description from weather response
+                            //String description = response.getJSONArray("weather").getJSONObject(0).getString("main");
+                            //descriptionTextView.setText(description);
+
+                            // Get temperature from weather response
+                            Integer humidity = response.getJSONObject("main").getInt("humidity");
+                            outdoorHumidityTextView.setText(humidity.toString());
+
+                        } catch (Exception e) {
+                            Log.w(HUMIDITY_LOG_TAG, "Attempt to parse JSON Object failed");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(HUMIDITY_LOG_TAG, "JSON Request has failed");
+                    }
+                });
+        queue.add(humidityRequest);
+    }
 }
+
