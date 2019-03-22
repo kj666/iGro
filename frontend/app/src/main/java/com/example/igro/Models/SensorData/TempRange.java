@@ -1,16 +1,16 @@
 package com.example.igro.Models.SensorData;
 
-public class Range {
+public class TempRange {
 
     private String lowTempValue;
     private String highTempValue;
 
-    public Range(){
+    public TempRange(){
 
     }
 
 
-    public Range(String lowTempValue, String highTempValue){
+    public TempRange(String lowTempValue, String highTempValue){
 
         this.lowTempValue=lowTempValue;
         this.highTempValue=highTempValue;

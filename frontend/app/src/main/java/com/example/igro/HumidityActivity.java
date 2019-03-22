@@ -5,16 +5,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igro.Controller.Helper;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,7 +26,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.ActuatorControl.HumidControlEvents;
+import com.example.igro.Models.SensorData.HumidityRange;
+import com.example.igro.Models.SensorData.MoistureRange;
 import com.example.igro.Models.SensorData.SensorData;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,11 +65,14 @@ public class HumidityActivity extends AppCompatActivity {
     //initialize the layout fields
     EditText lowHumEditText;
     EditText highHumEditText;
-    TextView humTextView;
     TextView humControlTextView;
     Switch humSwitch;
-
+    TextView humTextView;
+    Button setHumidityRange;
+    Double ghHumidity;
+    private FirebaseUser currentUser;
     public Boolean lastHumidState = false;
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HumidifyerIsOnTag";
@@ -71,6 +82,8 @@ public class HumidityActivity extends AppCompatActivity {
 
     TextView outdoorHumidityTextView; // displays the humidity in percentage
     private RequestQueue queue;
+    //create database reference for ranges
+    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +103,16 @@ public class HumidityActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         requestHumidity();
 
+        initializeUI();
+        currentUser = helper.checkAuthentication();
+        retrieveSensorData();
+        retrieveRange();
+        setHumidityRange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setHumidityRange();
+            }
+        });
         double y, x;
         x = -5;
 
@@ -103,6 +126,96 @@ public class HumidityActivity extends AppCompatActivity {
         graph.addSeries(series);
     }
 
+    void initializeUI() {
+
+        //Initialization
+        humTextView = (TextView) findViewById(R.id.ghHumTextView);
+        lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
+        highHumEditText = (EditText) findViewById(R.id.highHumEditText);
+        setHumidityRange = (Button) findViewById(R.id.setHumidityRange);
+        humControlTextView = (TextView) findViewById(R.id.humControlTextView);
+        humSwitch = (Switch) findViewById(R.id.humSwitch);
+        humSwitch.setClickable(true);
+    }
+
+    public void setHumidityRange() {
+
+        String lowHumidity = lowHumEditText.getText().toString();
+        String highHumidity = highHumEditText.getText().toString();
+        //check if the ranges are empty or not
+        if (!TextUtils.isEmpty(lowHumidity) && !TextUtils.isEmpty(highHumidity)) {
+            if (Integer.parseInt(lowHumidity.toString()) < Integer.parseInt(highHumidity.toString())) {
+
+                HumidityRange humidityRange = new HumidityRange(lowHumidity, highHumidity);
+                databaseRange.child("Humidity").setValue(humidityRange);
+                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(this, "HIGH VALUES SHOULD BE GREATER THAN LOW VALUES!!!", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(this, "YOU SHOULD ENTER LOW AND HIGH VALUES!!!", Toast.LENGTH_LONG).show();
+        }
+
+    }
+    void retrieveSensorData() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    SensorData sensorData = snap.getValue(SensorData.class);
+                    DecimalFormat df = new DecimalFormat("####0.00");
+                    //Humidity
+                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
+                    ghHumidity = Double.parseDouble(humTextView.getText().toString());
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+
+    }
+    void retrieveRange(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
+        DatabaseReference humidityRange = db.child("Humidity");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                highHumEditText.setText(dataSnapshot.child("highHumidityValue").getValue().toString());
+                Double highRange = Double.parseDouble(dataSnapshot.child("highHumidityValue").getValue().toString());
+
+                lowHumEditText.setText(dataSnapshot.child("lowHumidityValue").getValue().toString());
+                Double lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
+
+
+                if (!(ghHumidity > lowRange)
+                        && ghHumidity< highRange) {
+
+                    humTextView.setTextColor(Color.RED);
+                    Toast.makeText(HumidityActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    humTextView.setTextColor(Color.GREEN);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        humidityRange.addValueEventListener(eventListener);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -121,13 +234,7 @@ public class HumidityActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        humControlTextView = (TextView) findViewById(R.id.humControlTextView);
-        humSwitch = (Switch) findViewById(R.id.humSwitch);
-
-        lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
-        highHumEditText = (EditText) findViewById(R.id.highHumEditText);
-
+        initializeUI();
         String lowHumLimit = lowHumEditText.getText().toString();
         String highHumLimit = lowHumEditText.getText().toString();
 
@@ -272,33 +379,6 @@ public class HumidityActivity extends AppCompatActivity {
 
         }
 
-    }
-
-    void retrieveSensorData() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
-
-
-                    //Humidity
-                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
-
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
     void requestHumidity() {

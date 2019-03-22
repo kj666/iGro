@@ -56,7 +56,7 @@
 
     <TextView
         android:id="@+id/ghMoistureTextView"
-        android:layout_width="67dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="148dp"
         android:layout_marginLeft="148dp"
@@ -398,6 +398,24 @@
         android:id="@+id/group2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/setRangeMoistureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="37dp"
+        android:text="SET RANGE"
+        app:layout_constraintBottom_toTopOf="@+id/moistureTableCardView"
+        app:layout_constraintEnd_toStartOf="@+id/highMoistureEditText"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toEndOf="@+id/lowMoistureEditText"
+        app:layout_constraintTop_toBottomOf="@+id/moistureRangeTextView"
+        app:layout_constraintVertical_bias="1.0" />
 
 
 </android.support.constraint.ConstraintLayout>
