@@ -67,7 +67,7 @@ public class HumidityActivity extends AppCompatActivity {
     EditText highHumEditText;
     TextView humControlTextView;
     Switch humSwitch;
-    TextView ghHumTextView;
+    TextView humTextView;
     Button setHumidityRange;
     Double ghHumidity;
     private FirebaseUser currentUser;
@@ -129,7 +129,7 @@ public class HumidityActivity extends AppCompatActivity {
     void initializeUI() {
 
         //Initialization
-        ghHumTextView = (TextView) findViewById(R.id.ghHumTextView);
+        humTextView = (TextView) findViewById(R.id.ghHumTextView);
         lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
         highHumEditText = (EditText) findViewById(R.id.highHumEditText);
         setHumidityRange = (Button) findViewById(R.id.setHumidityRange);
@@ -168,8 +168,8 @@ public class HumidityActivity extends AppCompatActivity {
                     SensorData sensorData = snap.getValue(SensorData.class);
                     DecimalFormat df = new DecimalFormat("####0.00");
                     //Humidity
-                    ghHumTextView.setText(df.format(sensorData.getHumidity()) + "");
-                    ghHumidity = Double.parseDouble(ghHumTextView.getText().toString());
+                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
+                    ghHumidity = Double.parseDouble(humTextView.getText().toString());
 
                 }
             }
@@ -180,7 +180,6 @@ public class HumidityActivity extends AppCompatActivity {
             }
         };
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
-
 
     }
     void retrieveRange(){
@@ -200,11 +199,11 @@ public class HumidityActivity extends AppCompatActivity {
                 if (!(ghHumidity > lowRange)
                         && ghHumidity< highRange) {
 
-                    ghHumTextView.setTextColor(Color.RED);
+                    humTextView.setTextColor(Color.RED);
                     Toast.makeText(HumidityActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    ghHumTextView.setTextColor(Color.GREEN);
+                    humTextView.setTextColor(Color.GREEN);
                 }
             }
 
@@ -380,33 +379,6 @@ public class HumidityActivity extends AppCompatActivity {
 
         }
 
-    }
-
-    void retrieveSensorData() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
-
-
-                    //Humidity
-                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
-
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
     void requestHumidity() {
