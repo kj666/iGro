@@ -1,12 +1,14 @@
 package com.example.igro;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.igro.Models.SensorData.SensorData;
@@ -31,9 +33,26 @@ public class SensorGraphFragment extends Fragment {
 
     private String sensorType;
     GraphView graphView;
-    LineGraphSeries<DataPoint> series;
+
     TextView sensorTypeTextView;
     private List<SensorData> sensorDataList = new ArrayList<>();
+    DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+    ValueEventListener eventListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+            for(DataSnapshot snap : dataSnapshot.getChildren()){
+                SensorData sensorData = snap.getValue(SensorData.class);
+                Log.d("FIREBASE", sensorData.getTime()+"");
+                sensorDataList.add(sensorData);
+            }
+            populateGraph();
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+    };
 
 
     public SensorGraphFragment() {
@@ -69,6 +88,7 @@ public class SensorGraphFragment extends Fragment {
         sensorTypeTextView.setText(sensorType);
 
         retrieveSensorDataFromDB();
+
         return view;
     }
 
@@ -77,23 +97,32 @@ public class SensorGraphFragment extends Fragment {
      */
     void populateGraph(){
 
-        series = new LineGraphSeries<>();
-
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
         for(SensorData data: sensorDataList){
             long t = data.getTime();
             Date time = new Date(t);
 
             double y = 0;
-            if(sensorType.equals("TEMPERATURE-C"))
+            if(sensorType.equals("TEMPERATURE-C")) {
                 y = data.getTemperatureC();
-            else if (sensorType.equals("TEMPERATURE-F"))
+                graphView.getGridLabelRenderer().setVerticalAxisTitle("Celsius");
+            }
+            else if (sensorType.equals("TEMPERATURE-F")) {
                 y = data.getTemperatureF();
-            else if(sensorType.equals("UV"))
+                graphView.getGridLabelRenderer().setVerticalAxisTitle("Fahrenheit");
+            }
+            else if(sensorType.equals("UV")) {
                 y = data.getUv();
-            else if(sensorType.equals("HUMIDITY"))
+                graphView.getGridLabelRenderer().setVerticalAxisTitle("Index");
+            }
+            else if(sensorType.equals("HUMIDITY")) {
                 y = data.getHumidity();
-            else if(sensorType.equals("MOISTURE"))
+                graphView.getGridLabelRenderer().setVerticalAxisTitle("%");
+            }
+            else if(sensorType.equals("MOISTURE")) {
                 y = data.getSoil();
+                graphView.getGridLabelRenderer().setVerticalAxisTitle("%");
+            }
 
             series.appendData(new DataPoint(time.getTime(),y), true, 500);
         }
@@ -101,8 +130,10 @@ public class SensorGraphFragment extends Fragment {
 
         //Use time as x-axis
         graphView.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getContext(),new SimpleDateFormat("dd-MM HH:mm")));
-        graphView.getGridLabelRenderer().setHorizontalLabelsAngle(90);
+        graphView.getGridLabelRenderer().setHorizontalAxisTitle("Time");
+        graphView.getGridLabelRenderer().setHorizontalLabelsAngle(135);
         graphView.getGridLabelRenderer().setLabelHorizontalHeight(200);
+
 
         //make the graph scrollable and scalable
         graphView.getViewport().setYAxisBoundsManual(true);
@@ -110,27 +141,12 @@ public class SensorGraphFragment extends Fragment {
         graphView.getViewport().setScrollable(true);
         graphView.getViewport().setScrollableY(true);
         graphView.getViewport().setScalable(true);
+
+        //Stop listener
+        db.removeEventListener(eventListener);
     }
 
     void retrieveSensorDataFromDB(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    Log.d("FIREBASE", sensorData.getTime()+"");
-                    sensorDataList.add(sensorData);
-                }
-                populateGraph();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        };
-        db.addValueEventListener(eventListener);
+        db.orderByChild("time").addValueEventListener(eventListener);
     }
 }
