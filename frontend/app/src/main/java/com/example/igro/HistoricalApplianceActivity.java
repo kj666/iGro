@@ -1,6 +1,5 @@
 package com.example.igro;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +8,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
-import com.example.igro.Models.ActuatorControl.HeaterEventsListConfig;
+import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
+import com.example.igro.Models.ActuatorControl.ApplianceEventsListConfig;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +33,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     TextView listOnOffTitleTextView;
     ListView applianceEventListView;
 
-    List<HeaterControlEvents> applianceList = new ArrayList<>();
+    List<ApplianceControlEvents> applianceList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +106,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
 // creates a new array list of the Class Heater Control Events which will be populated by records
-        final List<HeaterControlEvents> heaterList = new ArrayList<>();
+        final List<ApplianceControlEvents> heaterList = new ArrayList<>();
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
         heaterSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
@@ -119,12 +118,12 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
                 for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
 //retrieves each of the 20 nodes of object of HeaterControlEvents class to build the array
-                    HeaterControlEvents heaterEvent = heaterEventSnapshot.getValue(HeaterControlEvents.class);
+                    ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
                     heaterList.add(heaterEvent);
 
                 }
 // calls the array adapter to display the list of records
-                HeaterEventsListConfig adapter = new HeaterEventsListConfig(HistoricalApplianceActivity.this, heaterList);
+                ApplianceEventsListConfig adapter = new ApplianceEventsListConfig(HistoricalApplianceActivity.this, heaterList);
                 applianceEventListView.setAdapter(adapter);
 
             }
@@ -147,7 +146,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
 // creates a new array list of the Class Heater Control Events which will be populated by records
-        final List<HeaterControlEvents> heaterList = new ArrayList<>();
+        final List<ApplianceControlEvents> heaterList = new ArrayList<>();
 
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
@@ -159,12 +158,12 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
                 for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
 
-                    HeaterControlEvents heaterEvent = heaterEventSnapshot.getValue(HeaterControlEvents.class);
+                    ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
                     heaterList.add(heaterEvent);
 
                 }
 
-                HeaterEventsListConfig adapter = new HeaterEventsListConfig(HistoricalApplianceActivity.this, heaterList);
+                ApplianceEventsListConfig adapter = new ApplianceEventsListConfig(HistoricalApplianceActivity.this, heaterList);
                 applianceEventListView.setAdapter(adapter);
 
             }
@@ -187,7 +186,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
 // creates a new array list of the Class Heater Control Events which will be populated by records
-        final List<HeaterControlEvents> heaterList = new ArrayList<>();
+        final List<ApplianceControlEvents> heaterList = new ArrayList<>();
 
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
@@ -199,12 +198,12 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
                 for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
 
-                    HeaterControlEvents heaterEvent = heaterEventSnapshot.getValue(HeaterControlEvents.class);
+                    ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
                     heaterList.add(heaterEvent);
 
                 }
 
-                HeaterEventsListConfig adapter = new HeaterEventsListConfig(HistoricalApplianceActivity.this, heaterList);
+                ApplianceEventsListConfig adapter = new ApplianceEventsListConfig(HistoricalApplianceActivity.this, heaterList);
                 applianceEventListView.setAdapter(adapter);
 
             }
@@ -227,7 +226,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
 // creates a new array list of the Class Heater Control Events which will be populated by records
-        final List<HeaterControlEvents> heaterList = new ArrayList<>();
+        final List<ApplianceControlEvents> heaterList = new ArrayList<>();
 
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
@@ -239,12 +238,13 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
                 for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
 
-                    HeaterControlEvents heaterEvent = heaterEventSnapshot.getValue(HeaterControlEvents.class);
+                    ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
+
                     heaterList.add(heaterEvent);
 
                 }
 
-                HeaterEventsListConfig adapter = new HeaterEventsListConfig(HistoricalApplianceActivity.this, heaterList);
+                ApplianceEventsListConfig adapter = new ApplianceEventsListConfig(HistoricalApplianceActivity.this, heaterList);
                 applianceEventListView.setAdapter(adapter);
 
             }

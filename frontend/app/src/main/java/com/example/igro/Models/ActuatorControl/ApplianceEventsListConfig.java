@@ -13,13 +13,13 @@ import com.example.igro.R;
 
 import java.util.List;
 
-public class HeaterEventsListConfig extends ArrayAdapter<HeaterControlEvents>{
+public class ApplianceEventsListConfig extends ArrayAdapter<ApplianceControlEvents>{
 
     private Activity context;
 
-    private List<HeaterControlEvents> applianceEventList;
+    private List<ApplianceControlEvents> applianceEventList;
 
-    public HeaterEventsListConfig(Activity context, List<HeaterControlEvents> applianceEventList){
+    public ApplianceEventsListConfig(Activity context, List<ApplianceControlEvents> applianceEventList){
         super(context, R.layout.appliance_trigger_list_layout, applianceEventList);
         this.context = context;
         this.applianceEventList = applianceEventList;
@@ -36,7 +36,7 @@ public class HeaterEventsListConfig extends ArrayAdapter<HeaterControlEvents>{
         TextView listItemDateTextView = (TextView)listViewItem.findViewById(R.id.listItemDateTextView);
         TextView listItemOnOffStatusTextView = (TextView)listViewItem.findViewById(R.id.listItemOnOffStatusTextView);
 
-        HeaterControlEvents applianceEvent = applianceEventList.get(position);
+        ApplianceControlEvents applianceEvent = applianceEventList.get(position);
 
         String onOffStr;
         Boolean onOff = applianceEvent.getEventOnOff();

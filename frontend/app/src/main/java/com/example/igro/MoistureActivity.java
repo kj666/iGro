@@ -21,12 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
-import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
-import com.example.igro.Models.ActuatorControl.MoistureControlEvents;
+import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
 import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.MoistureRange;
-import com.example.igro.Models.SensorData.TempRange;
-import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -35,9 +32,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -94,6 +88,98 @@ public class MoistureActivity extends AppCompatActivity {
         });
 
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        initializeUI();
+
+
+        //call function check last child in heaterSwitchEventDB and set switch to that state
+
+        final Boolean switchState = moistureSwitch.isChecked();
+        moistureSwitchStateFromRecord();
+
+        retrieveSensorData();
+
+        moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
+
+                //Call heaterSwitchEvent function
+                moistureSwitchEvent(SwitchState);
+
+            }
+        });
+
+        moistureHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = MoistureActivity.this;
+                Intent i = new Intent(context, SensorDataActivity.class);
+                i.putExtra("SensorType", "MOISTURE");
+                context.startActivity(i);
+            }
+        });
+
+        irrigationUseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = MoistureActivity.this ;
+                Intent i = new Intent(context, HistoricalApplianceActivity.class);
+                i.putExtra("ApplianceType", "IRRIGATION");
+                context.startActivity(i);
+            }
+        });
+
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final Boolean switchState = moistureSwitch.isChecked();
+        moistureSwitchStateFromRecord();
+
+        moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
+
+                //Call heaterSwitchEvent function
+                moistureSwitchEvent(SwitchState);
+
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.sign_out:
+                helper.signout();
+                helper.goToActivity(LoginActivity.class);
+                return true;
+
+            case R.id.polling_menu:
+                openDialog();
+                return true;
+
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     public void setMoistureRange(){
 
         String lowMoisture=lowMoistureEditText.getText().toString();
@@ -107,13 +193,14 @@ public class MoistureActivity extends AppCompatActivity {
                 Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
             } else {
-                Toast.makeText(this, "HIGH VALUES SHOULD BE GREATER THAN LOW VALUES!!!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please, make sure the Upper Limit is bigger than the Lower Limit", Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(this, "YOU SHOULD ENTER LOW AND HIGH VALUES!!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please, set a values to your desired Upper and Lower Humidity Limits", Toast.LENGTH_LONG).show();
         }
 
     }
+
     void retrieveRange(){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
         DatabaseReference moistureRange = db.child("Moisture");
@@ -193,110 +280,6 @@ public class MoistureActivity extends AppCompatActivity {
         irrigationUseButton = findViewById(R.id.irrigationUseHistoryButton);
         moistureDataTextView = findViewById(R.id.numMoistureTextView);
     }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        initializeUI();
-
-
-        String lowMoistureLimit = lowMoistureEditText.getText().toString();
-        String highMoistureLimit = lowMoistureEditText.getText().toString();
-
-        if((lowMoistureLimit.matches(".*[0-9].*"))&&(highMoistureLimit.matches(".*[0-9].*"))){
-            int lowHum = parseInt(lowMoistureLimit);
-            int highHum = parseInt(highMoistureLimit);
-        }else{
-            Toast.makeText(this, "Please enter a valid number for lower and upper moistsure limits", Toast.LENGTH_LONG).show();
-        }
-
-        //call function check last child in heaterSwitchEventDB and set switch to that state
-
-        final Boolean switchState = moistureSwitch.isChecked();
-        moistureSwitchStateFromRecord();
-
-        retrieveSensorData();
-
-        moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
-
-                //Call heaterSwitchEvent function
-                moistureSwitchEvent(SwitchState);
-
-            }
-        });
-
-        moistureHistoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = MoistureActivity.this;
-                Intent i = new Intent(context, SensorDataActivity.class);
-                i.putExtra("SensorType", "MOISTURE");
-                context.startActivity(i);
-            }
-        });
-
-        irrigationUseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = MoistureActivity.this ;
-                Intent i = new Intent(context, HistoricalApplianceActivity.class);
-                i.putExtra("ApplianceType", "IRRIGATION");
-                context.startActivity(i);
-            }
-        });
-
-
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        final Boolean switchState = moistureSwitch.isChecked();
-        moistureSwitchStateFromRecord();
-
-        if(lastMoistureState){
-            Log.d(TAG, "The irrigation was on");
-        }else{
-            Log.d(TAG, "The irrigation was off");
-        }
-
-        moistureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton humSwitch, boolean SwitchState){
-
-                //Call heaterSwitchEvent function
-                moistureSwitchEvent(SwitchState);
-
-            }
-        });
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.sign_out:
-                helper.signout();
-                helper.goToActivity(LoginActivity.class);
-                return true;
-
-            case R.id.polling_menu:
-                openDialog();
-                return true;
-
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
     private void moistureSwitchStateFromRecord() {
@@ -305,7 +288,7 @@ public class MoistureActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
+                ApplianceControlEvents lastRecord = dataSnapshot.getValue(ApplianceControlEvents.class);
                 assert lastRecord != null;
                 final Boolean checkedStatus = lastRecord.getEventOnOff();
 
@@ -324,8 +307,11 @@ public class MoistureActivity extends AppCompatActivity {
                     Log.d(TAG, "On/Off Status of humidifier can't be null, getMoistureEventOnOff points to null");
 
                 }
-
-
+                if(checkedStatus){
+                    Log.d(TAG, "The irrigation was on");
+                }else{
+                    Log.d(TAG, "The irrigation was off");
+                }
             }
 
             @Override
@@ -370,7 +356,7 @@ public class MoistureActivity extends AppCompatActivity {
             String moistEventId = moistureSwitchEventDB.push().getKey();
 
 // creates a record as an object of class HeaterControlEvents, which includes id, dates in 2 formats and on/off state to be recorded
-            HeaterControlEvents moistSwitchClickEvent = new HeaterControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
+            ApplianceControlEvents moistSwitchClickEvent = new ApplianceControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
             moistureSwitchEventDB.child(moistEventId).setValue(moistSwitchClickEvent);
 
             if(!(moistEventId == null)) {

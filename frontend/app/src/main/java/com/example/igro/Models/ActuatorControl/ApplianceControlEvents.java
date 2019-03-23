@@ -1,17 +1,17 @@
 package com.example.igro.Models.ActuatorControl;
 
-public class HeaterControlEvents {
+public class ApplianceControlEvents {
 
     String eventId = null;
     String eventDateTime = null;
     Long eventUnixEpoch = null;
     Boolean eventOnOff = false;
 
-    HeaterControlEvents(){
+    ApplianceControlEvents(){
 
     }
 
-    public HeaterControlEvents(String eventId, String eventDateTime, Long eventUnixEpoch, Boolean eventOnOff) {
+    public ApplianceControlEvents(String eventId, String eventDateTime, Long eventUnixEpoch, Boolean eventOnOff) {
         this.eventId = eventId;
         this.eventDateTime = eventDateTime;
         this.eventOnOff = eventOnOff;
@@ -19,13 +19,13 @@ public class HeaterControlEvents {
     }
 
 
-    public HeaterControlEvents(String eventDateTime, Long eventUnixEpoch, Boolean eventOnOff) {
+    public ApplianceControlEvents(String eventDateTime, Long eventUnixEpoch, Boolean eventOnOff) {
         this.eventDateTime = eventDateTime;
         this.eventUnixEpoch = eventUnixEpoch;
         this.eventOnOff = eventOnOff;
     }
 
-    public HeaterControlEvents(String eventDateTime, Boolean eventOnOff){
+    public ApplianceControlEvents(String eventDateTime, Boolean eventOnOff){
         this.eventDateTime = eventDateTime;
         this.eventOnOff = eventOnOff;
     }
