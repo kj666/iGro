@@ -83,7 +83,7 @@ public class UvIndexActivity extends AppCompatActivity {
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "LightsAreOnTag";
 
-    //create heater database reference
+    //create heater database reference for the correct node
     DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("UVControlLog");
     //create database reference for ranges
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
@@ -390,7 +390,6 @@ public class UvIndexActivity extends AppCompatActivity {
                     //UVindex
                     uvTextView.setText(df.format(sensorData.getUv())+"");
                     ghUv = Double.parseDouble(uvTextView.getText().toString());
-
 
                 }
             }

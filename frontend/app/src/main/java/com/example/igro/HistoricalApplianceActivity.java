@@ -34,10 +34,6 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     TextView listOnOffTitleTextView;
     ListView applianceEventListView;
 
-    private static final String PARAM = "type";
-    private static Bundle extra = new Bundle();
-    private static String extraStr;
-
     List<HeaterControlEvents> applianceList = new ArrayList<>();
 
     @Override
@@ -45,25 +41,20 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historical_appliance_data);
 
+//initialization for all the fields
         historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
         listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
         listDateTitleTextView = (TextView)findViewById(R.id.listDateTitleTextView);
         listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
-
-
+//getting intent and retrieving the extra
         Intent intent = getIntent();
         final String userName = intent.getStringExtra("UserName");
         final String applianceType = intent.getStringExtra("ApplianceType");
-        extra = intent.getExtras();
-        extraStr = intent.getExtras().toString();
+// setting the title based on which Appliance data will be displayed based on intent extra
         final String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
-
         historicalApplianceTitleTextView.setText(pageTitle);
-
-        Bundle passData = new Bundle();
-        passData.putString(PARAM, applianceType);
 
     }
 
@@ -72,46 +63,45 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-
+//initializations
         historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
         listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
         listDateTitleTextView = (TextView)findViewById(R.id.listDateTitleTextView);
         listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
+//getting intent
         Intent intent = getIntent();
         String userName = intent.getStringExtra("UserName");
         String applianceType = intent.getStringExtra("ApplianceType");
         String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
 
-        extra = intent.getExtras();
-        extraStr = intent.getExtras().toString();
-
         historicalApplianceTitleTextView.setText(pageTitle);
+
 // depending on where the intent comes from, the extra determines which appliance data to load.
         //if the intent extra comes from Temperature Activity, load heater data
         if(applianceType.equals("HEATER")){
             loadHeaterOnOffList();
         } else if (applianceType.equals("HUMIDIFIER")) {
-            //todo change
+            //retrieves the humidifier historical trigger records
             loadHumidityOnOffList();
 
         }else if(applianceType.equals("IRRIGATION")){
-            //todo change
+            //gets irrigation historical trigger records
             loadIrrigationOnOffList();
 
         }else if(applianceType.equals("LIGHTS")){
-            //todo change
+            //loads artificial lights on/off trigger records
             loadLightsOnOffList();
         }else{
             Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG ).show();
         }
 
-
     }
 
+    // function definition for heater records
     protected void loadHeaterOnOffList() {
-
+// referrence the correct DB node
         final DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("HeaterControlLog");
 
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
@@ -119,39 +109,37 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 // creates a new array list of the Class Heater Control Events which will be populated by records
         final List<HeaterControlEvents> heaterList = new ArrayList<>();
 
+        //   fuction orders the db entries by key and limits to last 20 entries to display
+        heaterSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
 
- //   fuction orders the db entries by key and limits to last 20 entries to display
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//creates a snapshot of the last 20 node entries
+                long records = dataSnapshot.getChildrenCount();
 
-            heaterSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    long records = dataSnapshot.getChildrenCount();
-
-                  for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
-
-                        HeaterControlEvents heaterEvent = heaterEventSnapshot.getValue(HeaterControlEvents.class);
-                        heaterList.add(heaterEvent);
-
-                    }
-
-                    HeaterEventsListConfig adapter = new HeaterEventsListConfig(HistoricalApplianceActivity.this, heaterList);
-                  applianceEventListView.setAdapter(adapter);
+                for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
+//retrieves each of the 20 nodes of object of HeaterControlEvents class to build the array
+                    HeaterControlEvents heaterEvent = heaterEventSnapshot.getValue(HeaterControlEvents.class);
+                    heaterList.add(heaterEvent);
 
                 }
+// calls the array adapter to display the list of records
+                HeaterEventsListConfig adapter = new HeaterEventsListConfig(HistoricalApplianceActivity.this, heaterList);
+                applianceEventListView.setAdapter(adapter);
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
 
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
     }
 
 
-
+    //function definition to load humidifier trigger records
     protected void loadHumidityOnOffList() {
 
         final DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("HumidityControlLog");
@@ -191,7 +179,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     }
 
 
-
+    // function definition for irrigation control records
     protected void loadIrrigationOnOffList() {
 
         final DatabaseReference moistSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("SoilMoistureControlLog");
@@ -231,7 +219,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     }
 
 
-
+    // function definition for loading the table of lights control records
     protected void loadLightsOnOffList() {
 
         final DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("UVControlLog");

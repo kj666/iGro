@@ -369,13 +369,13 @@ public class MoistureActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String moistEventId = moistureSwitchEventDB.push().getKey();
 
-
+// creates a record as an object of class HeaterControlEvents, which includes id, dates in 2 formats and on/off state to be recorded
             HeaterControlEvents moistSwitchClickEvent = new HeaterControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
             moistureSwitchEventDB.child(moistEventId).setValue(moistSwitchClickEvent);
 
             if(!(moistEventId == null)) {
 
-
+// checks the state of the switch to display message
                 if (moistSwitchState) {
 
                     Log.d(TAG, "The irrigation was turned on " + moistOnTimeStampFormated);
@@ -386,12 +386,11 @@ public class MoistureActivity extends AppCompatActivity {
                 }
             }else{
                 Log.d(TAG, "ERROR: moistEventId can't be null");
-
             }
-
         }
-
     }
+
+ // dialog to display the polling frequency fragment
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");

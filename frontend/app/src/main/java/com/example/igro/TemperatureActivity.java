@@ -77,7 +77,6 @@ public class TemperatureActivity extends AppCompatActivity {
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
     //create heater database reference
-    DatabaseReference applianceTriggerRecordDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog");
     DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog").child("HeaterControlLog");
     //Get current user using the Helper class
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
@@ -89,7 +88,7 @@ public class TemperatureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_temperature);
 
         initializeUI();
-
+// make temperature control switch clickable
         tempSwitch.setClickable(true);
 
         currentUser = helper.checkAuthentication();
@@ -242,6 +241,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 Context context = TemperatureActivity.this ;
                 Intent i = new Intent(context, HistoricalApplianceActivity.class);
+         //sends extra with the intent to distinguish from which activity intect came and which records to display
                 i.putExtra("ApplianceType", "HEATER");
                 context.startActivity(i);
             }
