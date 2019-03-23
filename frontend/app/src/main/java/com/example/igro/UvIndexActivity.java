@@ -84,7 +84,6 @@ public class UvIndexActivity extends AppCompatActivity {
 
     //create heater database reference
     DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("UVControlLog");
-    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
     //create database reference for ranges
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
 
