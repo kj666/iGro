@@ -8,25 +8,21 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.igro.HumidityActivity;
-import com.example.igro.MoistureActivity;
 import com.example.igro.R;
-import com.example.igro.TemperatureActivity;
-import com.example.igro.UvIndexActivity;
 
 
 import java.util.List;
 
-public class HeaterEventConfig extends ArrayAdapter<HeaterControlEvents>{
+public class HeaterEventsListConfig extends ArrayAdapter<HeaterControlEvents>{
 
     private Activity context;
 
-    private List<HeaterControlEvents> heaterEventList;
+    private List<HeaterControlEvents> applianceEventList;
 
-    public HeaterEventConfig(Activity context, List<HeaterControlEvents> heaterEventList){
-        super(context, R.layout.appliance_trigger_list_layout, heaterEventList);
+    public HeaterEventsListConfig(Activity context, List<HeaterControlEvents> applianceEventList){
+        super(context, R.layout.appliance_trigger_list_layout, applianceEventList);
         this.context = context;
-        this.heaterEventList = heaterEventList;
+        this.applianceEventList = applianceEventList;
     }
 
     @NonNull
@@ -40,10 +36,10 @@ public class HeaterEventConfig extends ArrayAdapter<HeaterControlEvents>{
         TextView listItemDateTextView = (TextView)listViewItem.findViewById(R.id.listItemDateTextView);
         TextView listItemOnOffStatusTextView = (TextView)listViewItem.findViewById(R.id.listItemOnOffStatusTextView);
 
-        HeaterControlEvents heaterEvent = heaterEventList.get(position);
+        HeaterControlEvents applianceEvent = applianceEventList.get(position);
 
         String onOffStr;
-        Boolean onOff = heaterEvent.getHeaterEventOnOff();
+        Boolean onOff = applianceEvent.getEventOnOff();
         if(onOff){
             onOffStr = "ON";
         }else{
@@ -51,7 +47,7 @@ public class HeaterEventConfig extends ArrayAdapter<HeaterControlEvents>{
         }
 
         listItemCounterTextView.setText(String.valueOf(position+1));
-        listItemDateTextView.setText(heaterEvent.getHeaterEventDateTime());
+        listItemDateTextView.setText(applianceEvent.getEventDateTime());
         listItemOnOffStatusTextView.setText(onOffStr);
 
         return listViewItem;

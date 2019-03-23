@@ -27,6 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
 import com.example.igro.Models.ActuatorControl.HumidControlEvents;
 import com.example.igro.Models.SensorData.HumidityRange;
 import com.example.igro.Models.SensorData.MoistureRange;
@@ -75,7 +76,8 @@ public class HumidityActivity extends AppCompatActivity {
     private static final String TAG = "HumidifyerIsOnTag";
 
     //create heater database reference
-    DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("HumidControlLog");
+    DatabaseReference applianceDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog");
+    DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("HumidityControlLog");
 
     TextView outdoorHumidityTextView; // displays the humidity in percentage
     private RequestQueue queue;
@@ -241,7 +243,7 @@ public class HumidityActivity extends AppCompatActivity {
         String lowHumLimit = lowHumEditText.getText().toString();
         String highHumLimit = lowHumEditText.getText().toString();
 
-        if ((lowHumLimit.matches(".*[0-9].*")) && (highHumLimit.matches(".*[0-9].*"))) {
+        if ((lowHumLimit.matches(".*[0-999].*")) && (highHumLimit.matches(".*[0-999].*"))) {
             int lowHum = parseInt(lowHumLimit);
             int highHum = parseInt(highHumLimit);
         } else {
@@ -317,9 +319,9 @@ public class HumidityActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                HumidControlEvents lastRecord = dataSnapshot.getValue(HumidControlEvents.class);
+                HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
                 assert lastRecord != null;
-                final Boolean checkedStatus = lastRecord.getHumidEventOnOff();
+                final Boolean checkedStatus = lastRecord.getEventOnOff();
 
                 if (!(checkedStatus == null)) {
 
@@ -333,7 +335,7 @@ public class HumidityActivity extends AppCompatActivity {
 
                 } else {
 
-                    Log.d(TAG, "On/Off Status of humidifier can't be null, getHumidEventOnOff points to null");
+                    Log.d(TAG, "On/Off Status of humidifier can't be null, getEventOnOff points to null");
 
                 }
 
@@ -379,7 +381,7 @@ public class HumidityActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String humEventId = humidSwitchEventDB.push().getKey();
 
-            HumidControlEvents humSwitchClickEvent = new HumidControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, humSwitchState);
+            HeaterControlEvents humSwitchClickEvent = new HeaterControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, humSwitchState);
             humidSwitchEventDB.child(humEventId).setValue(humSwitchClickEvent);
 
             if (!(humEventId == null)) {

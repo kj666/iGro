@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import com.example.igro.Controller.Helper;
+import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
 import com.example.igro.Models.SensorData.UvRange;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -83,7 +84,7 @@ public class UvIndexActivity extends AppCompatActivity {
     private static final String TAG = "LightsAreOnTag";
 
     //create heater database reference
-    DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("UVControlLog");
+    DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("UVControlLog");
     //create database reference for ranges
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
 
@@ -151,7 +152,7 @@ public class UvIndexActivity extends AppCompatActivity {
         String lowUvLimit = lowUvEditText.getText().toString();
         String highUvLimit = lowUvEditText.getText().toString();
 
-        if((lowUvLimit.matches(".*[0-9].*"))&&(highUvLimit.matches(".*[0-9].*"))){
+        if((lowUvLimit.matches(".*[0-999].*"))&&(highUvLimit.matches(".*[0-999].*"))){
             int lowUv = parseInt(lowUvLimit);
             int highUv = parseInt(highUvLimit);
         }else{
@@ -286,9 +287,9 @@ public class UvIndexActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                UvControlEvents lastRecord = dataSnapshot.getValue(UvControlEvents.class);
+                HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
                 assert lastRecord != null;
-                final Boolean checkedStatus = lastRecord.getUvEventOnOff();
+                final Boolean checkedStatus = lastRecord.getEventOnOff();
 
                 if(!(checkedStatus == null)){
 
@@ -351,7 +352,7 @@ public class UvIndexActivity extends AppCompatActivity {
             String uvEventId = uvSwitchEventDB.push().getKey();
 
 
-            UvControlEvents uvSwitchClickEvent = new UvControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
+            HeaterControlEvents uvSwitchClickEvent = new HeaterControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
             uvSwitchEventDB.child(uvEventId).setValue(uvSwitchClickEvent);
 
             if(!(uvEventId == null)) {

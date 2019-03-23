@@ -2,64 +2,64 @@ package com.example.igro.Models.ActuatorControl;
 
 public class HeaterControlEvents {
 
-    String heaterEventId = null;
-    String heaterEventDateTime = null;
-    Long heaterEventUnixEpoch = null;
-    Boolean heaterEventOnOff = false;
+    String eventId = null;
+    String eventDateTime = null;
+    Long eventUnixEpoch = null;
+    Boolean eventOnOff = false;
 
     HeaterControlEvents(){
 
     }
 
-    public HeaterControlEvents(String heaterEventId, String heaterEventDateTime, Long heaterEventUnixEpoch, Boolean heaterEventOnOff) {
-        this.heaterEventId = heaterEventId;
-        this.heaterEventDateTime = heaterEventDateTime;
-        this.heaterEventOnOff = heaterEventOnOff;
-        this.heaterEventUnixEpoch = heaterEventUnixEpoch;
+    public HeaterControlEvents(String eventId, String eventDateTime, Long eventUnixEpoch, Boolean eventOnOff) {
+        this.eventId = eventId;
+        this.eventDateTime = eventDateTime;
+        this.eventOnOff = eventOnOff;
+        this.eventUnixEpoch = eventUnixEpoch;
     }
 
 
-    public HeaterControlEvents(String heaterEventDateTime, Long heaterEventUnixEpoch, Boolean heaterEventOnOff) {
-        this.heaterEventDateTime = heaterEventDateTime;
-        this.heaterEventUnixEpoch = heaterEventUnixEpoch;
-        this.heaterEventOnOff = heaterEventOnOff;
+    public HeaterControlEvents(String eventDateTime, Long eventUnixEpoch, Boolean eventOnOff) {
+        this.eventDateTime = eventDateTime;
+        this.eventUnixEpoch = eventUnixEpoch;
+        this.eventOnOff = eventOnOff;
     }
 
-    public HeaterControlEvents(String heaterEventDateTime, Boolean heaterEventOnOff){
-        this.heaterEventDateTime = heaterEventDateTime;
-        this.heaterEventOnOff = heaterEventOnOff;
+    public HeaterControlEvents(String eventDateTime, Boolean eventOnOff){
+        this.eventDateTime = eventDateTime;
+        this.eventOnOff = eventOnOff;
     }
 
 
-    public String getHeaterEventId() {
-        return heaterEventId;
+    public String getEventId() {
+        return eventId;
     }
 
-    public void setHeaterEventId(String heaterEventId) {
-        this.heaterEventId = heaterEventId;
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
     }
 
-    public String getHeaterEventDateTime() {
-        return heaterEventDateTime;
+    public String getEventDateTime() {
+        return eventDateTime;
     }
 
-    public void setHeaterEventDateTime(String heaterEventDateTime) {
-        this.heaterEventDateTime = heaterEventDateTime;
+    public void setEventDateTime(String eventDateTime) {
+        this.eventDateTime = eventDateTime;
     }
 
-    public Long getHeaterEventUnixEpoch() {
-        return heaterEventUnixEpoch;
+    public Long getEventUnixEpoch() {
+        return eventUnixEpoch;
     }
 
-    public void setHeaterEventUnixEpoch(Long heaterEventUnixEpoch) {
-        this.heaterEventUnixEpoch = heaterEventUnixEpoch;
+    public void setEventUnixEpoch(Long eventUnixEpoch) {
+        this.eventUnixEpoch = eventUnixEpoch;
     }
 
-    public Boolean getHeaterEventOnOff() {
-        return heaterEventOnOff;
+    public Boolean getEventOnOff() {
+        return eventOnOff;
     }
 
-    public void setHeaterEventOnOff(Boolean heaterEventOnOff) {
-        this.heaterEventOnOff = heaterEventOnOff;
+    public void setEventOnOff(Boolean eventOnOff) {
+        this.eventOnOff = eventOnOff;
     }
 }

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
+import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
 import com.example.igro.Models.ActuatorControl.MoistureControlEvents;
 import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.MoistureRange;
@@ -68,7 +69,7 @@ public class MoistureActivity extends AppCompatActivity {
     private static final String TAG = "IrrigationIsOnTag";
 
     //create heater database reference
-    DatabaseReference moistureSwitchEventDB = FirebaseDatabase.getInstance().getReference("SoilMoistureControlLog");
+    DatabaseReference moistureSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("SoilMoistureControlLog");
     //create database reference for ranges
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
 
@@ -304,9 +305,9 @@ public class MoistureActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                MoistureControlEvents lastRecord = dataSnapshot.getValue(MoistureControlEvents.class);
+                HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
                 assert lastRecord != null;
-                final Boolean checkedStatus = lastRecord.getMoistEventOnOff();
+                final Boolean checkedStatus = lastRecord.getEventOnOff();
 
                 if(!(checkedStatus == null)){
 
@@ -369,7 +370,7 @@ public class MoistureActivity extends AppCompatActivity {
             String moistEventId = moistureSwitchEventDB.push().getKey();
 
 
-            MoistureControlEvents moistSwitchClickEvent = new MoistureControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
+            HeaterControlEvents moistSwitchClickEvent = new HeaterControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
             moistureSwitchEventDB.child(moistEventId).setValue(moistSwitchClickEvent);
 
             if(!(moistEventId == null)) {

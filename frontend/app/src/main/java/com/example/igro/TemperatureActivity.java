@@ -77,7 +77,8 @@ public class TemperatureActivity extends AppCompatActivity {
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
     //create heater database reference
-    DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("HeaterControlLog");
+    DatabaseReference applianceTriggerRecordDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog");
+    DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog").child("HeaterControlLog");
     //Get current user using the Helper class
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
@@ -227,7 +228,7 @@ public class TemperatureActivity extends AppCompatActivity {
         String lowTempLimit = lowTempEditText.getText().toString();
         String highTempLimit = lowTempEditText.getText().toString();
 
-        if((lowTempLimit.matches(".*[0-9].*"))&&(highTempLimit.matches(".*[0-9].*"))){
+        if((lowTempLimit.matches(".*[0-999].*"))&&(highTempLimit.matches(".*[0-999].*"))){
             Integer lowTemp = Integer.parseInt(lowTempLimit);
             Integer highTemp = Integer.parseInt(highTempLimit);
         }else{
@@ -309,6 +310,35 @@ public class TemperatureActivity extends AppCompatActivity {
                 heaterSwitchEvent(tempSwitchState);
             }
         });
+
+        //opening the SensorDataActivity on history sensor data button click
+        tempHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Context context = TemperatureActivity.this ;
+                Intent i = new Intent(context, SensorDataActivity.class);
+                if (celisusOrFahrenheit) { //Celsius
+                    i.putExtra("SensorType", "TEMPERATURE-C");
+                } else { //Fahrenheit
+                    i.putExtra("SensorType", "TEMPERATURE-F");
+                }
+                context.startActivity(i);
+            }
+        });
+
+        //opening the HistoricalApplianceActivity view when the HeaterUseHistory button is clicked
+        heaterUseHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Context context = TemperatureActivity.this ;
+                Intent i = new Intent(context, HistoricalApplianceActivity.class);
+                i.putExtra("ApplianceType", "HEATER");
+                context.startActivity(i);
+            }
+        });
+
     }
 
 
@@ -320,7 +350,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 HeaterControlEvents lastRecord = dataSnapshot.getValue(HeaterControlEvents.class);
                 assert lastRecord != null;
-                final Boolean checkedStatus = lastRecord.getHeaterEventOnOff();
+                final Boolean checkedStatus = lastRecord.getEventOnOff();
 
                 if(!(checkedStatus == null)){
 
