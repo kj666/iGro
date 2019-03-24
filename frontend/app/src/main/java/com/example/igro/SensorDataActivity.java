@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ public class SensorDataActivity extends AppCompatActivity {
 
     //UI components
     TextView historicalSensorDataTextView;
+    Button refreshButton;
 
     //boolean to decide if its table/graph
     boolean tableMode = false;
@@ -35,6 +38,7 @@ public class SensorDataActivity extends AppCompatActivity {
         fragmentManager =  getSupportFragmentManager();
 
         historicalSensorDataTextView = (TextView) findViewById(R.id.historicalSensorDataTextView);
+        refreshButton = findViewById(R.id.refreshActivityButton);
 
         Intent intent = getIntent();
         sensorType = intent.getStringExtra("SensorType");
@@ -57,6 +61,20 @@ public class SensorDataActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this, "ERROR: unKnown sensor type ", Toast.LENGTH_LONG ).show();
         }
+
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(tableMode) {
+                    removeTableFrag();
+                    createTableFrag(sensorType);
+                }
+                else {
+                    removeGraphFrag();
+                    createGraphFrag(sensorType);
+                }
+            }
+        });
 
     }
     void createGraphFrag(String type){
@@ -110,6 +128,17 @@ public class SensorDataActivity extends AppCompatActivity {
                     item.setChecked(true);
                     removeGraphFrag();
                     createTableFrag(sensorType);
+                }
+                return true;
+
+            case R.id.refreshButton:
+                if(tableMode) {
+                    removeTableFrag();
+                    createTableFrag(sensorType);
+                }
+                else {
+                    removeGraphFrag();
+                    createGraphFrag(sensorType);
                 }
                 return true;
         }
