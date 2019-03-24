@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void tempColorSet(){
+    void tempColorSet(final Double tempData){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("Temperature");
 
 
@@ -188,14 +188,13 @@ public class MainActivity extends AppCompatActivity {
                 Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
                 Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
 
-                if (!((sensorData.getTemperatureC() > lowRange)
-                        && (sensorData.getTemperatureC() < highRange))) {
+                if (!((tempData > lowRange)
+                        && (tempData < highRange))) {
 
                     temperatureNumberButton.setTextColor(Color.RED);
                     /*//temp status out of range
                     tempStatus=true;
 */
-
                 } else {
 
                     temperatureNumberButton.setTextColor(Color.GREEN);
@@ -375,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         helper.checkAuthentication();
         requestWeather();
-        tempColorSet();
+//        tempColorSet();
         humColorSet();
         uvColorSet();
         moistColorSet();
@@ -387,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         helper.checkAuthentication();
         requestWeather();
-        tempColorSet();
+//        tempColorSet();
         humColorSet();
         uvColorSet();
         moistColorSet();
@@ -449,6 +448,8 @@ public class MainActivity extends AppCompatActivity {
 
                     //SoilMoisture
                     moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getSoil())+"");
+
+                    tempColorSet(sensorData.getTemperatureC());
                 }
             }
 
