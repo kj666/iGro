@@ -53,8 +53,17 @@ public class MainActivity extends AppCompatActivity {
     protected TextView humidityNumberButton;
 
     //Greenhouse status textview
-    private TextView statusTextview;
-    // count how many sensor data are in/out of ranges
+    private TextView ghStatus;
+    // temperature status
+    private boolean tempStatus;
+    // humidity status
+    private boolean humStatus;
+    // moisture status
+    private boolean moistStatus;
+    // uv status
+    private boolean uvStatus;
+
+
 
 
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
@@ -176,16 +185,22 @@ public class MainActivity extends AppCompatActivity {
                 SensorData sensorData = dataSnapshot.getValue(SensorData.class);
 
                 Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
-
-
                 Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+
                 if (!((sensorData.getTemperatureC() > lowRange)
                         && (sensorData.getTemperatureC() < highRange))) {
 
                     temperatureNumberButton.setTextColor(Color.RED);
+                    //temp status out of range
+                    tempStatus=true;
+
 
                 } else {
+
                     temperatureNumberButton.setTextColor(Color.GREEN);
+                    //temp status in range
+                    tempStatus=false;
+
                 }
             }
 
@@ -217,9 +232,13 @@ public class MainActivity extends AppCompatActivity {
                         && (sensorData.getHumidity() < highRange))) {
 
                     humidityNumberButton.setTextColor(Color.RED);
+                   //humidity is out of range
+                    humStatus=true;
 
                 } else {
                     humidityNumberButton.setTextColor(Color.GREEN);
+                    //humidity is out of range
+                    humStatus=false;
                 }
             }
 
@@ -251,9 +270,13 @@ public class MainActivity extends AppCompatActivity {
                         && (sensorData.getSoil() < highRange))) {
 
                     moistureNumberButton.setTextColor(Color.RED);
+                    //moisture color is out of range
+                 moistStatus=true;
 
                 } else {
                     moistureNumberButton.setTextColor(Color.GREEN);
+                    //moisture is in range
+                    moistStatus=false;
                 }
             }
 
@@ -286,9 +309,13 @@ public class MainActivity extends AppCompatActivity {
                         && (sensorData.getUv() < highRange))) {
 
                     uvNumberButton.setTextColor(Color.RED);
+                    //uv is ouf of range
+                   uvStatus=true;
 
                 } else {
                     uvNumberButton.setTextColor(Color.GREEN);
+                    //uv is in range
+                    uvStatus=false;
                 }
             }
 
@@ -302,6 +329,12 @@ public class MainActivity extends AppCompatActivity {
         db.addValueEventListener(eventListener);
 
     }
+
+    void greenhouseStatus(){
+
+        
+    }
+
     // TODO 2019-03-21
     // Switch the fixed value given for temperature below to sensor data when available
     protected void initializeUI(){
@@ -322,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
         moistureTitleButton = (Button) findViewById(R.id.moistureButton);
         moistureNumberButton = (Button) findViewById(R.id.moisturePercentView);
 
-        statusTextview=(TextView)findViewById(R.id.statusTextView);
+        ghStatus=(TextView)findViewById(R.id.statusTextView);
     }
 
 
