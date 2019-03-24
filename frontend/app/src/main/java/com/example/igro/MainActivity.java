@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Retrieve data from DB
         retrieveSensorData();
+        greenhouseStatus();
 
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,15 +192,15 @@ public class MainActivity extends AppCompatActivity {
                         && (sensorData.getTemperatureC() < highRange))) {
 
                     temperatureNumberButton.setTextColor(Color.RED);
-                    //temp status out of range
+                    /*//temp status out of range
                     tempStatus=true;
-
+*/
 
                 } else {
 
                     temperatureNumberButton.setTextColor(Color.GREEN);
-                    //temp status in range
-                    tempStatus=false;
+                    /*//temp status in range
+                    tempStatus=false;*/
 
                 }
             }
@@ -232,13 +233,13 @@ public class MainActivity extends AppCompatActivity {
                         && (sensorData.getHumidity() < highRange))) {
 
                     humidityNumberButton.setTextColor(Color.RED);
-                   //humidity is out of range
-                    humStatus=true;
+                   /*//humidity is out of range
+                    humStatus=true;*/
 
                 } else {
                     humidityNumberButton.setTextColor(Color.GREEN);
-                    //humidity is out of range
-                    humStatus=false;
+                    /*//humidity is out of range
+                    humStatus=false;*/
                 }
             }
 
@@ -270,13 +271,13 @@ public class MainActivity extends AppCompatActivity {
                         && (sensorData.getSoil() < highRange))) {
 
                     moistureNumberButton.setTextColor(Color.RED);
-                    //moisture color is out of range
-                 moistStatus=true;
+                   /* //moisture color is out of range
+                 moistStatus=true;*/
 
                 } else {
                     moistureNumberButton.setTextColor(Color.GREEN);
-                    //moisture is in range
-                    moistStatus=false;
+                    /*//moisture is in range
+                    moistStatus=false;*/
                 }
             }
 
@@ -309,13 +310,13 @@ public class MainActivity extends AppCompatActivity {
                         && (sensorData.getUv() < highRange))) {
 
                     uvNumberButton.setTextColor(Color.RED);
-                    //uv is ouf of range
-                   uvStatus=true;
+                   /* //uv is ouf of range
+                   uvStatus=true;*/
 
                 } else {
                     uvNumberButton.setTextColor(Color.GREEN);
-                    //uv is in range
-                    uvStatus=false;
+                   /* //uv is in range
+                    uvStatus=false;*/
                 }
             }
 
@@ -332,7 +333,16 @@ public class MainActivity extends AppCompatActivity {
 
     void greenhouseStatus(){
 
-        
+           int count=0;
+           if(temperatureNumberButton.getCurrentTextColor()==(Color.RED)){ count++;}
+           if(moistureNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+           if(humidityNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+           if(uvNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+           if(count==0){ ghStatus.setText("OPTIMAL");}
+           if(count==1){ ghStatus.setText("AVERAGE");}
+           if(count==2){ghStatus.setText("POOR"); }
+           if(count==3){ghStatus.setText("CRITICAL"); }
+
     }
 
     // TODO 2019-03-21
@@ -369,6 +379,7 @@ public class MainActivity extends AppCompatActivity {
         humColorSet();
         uvColorSet();
         moistColorSet();
+        greenhouseStatus();
     }
 
     @Override
@@ -380,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
         humColorSet();
         uvColorSet();
         moistColorSet();
+        greenhouseStatus();
     }
 
     @Override
@@ -387,6 +399,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         helper.checkAuthentication();
         requestWeather();
+        greenhouseStatus();
     }
 
     @Override
