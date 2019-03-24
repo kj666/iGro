@@ -1,34 +1,23 @@
 package com.example.igro;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.igro.Models.ActuatorControl.HeaterControlEvents;
-import com.example.igro.Models.ActuatorControl.HeaterEventConfig;
-import com.google.firebase.database.ChildEventListener;
+import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
+import com.example.igro.Models.ActuatorControl.ApplianceEventsListConfig;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.example.igro.R.layout.appliance_trigger_list_layout;
 
 public class HistoricalApplianceActivity extends AppCompatActivity {
 
@@ -43,48 +32,28 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     TextView listDateTitleTextView;
     TextView listOnOffTitleTextView;
     ListView applianceEventListView;
-    private Activity context;
-    private ArrayList<String> heaterEventArray;
-    private List<String> heaterEventList;
 
+    List<ApplianceControlEvents> applianceList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historical_appliance_data);
 
+//initialization for all the fields
         historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
         listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
         listDateTitleTextView = (TextView)findViewById(R.id.listDateTitleTextView);
         listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
-        heaterEventArray = new ArrayList<>();
-        heaterEventArray = new ArrayList<>();
-
+//getting intent and retrieving the extra
         Intent intent = getIntent();
-        String userName = intent.getStringExtra("UserName");
-        String applianceType = intent.getStringExtra("ApplianceType");
-        String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
-
+        final String userName = intent.getStringExtra("UserName");
+        final String applianceType = intent.getStringExtra("ApplianceType");
+// setting the title based on which Appliance data will be displayed based on intent extra
+        final String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
         historicalApplianceTitleTextView.setText(pageTitle);
-
-        if(applianceType.equals("HEATER")){
-            loadHeaterOnOffList();
-        } else if (applianceType.equals("HUMIDIFIER")) {
-            //todo change
-            loadHeaterOnOffList();
-
-        }else if(applianceType.equals("IRRIGATION")){
-            //todo change
-            loadHeaterOnOffList();
-
-        }else if(applianceType.equals("LIGHTS")){
-            //todo change
-            loadHeaterOnOffList();
-        }else{
-            Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG ).show();
-        }
 
     }
 
@@ -93,50 +62,198 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+//initializations
+        historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
+        listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
+        listDateTitleTextView = (TextView)findViewById(R.id.listDateTitleTextView);
+        listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
+        applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
-        loadHeaterOnOffList();
+//getting intent
+        Intent intent = getIntent();
+        String userName = intent.getStringExtra("UserName");
+        String applianceType = intent.getStringExtra("ApplianceType");
+        String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
+
+        historicalApplianceTitleTextView.setText(pageTitle);
+
+// depending on where the intent comes from, the extra determines which appliance data to load.
+        //if the intent extra comes from Temperature Activity, load heater data
+        if(applianceType.equals("HEATER")){
+            loadHeaterOnOffList();
+        } else if (applianceType.equals("HUMIDIFIER")) {
+            //retrieves the humidifier historical trigger records
+            loadHumidityOnOffList();
+
+        }else if(applianceType.equals("IRRIGATION")){
+            //gets irrigation historical trigger records
+            loadIrrigationOnOffList();
+
+        }else if(applianceType.equals("LIGHTS")){
+            //loads artificial lights on/off trigger records
+            loadLightsOnOffList();
+        }else{
+            Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG ).show();
+        }
 
     }
 
+    // function definition for heater records
     protected void loadHeaterOnOffList() {
-
-        final DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("HeaterControlLog");
+// referrence the correct DB node
+        final DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("HeaterControlLog");
 
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
-        final List<HeaterControlEvents> heaterList = new ArrayList<>();
-        final List<String> heaterListStrings = new ArrayList<>();
+// creates a new array list of the Class Heater Control Events which will be populated by records
+        final List<ApplianceControlEvents> heaterList = new ArrayList<>();
+
+        //   fuction orders the db entries by key and limits to last 20 entries to display
+        heaterSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//creates a snapshot of the last 20 node entries
+                long records = dataSnapshot.getChildrenCount();
+
+                for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
+//retrieves each of the 20 nodes of object of HeaterControlEvents class to build the array
+                    ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
+                    heaterList.add(heaterEvent);
+
+                }
+// calls the array adapter to display the list of records
+                ApplianceEventsListConfig adapter = new ApplianceEventsListConfig(HistoricalApplianceActivity.this, heaterList);
+                applianceEventListView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
- //     final int i = 0;
- //      while (i < 20) {
+    }
 
-      //      heaterSwitchEventDB.orderByKey().limitToLast(1 + i).addValueEventListener(new ValueEventListener() {
 
-            heaterSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
+    //function definition to load humidifier trigger records
+    protected void loadHumidityOnOffList() {
 
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        final DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("HumidityControlLog");
 
-                    long records = dataSnapshot.getChildrenCount();
+        applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
-                  for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
+// creates a new array list of the Class Heater Control Events which will be populated by records
+        final List<ApplianceControlEvents> heaterList = new ArrayList<>();
 
-                        HeaterControlEvents heaterEvent = heaterEventSnapshot.getValue(HeaterControlEvents.class);
-                        heaterList.add(heaterEvent);
 
-                    }
+        //   fuction orders the db entries by key and limits to last 20 entries to display
 
-                    HeaterEventConfig adapter = new HeaterEventConfig(HistoricalApplianceActivity.this, heaterList);
-                  applianceEventListView.setAdapter(adapter);
+        humidSwitchEventDB.orderByChild("eventUnixEpoch").limitToLast(20).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
+
+                    ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
+                    heaterList.add(heaterEvent);
 
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+                ApplianceEventsListConfig adapter = new ApplianceEventsListConfig(HistoricalApplianceActivity.this, heaterList);
+                applianceEventListView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+
+    // function definition for irrigation control records
+    protected void loadIrrigationOnOffList() {
+
+        final DatabaseReference moistSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("SoilMoistureControlLog");
+
+        applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
+
+// creates a new array list of the Class Heater Control Events which will be populated by records
+        final List<ApplianceControlEvents> heaterList = new ArrayList<>();
+
+
+        //   fuction orders the db entries by key and limits to last 20 entries to display
+
+        moistSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
+
+                    ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
+                    heaterList.add(heaterEvent);
 
                 }
-            });
+
+                ApplianceEventsListConfig adapter = new ApplianceEventsListConfig(HistoricalApplianceActivity.this, heaterList);
+                applianceEventListView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+
+    // function definition for loading the table of lights control records
+    protected void loadLightsOnOffList() {
+
+        final DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("UVControlLog");
+
+        applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
+
+// creates a new array list of the Class Heater Control Events which will be populated by records
+        final List<ApplianceControlEvents> heaterList = new ArrayList<>();
+
+
+        //   fuction orders the db entries by key and limits to last 20 entries to display
+
+        uvSwitchEventDB.orderByChild("uvEventUnixEpoch").limitToLast(20).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
+
+                    ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
+
+                    heaterList.add(heaterEvent);
+
+                }
+
+                ApplianceEventsListConfig adapter = new ApplianceEventsListConfig(HistoricalApplianceActivity.this, heaterList);
+                applianceEventListView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
     }
