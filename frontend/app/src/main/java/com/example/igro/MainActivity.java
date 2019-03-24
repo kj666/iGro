@@ -183,13 +183,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                SensorData sensorData = dataSnapshot.getValue(SensorData.class);
-
                 Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
                 Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
 
-                if (!((tempData > lowRange)
-                        && (tempData < highRange))) {
+                if (!((tempData > lowRange) && (tempData < highRange))) {
 
                     temperatureNumberButton.setTextColor(Color.RED);
                     /*//temp status out of range
@@ -204,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -215,21 +211,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
     //set the color of the humidity button
-    void humColorSet(){
+    void humColorSet(final Double value){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("Humidity");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                SensorData sensorData = dataSnapshot.getValue(SensorData.class);
-
                 Double lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
 
-
                 Double highRange = Double.parseDouble(dataSnapshot.child("highHumidityValue").getValue().toString());
-                if (!((sensorData.getHumidity() > lowRange)
-                        && (sensorData.getHumidity() < highRange))) {
+                if (!((value > lowRange) && (value < highRange))) {
 
                     humidityNumberButton.setTextColor(Color.RED);
                    /*//humidity is out of range
@@ -253,21 +245,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
     //set the color of the humidity button
-    void moistColorSet(){
+    void moistColorSet(final Double value){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("Moisture");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                SensorData sensorData = dataSnapshot.getValue(SensorData.class);
-
                 Double lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
 
-
                 Double highRange = Double.parseDouble(dataSnapshot.child("highMoistureValue").getValue().toString());
-                if (!((sensorData.getSoil() > lowRange)
-                        && (sensorData.getSoil() < highRange))) {
+                if (!((value > lowRange) && (value < highRange))) {
 
                     moistureNumberButton.setTextColor(Color.RED);
                    /* //moisture color is out of range
@@ -292,21 +280,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //set the color of the humidity button
-    void uvColorSet(){
+    void uvColorSet(final int value){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("UV");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                SensorData sensorData = dataSnapshot.getValue(SensorData.class);
-
                 Double lowRange = Double.parseDouble(dataSnapshot.child("lowUvValue").getValue().toString());
 
-
                 Double highRange = Double.parseDouble(dataSnapshot.child("highUvValue").getValue().toString());
-                if (!((sensorData.getUv() > lowRange)
-                        && (sensorData.getUv() < highRange))) {
+                if (!((value > lowRange) && (value < highRange))) {
 
                     uvNumberButton.setTextColor(Color.RED);
                    /* //uv is ouf of range
@@ -374,10 +358,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         helper.checkAuthentication();
         requestWeather();
-//        tempColorSet();
-        humColorSet();
-        uvColorSet();
-        moistColorSet();
         greenhouseStatus();
     }
 
@@ -386,10 +366,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         helper.checkAuthentication();
         requestWeather();
-//        tempColorSet();
-        humColorSet();
-        uvColorSet();
-        moistColorSet();
         greenhouseStatus();
     }
 
@@ -450,6 +426,9 @@ public class MainActivity extends AppCompatActivity {
                     moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getSoil())+"");
 
                     tempColorSet(sensorData.getTemperatureC());
+                    humColorSet(sensorData.getHumidity());
+                    moistColorSet(sensorData.getSoil());
+                    uvColorSet(sensorData.getUv());
                 }
             }
 
