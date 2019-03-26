@@ -15,7 +15,7 @@
 #define WIFI_PASSWORD "karthi666"
 
 double uv_value;
-int soil_value;
+double soil_value;
 
 BME280 mySensor;
 
@@ -130,12 +130,27 @@ void loop() {
   
 }
 //
-int readSoil(){
+double readSoil(){
   digitalWrite(D3, HIGH);
   delay(10);
-  int val = analogRead(A0);
+  double val = analogRead(A0);
+  Serial.print("soil/" +String(val));
   digitalWrite(D3, LOW);
-  return val;
+  double soil;
+  if(val <150){
+    soil = 0;
+    Serial.print("soil0/" +String(val));
+  }
+  else if(val > 620){
+    soil = 100;
+    Serial.print("soil100/" +String(val));
+  }
+  else{
+    soil = ((val-150)/500)*100;
+    Serial.print("soilCal/" +String(val) + String(((val-150)/500)*100));
+  }
+  
+  return soil;
 }
 
 double readUV(){
