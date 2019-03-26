@@ -42,7 +42,10 @@ public class SensorData {
     }
 
     public int getUv() {
-        return uv;
+        if(uv<=5)
+            return 0;
+        else
+            return uv;
     }
 
     public void setUv(int uv) {
@@ -67,7 +70,11 @@ public class SensorData {
     }
 
     public double getSoil() {
-        return soil;
+        if(soil <=5){
+            return 0;
+        }
+        else
+            return (soil/500)*100;
     }
 
     public void setSoil(double soilMoisture) {

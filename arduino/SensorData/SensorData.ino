@@ -25,7 +25,7 @@ int poll = 0;
 void setup() {
   Serial.begin(9600);
   pinMode(D0, OUTPUT);
-  pinMode(D7, OUTPUT);
+  pinMode(D3, OUTPUT);
 
   // connect to wifi.
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -121,16 +121,16 @@ void loop() {
 }
 //
 int readSoil(){
-  digitalWrite(D7, HIGH);
+  digitalWrite(D3, HIGH);
   delay(10);
   int val = analogRead(A0);
-  digitalWrite(D7, LOW);
+  digitalWrite(D3, LOW);
   return val;
 }
 
 int readUV(){
   digitalWrite(D0, HIGH);
-  delay(1000);
+  delay(10);
   int val = analogRead(A0);
   digitalWrite(D0, LOW);
   return val;
