@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Retrieve data from DB
         retrieveSensorData();
-//        greenhouseStatus();
 
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                     tempStatus=false;*/
 
                 }
+                greenhouseStatus();
             }
 
             @Override
@@ -232,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
                     /*//humidity is out of range
                     humStatus=false;*/
                 }
+                greenhouseStatus();
             }
 
 
@@ -266,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
                     /*//moisture is in range
                     moistStatus=false;*/
                 }
+                greenhouseStatus();
             }
 
 
@@ -301,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
                    /* //uv is in range
                     uvStatus=false;*/
                 }
+                greenhouseStatus();
             }
 
 
@@ -429,7 +432,6 @@ public class MainActivity extends AppCompatActivity {
                     humColorSet(sensorData.getHumidity());
                     moistColorSet(sensorData.getSoil());
                     uvColorSet(sensorData.getUv());
-                    greenhouseStatus();
                 }
             }
 
