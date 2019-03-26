@@ -220,13 +220,10 @@ public class HumidityActivity extends AppCompatActivity {
         String lowHumidity = lowHumEditText.getText().toString();
         String highHumidity = highHumEditText.getText().toString();
 
-        int lowHum = parseInt(lowHumidity);
-        int highHum = parseInt(highHumidity);
-
         //check if the ranges are empty or not
         if (!TextUtils.isEmpty(lowHumidity) && !TextUtils.isEmpty(highHumidity)) {
 
-            if (Integer.parseInt(lowHumidity.toString()) < Integer.parseInt(highHumidity.toString())) {
+            if (Double.parseDouble(lowHumidity.toString()) < Double.parseDouble(highHumidity.toString())) {
 
                     HumidityRange humidityRange = new HumidityRange(lowHumidity, highHumidity);
                     databaseRange.child("Humidity").setValue(humidityRange);

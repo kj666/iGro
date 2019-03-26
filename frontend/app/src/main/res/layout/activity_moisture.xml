@@ -288,7 +288,7 @@
         android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
         android:gravity="bottom|clip_horizontal|center|center_horizontal|center_vertical"
         android:hint="Upper Limit"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         android:saveEnabled="true"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorAccent"

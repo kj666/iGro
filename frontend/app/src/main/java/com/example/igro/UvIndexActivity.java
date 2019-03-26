@@ -254,7 +254,7 @@ public class UvIndexActivity extends AppCompatActivity {
  //check if the ranges are empty or not
             if (!TextUtils.isEmpty(lowUv) && !TextUtils.isEmpty(highUv)) {
  //Check if Lower limit is < upper limit
-                if (Integer.parseInt(lowUv) < Integer.parseInt(highUv)) {
+                if (Double.parseDouble(lowUv) < Double.parseDouble(highUv)) {
 
                     UvRange UvRange = new UvRange(lowUv, highUv);
                     databaseRange.child("UV").setValue(UvRange);
