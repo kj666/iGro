@@ -485,7 +485,7 @@ public class TemperatureActivity extends AppCompatActivity {
  //theck if input is numerical
             if((lowTemp.matches(".*[0-999].*"))&&(highTemp.matches(".*[0-999].*"))){
   //Check if Lower limit is < upper limit
-                if (Integer.parseInt(lowTemp) < Integer.parseInt(highTemp)) {
+                if (Double.parseDouble(lowTemp) < Double.parseDouble(highTemp)) {
 
                 TempRange temperatureTempRange = new TempRange(lowTemp, highTemp);
                 databaseRange.child("Temperature").setValue(temperatureTempRange);
