@@ -1,5 +1,7 @@
 package com.example.igro;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.igro.Controller.Helper;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -47,6 +51,20 @@ public class MainActivity extends AppCompatActivity {
 
     protected Button humidityTitleButton;
     protected TextView humidityNumberButton;
+
+    //Greenhouse status textview
+    private TextView ghStatus;
+    // temperature status
+    private boolean tempStatus;
+    // humidity status
+    private boolean humStatus;
+    // moisture status
+    private boolean moistStatus;
+    // uv status
+    private boolean uvStatus;
+
+
+
 
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
@@ -86,75 +104,233 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-            //opening the Temperature view when the temperature text is clicked
+        //opening the Temperature view when the temperature text is clicked
         temperatureTitleButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(TemperatureActivity.class);
             }
-            });
+        });
 
-            //opening the Temperature view when the temperature number is clicked
+        //opening the Temperature view when the temperature number is clicked
         temperatureNumberButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(TemperatureActivity.class);
             }
-            });
+        });
 
-            //opening the Uv index view  when the uvTitleButton text is clicked
+        //opening the Uv index view  when the uvTitleButton text is clicked
         uvTitleButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(UvIndexActivity.class);
             }
-            });
+        });
 
-            //opening the uvTitleButton view when the uvTitleButton number is clicked
+        //opening the uvTitleButton view when the uvTitleButton number is clicked
         uvNumberButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(UvIndexActivity.class);
             }
-            });
+        });
         humidityTitleButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(HumidityActivity.class);
             }
-            });
+        });
         humidityNumberButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(HumidityActivity.class);
             }
-            });
+        });
         moistureTitleButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick (View v2){
-                    helper.goToActivity(MoistureActivity.class);
-            }
-
-            });
-        moistureNumberButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick (View v){
+            @Override
+            public void onClick (View v2){
                 helper.goToActivity(MoistureActivity.class);
             }
-            });
-        }
+
+        });
+        moistureNumberButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick (View v){
+                helper.goToActivity(MoistureActivity.class);
+            }
+        });
+    }
+
+    void tempColorSet(final Double tempData){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("Temperature");
+
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
+                Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+
+                if (!((tempData > lowRange) && (tempData < highRange))) {
+
+                    temperatureNumberButton.setTextColor(Color.RED);
+                    /*//temp status out of range
+                    tempStatus=true;
+*/
+                } else {
+
+                    temperatureNumberButton.setTextColor(Color.GREEN);
+                    /*//temp status in range
+                    tempStatus=false;*/
+
+                }
+                greenhouseStatus();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        db.addValueEventListener(eventListener);
+
+    }
+    //set the color of the humidity button
+    void humColorSet(final Double value){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("Humidity");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Double lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
+
+                Double highRange = Double.parseDouble(dataSnapshot.child("highHumidityValue").getValue().toString());
+                if (!((value > lowRange) && (value < highRange))) {
+
+                    humidityNumberButton.setTextColor(Color.RED);
+                   /*//humidity is out of range
+                    humStatus=true;*/
+
+                } else {
+                    humidityNumberButton.setTextColor(Color.GREEN);
+                    /*//humidity is out of range
+                    humStatus=false;*/
+                }
+                greenhouseStatus();
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        db.addValueEventListener(eventListener);
+
+    }
+    //set the color of the humidity button
+    void moistColorSet(final Double value){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("Moisture");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Double lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
+
+                Double highRange = Double.parseDouble(dataSnapshot.child("highMoistureValue").getValue().toString());
+                if (!((value > lowRange) && (value < highRange))) {
+
+                    moistureNumberButton.setTextColor(Color.RED);
+                   /* //moisture color is out of range
+                 moistStatus=true;*/
+
+                } else {
+                    moistureNumberButton.setTextColor(Color.GREEN);
+                    /*//moisture is in range
+                    moistStatus=false;*/
+                }
+                greenhouseStatus();
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        db.addValueEventListener(eventListener);
+
+    }
+
+    //set the color of the humidity button
+    void uvColorSet(final int value){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("UV");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Double lowRange = Double.parseDouble(dataSnapshot.child("lowUvValue").getValue().toString());
+
+                Double highRange = Double.parseDouble(dataSnapshot.child("highUvValue").getValue().toString());
+                if (!((value > lowRange) && (value < highRange))) {
+
+                    uvNumberButton.setTextColor(Color.RED);
+                   /* //uv is ouf of range
+                   uvStatus=true;*/
+
+                } else {
+                    uvNumberButton.setTextColor(Color.GREEN);
+                   /* //uv is in range
+                    uvStatus=false;*/
+                }
+                greenhouseStatus();
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        db.addValueEventListener(eventListener);
+
+    }
+
+    void greenhouseStatus(){
+
+           int count=0;
+           if(temperatureNumberButton.getCurrentTextColor()==(Color.RED)){ count++;}
+           if(moistureNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+           if(humidityNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+           if(uvNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+           if(count==0){ ghStatus.setText("OPTIMAL");}
+           if(count==1){ ghStatus.setText("AVERAGE");}
+           if(count==2){ghStatus.setText("POOR"); }
+           if(count==3){ghStatus.setText("CRITICAL");}
+           if(count==4){ghStatus.setText("VERY CRITICAL");}
+
+    }
 
     // TODO 2019-03-21
     // Switch the fixed value given for temperature below to sensor data when available
@@ -175,13 +351,18 @@ public class MainActivity extends AppCompatActivity {
         //Moisture view initialization
         moistureTitleButton = (Button) findViewById(R.id.moistureButton);
         moistureNumberButton = (Button) findViewById(R.id.moisturePercentView);
+
+        ghStatus=(TextView)findViewById(R.id.statusTextView);
     }
+
+
 
     @Override
     protected void onStart() {
         super.onStart();
         helper.checkAuthentication();
         requestWeather();
+//        greenhouseStatus();
     }
 
     @Override
@@ -189,6 +370,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         helper.checkAuthentication();
         requestWeather();
+//        greenhouseStatus();
     }
 
     @Override
@@ -196,6 +378,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         helper.checkAuthentication();
         requestWeather();
+//        greenhouseStatus();
     }
 
     @Override
@@ -219,12 +402,9 @@ public class MainActivity extends AppCompatActivity {
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-
-                case R.id.polling_menu:
+            case R.id.polling_menu:
                 openDialog();
                 return true;
-
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -251,6 +431,11 @@ public class MainActivity extends AppCompatActivity {
 
                     //SoilMoisture
                     moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getSoil())+"");
+
+                    tempColorSet(sensorData.getTemperatureC());
+                    humColorSet(sensorData.getHumidity());
+                    moistColorSet(sensorData.getSoil());
+                    uvColorSet(sensorData.getUv());
                 }
             }
 
@@ -323,9 +508,9 @@ public class MainActivity extends AppCompatActivity {
             return numberToBeConverted.toString();
         }
     }
+
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
-
 }
