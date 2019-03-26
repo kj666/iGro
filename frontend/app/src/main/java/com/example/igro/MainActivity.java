@@ -327,7 +327,8 @@ public class MainActivity extends AppCompatActivity {
            if(count==0){ ghStatus.setText("OPTIMAL");}
            if(count==1){ ghStatus.setText("AVERAGE");}
            if(count==2){ghStatus.setText("POOR"); }
-           if(count==3){ghStatus.setText("CRITICAL"); }
+           if(count==3){ghStatus.setText("CRITICAL");}
+           if(count==4){ghStatus.setText("VERY CRITICAL");}
 
     }
 
