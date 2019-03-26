@@ -70,11 +70,7 @@ public class SensorData {
     }
 
     public double getSoil() {
-        if(soil <=5){
-            return 0;
-        }
-        else
-            return (soil/500)*100;
+        return soil;
     }
 
     public void setSoil(double soilMoisture) {
