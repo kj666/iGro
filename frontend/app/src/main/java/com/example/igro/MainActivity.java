@@ -14,6 +14,12 @@ import android.util.Log;
 import android.widget.TextView;
 
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.SensorData.Temperature;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -325,11 +331,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Log.i(MAIN_LOG_TAG, "response: " + response);
                         try {
-                            // Get description from weather response
-                            //String description = response.getJSONArray("weather").getJSONObject(0).getString("main");
-                            //descriptionTextView.setText(description);
-
-                            // Get temperature from weather response
                             int temperature = response.getJSONObject("main").getInt("temp");
                             cityWeatherMessage.setText("Montreal" + temperature + "°");
 
