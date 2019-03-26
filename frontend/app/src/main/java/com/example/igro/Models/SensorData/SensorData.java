@@ -42,7 +42,10 @@ public class SensorData {
     }
 
     public int getUv() {
-        return uv;
+        if(uv<=5)
+            return 0;
+        else
+            return uv;
     }
 
     public void setUv(int uv) {
