@@ -186,7 +186,7 @@ public class MoistureActivity extends AppCompatActivity {
         String highMoisture=highMoistureEditText.getText().toString();
         //check if the ranges are empty or not
         if (!TextUtils.isEmpty(lowMoisture) && !TextUtils.isEmpty(highMoisture)) {
-            if (Integer.parseInt(lowMoisture.toString()) < Integer.parseInt(highMoisture.toString())) {
+            if (Double.parseDouble(lowMoisture.toString()) < Double.parseDouble(highMoisture.toString())) {
 
                 MoistureRange moistureTempRange = new MoistureRange(lowMoisture, highMoisture);
                 databaseRange.child("Moisture").setValue(moistureTempRange);
