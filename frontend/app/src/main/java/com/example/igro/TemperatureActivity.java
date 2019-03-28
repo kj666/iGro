@@ -79,11 +79,15 @@ public class TemperatureActivity extends AppCompatActivity {
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
     //create heater database reference
-    DatabaseReference heaterSwitchEventDB;
-    //Get current user using the Helper class
+    DatabaseReference heaterSwitchEventDB, appliances, databaseRange, db;
+
 
     public void initializeDB(String greenhouseID){
         heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/ApplianceControlLog").child("HeaterControlLog");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+        databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
+        db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+
     }
 
     @Override
@@ -253,8 +257,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
-        DatabaseReference tempRange = db.child("Temperature");
+        DatabaseReference tempRange = databaseRange.child("Temperature");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
@@ -395,11 +398,12 @@ public class TemperatureActivity extends AppCompatActivity {
                 if(!(heatEventId == null)) {
 
                     if (tempSwitchState) {
-
+                        appliances.child("HeaterCtrl").setValue(true);
                         Log.d(TAG, "The heater was turned on " + heatOnTimeStampFormated);
                         Toast.makeText(this, "The heater was switched ON on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
                     } else {
+                        appliances.child("HeaterCtrl").setValue(false);
                         Log.d(TAG, "The heater was turned off on " + heatOnTimeStampFormated);
                         Toast.makeText(this, "The heater was switched OFF on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
                     }
@@ -413,8 +417,6 @@ public class TemperatureActivity extends AppCompatActivity {
         }
 
     void retrieveSensorData() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

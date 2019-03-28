@@ -77,12 +77,13 @@ public class HumidityActivity extends AppCompatActivity {
     TextView outdoorHumidityTextView; // displays the humidity in percentage
     private RequestQueue queue;
     //create database reference for ranges
-    DatabaseReference databaseRange, humidSwitchEventDB, db ;
+    DatabaseReference databaseRange, humidSwitchEventDB, db, appliances ;
 
     public void initializeDB(String greenhouseID){
         databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
         humidSwitchEventDB = FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("HumidityControlLog");
         db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
     }
 
     @Override
@@ -376,11 +377,12 @@ public class HumidityActivity extends AppCompatActivity {
 
             if (!(humEventId == null)) {
 
-                if (lastHumidState) {
-
+                if (!lastHumidState) {
+                    appliances.child("HumidCtrl").setValue(true);
                     Log.d(TAG, "The humidifier was turned on " + humOnTimeStampFormated);
                     Toast.makeText(this, "The humidifier was switched ON on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 } else {
+                    appliances.child("HumidCtrl").setValue(false);
                     Log.d(TAG, "The humidifier was turned off on " + humOnTimeStampFormated);
                     Toast.makeText(this, "The humidifier was switched OFF on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }

@@ -79,12 +79,13 @@ public class UvIndexActivity extends AppCompatActivity {
     private static final String TAG = "LightsAreOnTag";
 
     //create heater database reference for the correct node
-    DatabaseReference uvSwitchEventDB, databaseRange, db;
+    DatabaseReference uvSwitchEventDB, databaseRange, db, appliances;
 
     public void initializeDB(String greenhouseID){
         databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
         uvSwitchEventDB = FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("UVControlLog");
         db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
     }
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -351,12 +352,13 @@ public class UvIndexActivity extends AppCompatActivity {
             if(!(uvEventId == null)) {
 
 
-                if (lastUvState) {
-
+                if (!lastUvState) {
+                    appliances.child("LightCtrl").setValue(true);
                     Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
                     Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
                 } else {
+                    appliances.child("LightCtrl").setValue(false);
                     Log.d(TAG, "Thelights were turned off on " + uvOnTimeStampFormated);
                     Toast.makeText(this, "The lights were switched OFF on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }
