@@ -6,6 +6,7 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
 #include <Wire.h>
+#include "Si1145.h"
 #include "SparkFunBME280.h"
 
 //Wifi and Firebase Configuration
@@ -14,17 +15,18 @@
 #define WIFI_SSID "Karthi"
 #define WIFI_PASSWORD "karthi666"
 
-double uv_value;
-double soil_value;
-
 BME280 mySensor;
+Si1145 uv = Si1145();
 
+double soil_value;
 int t = 0;
 int poll = 0;
+String greenHouseID;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(D0, OUTPUT);
+  
+  pinMode(A0, INPUT);
   pinMode(D3, OUTPUT);
 
   // connect to wifi.
@@ -40,29 +42,37 @@ void setup() {
 
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
   
-  //Read from sensor
+  //Check temp sensor
   Serial.println("Reading basic values from BME280");
 
-//Use only for esp
   if (mySensor.beginI2C() == false) //Begin communication over I2C
   {
     Serial.println("The sensor did not respond. Please check wiring.");
-    while(1); //Freeze
+    while(1); 
   }
+
+  //Check UV sensor
+  if (! uv.begin()) {
+    Serial.println("Didn't find Si1145 !\r\n");
+    while (1);
+  }
+
+  Serial.println("Si1145 Init success !\r\n");
+
+  greenHouseID = Firebase.getString("mcuGreenhouseIDSensor")+"/";
 }
 
 
 void loop() {
 
-  
-  poll = Firebase.getInt("config/poll");
+  poll = Firebase.getInt(greenHouseID+"SensorConfig/poll");
   delay(100);
-  t = Firebase.getInt("config/lastID");
+  t = Firebase.getInt(greenHouseID+"SensorConfig/lastID");
   t++;
 
   
   //TemperatureC
-  Firebase.setFloat("data/"+String(t)+"/temperatureC", mySensor.readTempC());
+  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/temperatureC", mySensor.readTempC());
   Serial.print(" temp: "+ String(mySensor.readTempC()));
   if (Firebase.failed()) {
       Serial.println("temperatureC/ failed:");
@@ -70,7 +80,7 @@ void loop() {
       return;
   }
   //TemperatureF
-  Firebase.setFloat("data/"+String(t)+"/temperatureF", mySensor.readTempF());
+  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/temperatureF", mySensor.readTempF());
   if (Firebase.failed()) {
       Serial.println("temperatureF/ failed:");
       Serial.println(Firebase.error());  
@@ -78,7 +88,7 @@ void loop() {
   }
   
   //Humidity
-  Firebase.setFloat("data/"+String(t)+"/humidity", mySensor.readFloatHumidity());
+  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/humidity", mySensor.readFloatHumidity());
   Serial.print(" hum: "+ String(mySensor.readFloatHumidity()));
   if (Firebase.failed()) {
       Serial.println("humidity/ failed:");
@@ -86,20 +96,29 @@ void loop() {
       return;
   }
 
-  //UV
-  uv_value = readUV();
-  Firebase.setFloat("data/"+String(t)+"/uv",uv_value);
-  Serial.print(" UV: "+ String(uv_value));
+  //UV index
+  float UVindex = uv.readUV();
+  UVindex /= 100.0;  
+  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/uvIndex",UVindex);
+  Serial.println(" UVindex: "+ String(UVindex));
   if (Firebase.failed()) {
       Serial.println("uv/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
 
-  //UV
-  double uv_nm = readUVnm(uv_value);
-  Firebase.setFloat("data/"+String(t)+"/uvnm",uv_nm);
-  Serial.print(" UV: "+ String(uv_nm));
+  //Visible light
+  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/visibleLight",uv.readVisible());
+  Serial.println(" VIS: "+ String(uv.readVisible()));
+  if (Firebase.failed()) {
+      Serial.println("uv/ failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
+
+  //IR visble
+  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/IR",uv.readIR());
+  Serial.println(" IR: "+ String(uv.readIR()));
   if (Firebase.failed()) {
       Serial.println("uv/ failed:");
       Serial.println(Firebase.error());  
@@ -108,7 +127,7 @@ void loop() {
 
   //Soil Moisture
   soil_value = readSoil();
-  Firebase.setFloat("data/"+String(t)+"/soil",soil_value);
+  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/soil",soil_value);
   Serial.println(" soil: "+ String(soil_value));
   if (Firebase.failed()) {
       Serial.print("soil/ failed:");
@@ -117,7 +136,7 @@ void loop() {
   }
   
  //keep track of time ID
-  Firebase.setInt("config/lastID",t);
+  Firebase.setInt(greenHouseID+"SensorConfig/lastID",t);
   if (Firebase.failed()) {
       Serial.print("lastId failed:");
       Serial.println(Firebase.error());  
@@ -134,47 +153,8 @@ double readSoil(){
   digitalWrite(D3, HIGH);
   delay(10);
   double val = analogRead(A0);
-  Serial.print("soil/" +String(val));
   digitalWrite(D3, LOW);
-  double soil;
-  if(val <150){
-    soil = 0;
-    Serial.print("soil0/" +String(val));
-  }
-  else if(val > 620){
-    soil = 100;
-    Serial.print("soil100/" +String(val));
-  }
-  else{
-    soil = ((val-150)/500)*100;
-    Serial.print("soilCal/" +String(val) + String(((val-150)/500)*100));
-  }
-  
+  double soil = map(val, 0, 880, 0, 100);
+ 
   return soil;
-}
-
-double readUV(){
-  digitalWrite(D0, HIGH);
-  delay(10);
-  double val = analogRead(A0);
-  digitalWrite(D0, LOW);
-  return val;
-}
-
-double readUVnm(double value){
-  double val = (value*0.076)/100;
-  int nm;
-  if(val <= 0.01){
-    nm = 240;
-  }
-  else if(val > 0.01 && val <= 0.12){
-    nm=(val+0.32)/0.001375;
-  }
-  else if (val >0.12 && val <0.15){
-    nm= (val+0.2)/0.001;
-  }
-  else{
-    nm = 360;
-  }
-  return nm;
 }
