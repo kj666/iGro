@@ -8,8 +8,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
 import com.example.igro.Models.ActuatorControl.ApplianceEventsListConfig;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,12 +35,15 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     TextView listOnOffTitleTextView;
     ListView applianceEventListView;
 
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+
     List<ApplianceControlEvents> applianceList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historical_appliance_data);
+        helper.setSharedPreferences(getApplicationContext());
 
 //initialization for all the fields
         historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
@@ -101,7 +106,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     // function definition for heater records
     protected void loadHeaterOnOffList() {
 // referrence the correct DB node
-        final DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("HeaterControlLog");
+        final DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/ApplianceControlLog").child("HeaterControlLog");
 
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
@@ -141,7 +146,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     //function definition to load humidifier trigger records
     protected void loadHumidityOnOffList() {
 
-        final DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("HumidityControlLog");
+        final DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/ApplianceControlLog").child("HumidityControlLog");
 
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
@@ -181,7 +186,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     // function definition for irrigation control records
     protected void loadIrrigationOnOffList() {
 
-        final DatabaseReference moistSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("SoilMoistureControlLog");
+        final DatabaseReference moistSwitchEventDB = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/ApplianceControlLog").child("SoilMoistureControlLog");
 
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
@@ -221,7 +226,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     // function definition for loading the table of lights control records
     protected void loadLightsOnOffList() {
 
-        final DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("UVControlLog");
+        final DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/ApplianceControlLog").child("UVControlLog");
 
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 

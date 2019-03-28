@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.rpc.Help;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -63,11 +64,15 @@ public class MoistureActivity extends AppCompatActivity {
     private static final String TAG = "IrrigationIsOnTag";
 
     //create heater database reference
-    DatabaseReference moistureSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("SoilMoistureControlLog");
-    //create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+    DatabaseReference moistureSwitchEventDB, databaseRange, db, appliances;
 
+    public void initializeDB(String greenhouseID){
+        databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
+        moistureSwitchEventDB= FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("SoilMoistureControlLog");
+        db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
 
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
@@ -75,6 +80,8 @@ public class MoistureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_moisture);
         initializeUI();
         currentUser = helper.checkAuthentication();
+        helper.setSharedPreferences(getApplicationContext());
+        initializeDB(helper.retrieveGreenhouseID());
         retrieveSensorData();
         retrieveRange();
 
@@ -202,18 +209,16 @@ public class MoistureActivity extends AppCompatActivity {
     }
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference moistureRange = db.child("Moisture");
+        DatabaseReference moistureRange = databaseRange.child("Moisture");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                highMoistureEditText.setText(dataSnapshot.child("highMoistureValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highMoistureValue").getValue().toString());
+                Double highRange = Helper.retrieveRange("highMoistureValue", dataSnapshot);
+                highMoistureEditText.setText(highRange.toString());
 
-                lowMoistureEditText.setText(dataSnapshot.child("lowMoistureValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
-
+                Double lowRange = Helper.retrieveRange("lowMoistureValue", dataSnapshot);
+                lowMoistureEditText.setText(lowRange.toString());
 
                 if (!((ghMoisture > lowRange)
                         && (ghMoisture< highRange))) {
@@ -236,8 +241,6 @@ public class MoistureActivity extends AppCompatActivity {
 
     }
     void retrieveSensorData(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -355,18 +358,19 @@ public class MoistureActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String moistEventId = moistureSwitchEventDB.push().getKey();
 
-// creates a record as an object of class HeaterControlEvents, which includes id, dates in 2 formats and on/off state to be recorded
+            // creates a record as an object of class HeaterControlEvents, which includes id, dates in 2 formats and on/off state to be recorded
             ApplianceControlEvents moistSwitchClickEvent = new ApplianceControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
             moistureSwitchEventDB.child(moistEventId).setValue(moistSwitchClickEvent);
 
             if(!(moistEventId == null)) {
 
-// checks the state of the switch to display message
+                // checks the state of the switch to display message
                 if (moistSwitchState) {
-
+                    appliances.child("SoilCtrl").setValue(true);
                     Log.d(TAG, "The irrigation was turned on " + moistOnTimeStampFormated);
                     Toast.makeText(this, "The irrigation was switched ON on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 } else {
+                    appliances.child("SoilCtrl").setValue(false);
                     Log.d(TAG, "The irrigation was turned off on " + moistOnTimeStampFormated);
                     Toast.makeText(this, "The irrigation was switched OFF on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }

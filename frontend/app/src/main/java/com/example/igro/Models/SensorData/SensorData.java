@@ -10,6 +10,9 @@ public class SensorData {
     private double soil;
     private int uv;
     private long time;
+    private int IR; //Infra red
+    private double uvIndex;
+    private int visibleLight;
 
     public SensorData(){
     }
@@ -75,5 +78,29 @@ public class SensorData {
 
     public void setSoil(double soilMoisture) {
         this.soil = soilMoisture;
+    }
+
+    public int getIR() {
+        return IR;
+    }
+
+    public void setIR(int IR) {
+        this.IR = IR;
+    }
+
+    public double getUvIndex() {
+        return uvIndex;
+    }
+
+    public void setUvIndex(double uvIndex) {
+        this.uvIndex = uvIndex;
+    }
+
+    public int getVisibleLight() {
+        return visibleLight;
+    }
+
+    public void setVisibleLight(int visibleLight) {
+        this.visibleLight = visibleLight;
     }
 }

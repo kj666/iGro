@@ -73,14 +73,18 @@ public class HumidityActivity extends AppCompatActivity {
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HumidifierIsOnTag";
 
-    //create heater database reference
-    DatabaseReference applianceDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog");
-    DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("HumidityControlLog");
 
     TextView outdoorHumidityTextView; // displays the humidity in percentage
     private RequestQueue queue;
     //create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+    DatabaseReference databaseRange, humidSwitchEventDB, db, appliances ;
+
+    public void initializeDB(String greenhouseID){
+        databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
+        humidSwitchEventDB = FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("HumidityControlLog");
+        db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +92,14 @@ public class HumidityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_humidity);
 
         initializeUI();
-
-        retrieveSensorData();
+        helper.setSharedPreferences(getApplicationContext());
+        initializeDB(helper.retrieveGreenhouseID());
 
         queue = Volley.newRequestQueue(this);
         requestHumidity();
 
-        initializeUI();
         currentUser = helper.checkAuthentication();
         retrieveSensorData();
-
         retrieveRange();
         setHumidityRange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,8 +243,6 @@ public class HumidityActivity extends AppCompatActivity {
 
 
     void retrieveSensorData() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -267,18 +267,16 @@ public class HumidityActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference humidityRange = db.child("Humidity");
-
+        DatabaseReference humidityRange = databaseRange.child("Humidity");
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                highHumEditText.setText(dataSnapshot.child("highHumidityValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highHumidityValue").getValue().toString());
 
-                lowHumEditText.setText(dataSnapshot.child("lowHumidityValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
+                Double lowRange = Helper.retrieveRange("lowHumidityValue", dataSnapshot);
+                Double highRange = Helper.retrieveRange("highHumidityValue", dataSnapshot);
 
+                highHumEditText.setText(highRange.toString());
+                lowHumEditText.setText(lowRange.toString());
 
                 if (!((ghHumidity > lowRange)
                         && (ghHumidity< highRange))) {
@@ -379,11 +377,12 @@ public class HumidityActivity extends AppCompatActivity {
 
             if (!(humEventId == null)) {
 
-                if (lastHumidState) {
-
+                if (!lastHumidState) {
+                    appliances.child("HumidCtrl").setValue(true);
                     Log.d(TAG, "The humidifier was turned on " + humOnTimeStampFormated);
                     Toast.makeText(this, "The humidifier was switched ON on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 } else {
+                    appliances.child("HumidCtrl").setValue(false);
                     Log.d(TAG, "The humidifier was turned off on " + humOnTimeStampFormated);
                     Toast.makeText(this, "The humidifier was switched OFF on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }

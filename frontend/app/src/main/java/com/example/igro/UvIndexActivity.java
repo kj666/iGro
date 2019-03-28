@@ -79,10 +79,14 @@ public class UvIndexActivity extends AppCompatActivity {
     private static final String TAG = "LightsAreOnTag";
 
     //create heater database reference for the correct node
-    DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("UVControlLog");
-    //create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+    DatabaseReference uvSwitchEventDB, databaseRange, db, appliances;
 
+    public void initializeDB(String greenhouseID){
+        databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
+        uvSwitchEventDB = FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("UVControlLog");
+        db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
@@ -91,6 +95,8 @@ public class UvIndexActivity extends AppCompatActivity {
 
 
         initializeUI();
+        helper.setSharedPreferences(getApplicationContext());
+        initializeDB(helper.retrieveGreenhouseID());
 
         currentUser = helper.checkAuthentication();
         retrieveSensorData();
@@ -212,18 +218,17 @@ public class UvIndexActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference uvRange = db.child("UV");
+        DatabaseReference uvRange = databaseRange.child("UV");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                lowUvEditText.setText(dataSnapshot.child("lowUvValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowUvValue").getValue().toString());
-                highUvEditText.setText(dataSnapshot.child("highUvValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highUvValue").getValue().toString());
 
+                Double lowRange = Helper.retrieveRange("lowUvValue", dataSnapshot);
+                Double highRange = Helper.retrieveRange("highUvValue", dataSnapshot);
 
+                lowUvEditText.setText(lowRange.toString());
+                highUvEditText.setText(highRange.toString());
                 if (!((ghUv > lowRange)
                         && (ghUv< highRange))) {
 
@@ -347,12 +352,13 @@ public class UvIndexActivity extends AppCompatActivity {
             if(!(uvEventId == null)) {
 
 
-                if (lastUvState) {
-
+                if (!lastUvState) {
+                    appliances.child("LightCtrl").setValue(true);
                     Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
                     Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
                 } else {
+                    appliances.child("LightCtrl").setValue(false);
                     Log.d(TAG, "Thelights were turned off on " + uvOnTimeStampFormated);
                     Toast.makeText(this, "The lights were switched OFF on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }
@@ -367,8 +373,6 @@ public class UvIndexActivity extends AppCompatActivity {
     }
 
     void retrieveSensorData(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

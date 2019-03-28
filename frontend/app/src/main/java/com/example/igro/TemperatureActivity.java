@@ -69,26 +69,38 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView outdoorTemperatureTextView;
     TextView greenhouseTemperatureTextView;
     private RequestQueue queue;
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+    String greenhouseID;
 
     // create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+
     private FirebaseUser currentUser;
     public Boolean lastHeaterState = false;
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
     //create heater database reference
-    DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog").child("HeaterControlLog");
-    //Get current user using the Helper class
-    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+    DatabaseReference heaterSwitchEventDB, appliances, databaseRange, db;
 
+
+    public void initializeDB(String greenhouseID){
+        heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/ApplianceControlLog").child("HeaterControlLog");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+        databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
+        db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
 
+        helper.setSharedPreferences(getApplicationContext());
+        greenhouseID = helper.retrieveGreenhouseID();
+
+        initializeDB(greenhouseID);
         initializeUI();
-// make temperature control switch clickable
+        // make temperature control switch clickable
         temperatureSwitch.setClickable(true);
 
         currentUser = helper.checkAuthentication();
@@ -128,13 +140,6 @@ public class TemperatureActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-  /*  //Create option menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }*/
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -150,8 +155,6 @@ public class TemperatureActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     protected void onStart() {
@@ -254,18 +257,17 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference tempRange = db.child("Temperature");
+        DatabaseReference tempRange = databaseRange.child("Temperature");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                lowTempEditText.setText(dataSnapshot.child("lowTempValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
+                Double lowRange = Helper.retrieveRange("lowTempValue", dataSnapshot);
+                Double highRange = Helper.retrieveRange("highTempValue", dataSnapshot);
 
-                highTempEditText.setText(dataSnapshot.child("highTempValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+                lowTempEditText.setText(lowRange.toString());
+                highTempEditText.setText(highRange.toString());
                 if (!((tempDegree > lowRange)
                         && (tempDegree < highRange))) {
 
@@ -396,11 +398,12 @@ public class TemperatureActivity extends AppCompatActivity {
                 if(!(heatEventId == null)) {
 
                     if (tempSwitchState) {
-
+                        appliances.child("HeaterCtrl").setValue(true);
                         Log.d(TAG, "The heater was turned on " + heatOnTimeStampFormated);
                         Toast.makeText(this, "The heater was switched ON on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
                     } else {
+                        appliances.child("HeaterCtrl").setValue(false);
                         Log.d(TAG, "The heater was turned off on " + heatOnTimeStampFormated);
                         Toast.makeText(this, "The heater was switched OFF on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
                     }
@@ -409,14 +412,11 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 }
 
-
             }
 
         }
 
     void retrieveSensorData() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -477,7 +477,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     public void setTempRange(){
-
+        DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
         String lowTemp=lowTempEditText.getText().toString();
         String highTemp=highTempEditText.getText().toString();
 //check if the ranges are empty or not
