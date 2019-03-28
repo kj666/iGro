@@ -64,8 +64,6 @@ public class PollingFrequencyDialogFragment extends AppCompatDialogFragment {
         // Create the AlertDialog object and return it
         return builder.create();
 
-
-
     }
 
     public void retrievePollData() {
