@@ -69,9 +69,11 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView outdoorTemperatureTextView;
     TextView greenhouseTemperatureTextView;
     private RequestQueue queue;
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+    String greenhouseID;
 
     // create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+
     private FirebaseUser currentUser;
     public Boolean lastHeaterState = false;
     //log tag to test the on/off state on changeState event of heaterSwitch
@@ -79,7 +81,7 @@ public class TemperatureActivity extends AppCompatActivity {
     //create heater database reference
     DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog").child("HeaterControlLog");
     //Get current user using the Helper class
-    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+
 
 
     @Override
@@ -87,6 +89,8 @@ public class TemperatureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
 
+        helper.setSharedPreferences(getApplicationContext());
+        greenhouseID = helper.retrieveGreenhouseID();
         initializeUI();
 // make temperature control switch clickable
         temperatureSwitch.setClickable(true);
@@ -254,7 +258,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
         DatabaseReference tempRange = db.child("Temperature");
 
         ValueEventListener eventListener = new ValueEventListener() {
@@ -477,7 +481,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     public void setTempRange(){
-
+        DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
         String lowTemp=lowTempEditText.getText().toString();
         String highTemp=highTempEditText.getText().toString();
 //check if the ranges are empty or not

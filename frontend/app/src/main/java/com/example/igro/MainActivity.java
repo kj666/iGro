@@ -1,6 +1,7 @@
 package com.example.igro;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected Button humidityTitleButton;
     protected TextView humidityNumberButton;
+    protected SharedPreferences sharedPreferences;
 
     //Greenhouse status textview
     private TextView ghStatus;
@@ -64,9 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean uvStatus;
 
 
-
-
-    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+    private Helper helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
 
     protected TextView userWelcomeMessage;
 
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         requestWeather();
 
-
+        retriveUserData();
         //Retrieve data from DB
         retrieveSensorData();
 
@@ -172,6 +173,28 @@ public class MainActivity extends AppCompatActivity {
                 helper.goToActivity(MoistureActivity.class);
             }
         });
+    }
+
+    void retriveUserData(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Users users = dataSnapshot.getValue(Users.class);
+                userWelcomeMessage.setText(users.getName() +"   "+users.getGreenhouseID());
+                helper.setSharedPreferences(getApplicationContext());
+                helper.saveGreenHouseID(users.getGreenhouseID());
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.addListenerForSingleValueEvent(eventListener);
     }
 
     void tempColorSet(final Double tempData){

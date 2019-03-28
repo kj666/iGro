@@ -2,29 +2,29 @@ package com.example.igro.Models;
 
 public class Users {
 
-    private String email;
+    private String Email;
     private String ID;
-    private String name;
-    private String userRole;
-    private String greenhouseID;
+    private String Name;
+    private String UserRole;
+    private String GreenhouseID;
 
     public Users() {
     }
 
     public Users(String email, String ID, String name, String userRole, String greenhouseID) {
-        this.email = email;
+        Email = email;
         this.ID = ID;
-        this.name = name;
-        this.userRole = userRole;
-        this.greenhouseID = greenhouseID;
+        Name = name;
+        UserRole = userRole;
+        GreenhouseID = greenhouseID;
     }
 
     public String getEmail() {
-        return email;
+        return Email;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        Email = email;
     }
 
     public String getID() {
@@ -36,26 +36,26 @@ public class Users {
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        Name = name;
     }
 
     public String getUserRole() {
-        return userRole;
+        return UserRole;
     }
 
     public void setUserRole(String userRole) {
-        this.userRole = userRole;
+        UserRole = userRole;
     }
 
     public String getGreenhouseID() {
-        return greenhouseID;
+        return GreenhouseID;
     }
 
     public void setGreenhouseID(String greenhouseID) {
-        this.greenhouseID = greenhouseID;
+        GreenhouseID = greenhouseID;
     }
 }
