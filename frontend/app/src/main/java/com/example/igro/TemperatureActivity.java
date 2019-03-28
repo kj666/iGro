@@ -79,10 +79,12 @@ public class TemperatureActivity extends AppCompatActivity {
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
     //create heater database reference
-    DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog").child("HeaterControlLog");
+    DatabaseReference heaterSwitchEventDB;
     //Get current user using the Helper class
 
-
+    public void initializeDB(String greenhouseID){
+        heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/ApplianceControlLog").child("HeaterControlLog");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -91,8 +93,10 @@ public class TemperatureActivity extends AppCompatActivity {
 
         helper.setSharedPreferences(getApplicationContext());
         greenhouseID = helper.retrieveGreenhouseID();
+
+        initializeDB(greenhouseID);
         initializeUI();
-// make temperature control switch clickable
+        // make temperature control switch clickable
         temperatureSwitch.setClickable(true);
 
         currentUser = helper.checkAuthentication();
@@ -132,13 +136,6 @@ public class TemperatureActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-  /*  //Create option menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }*/
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -154,8 +151,6 @@ public class TemperatureActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     protected void onStart() {
@@ -265,11 +260,11 @@ public class TemperatureActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                lowTempEditText.setText(dataSnapshot.child("lowTempValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
+                Double lowRange = Helper.retrieveRange("lowTempValue", dataSnapshot);
+                Double highRange = Helper.retrieveRange("highTempValue", dataSnapshot);
 
-                highTempEditText.setText(dataSnapshot.child("highTempValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+                lowTempEditText.setText(lowRange.toString());
+                highTempEditText.setText(highRange.toString());
                 if (!((tempDegree > lowRange)
                         && (tempDegree < highRange))) {
 
@@ -413,13 +408,12 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 }
 
-
             }
 
         }
 
     void retrieveSensorData() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override

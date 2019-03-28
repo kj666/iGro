@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.rpc.Help;
 
 import org.json.JSONObject;
 import java.text.DecimalFormat;
@@ -57,15 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
     //Greenhouse status textview
     private TextView ghStatus;
-    // temperature status
-    private boolean tempStatus;
-    // humidity status
-    private boolean humStatus;
-    // moisture status
-    private boolean moistStatus;
-    // uv status
-    private boolean uvStatus;
-
 
     private Helper helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
 
@@ -83,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         currentUser = helper.checkAuthentication();
+        helper.setSharedPreferences(getApplicationContext());
 
         //Initialize all the UI elements
         initializeUI();
@@ -198,30 +191,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void tempColorSet(final Double tempData){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("Temperature");
-
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges").child("Temperature");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+                Double lowRange, highRange;
+                if(dataSnapshot.child("lowTempValue").getValue() != null)
+                    lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
+                else
+                    lowRange = 0.0;
+                if(dataSnapshot.child("highTempValue").getValue() != null)
+                    highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+                else
+                    highRange = 5.0;
 
-                if (!((tempData > lowRange) && (tempData < highRange))) {
-
+                if (!((tempData > lowRange) && (tempData < highRange)))
                     temperatureNumberButton.setTextColor(Color.RED);
-                    /*//temp status out of range
-                    tempStatus=true;
-*/
-                } else {
-
+                else
                     temperatureNumberButton.setTextColor(Color.GREEN);
-                    /*//temp status in range
-                    tempStatus=false;*/
 
-                }
-                greenhouseStatus();
+             greenhouseStatus();
             }
 
             @Override
@@ -235,29 +226,30 @@ public class MainActivity extends AppCompatActivity {
     }
     //set the color of the humidity button
     void humColorSet(final Double value){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("Humidity");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges").child("Humidity");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
-
-                Double highRange = Double.parseDouble(dataSnapshot.child("highHumidityValue").getValue().toString());
-                if (!((value > lowRange) && (value < highRange))) {
-
-                    humidityNumberButton.setTextColor(Color.RED);
-                   /*//humidity is out of range
-                    humStatus=true;*/
-
-                } else {
-                    humidityNumberButton.setTextColor(Color.GREEN);
-                    /*//humidity is out of range
-                    humStatus=false;*/
+                Double lowRange, highRange;
+                if(dataSnapshot.child("lowHumidityValue").getValue() != null) {
+                    lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
                 }
+                else
+                    lowRange = 0.0;
+
+                if(dataSnapshot.child("highHumidityValue").getValue() != null) {
+                    highRange = Double.parseDouble(dataSnapshot.child("highHumidityValue").getValue().toString());
+                }
+                else
+                    highRange = 5.0;
+                if (!((value > lowRange) && (value < highRange)))
+                    humidityNumberButton.setTextColor(Color.RED);
+                else
+                    humidityNumberButton.setTextColor(Color.GREEN);
+
                 greenhouseStatus();
             }
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -270,26 +262,25 @@ public class MainActivity extends AppCompatActivity {
     }
     //set the color of the humidity button
     void moistColorSet(final Double value){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("Moisture");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges").child("Moisture");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
-
-                Double highRange = Double.parseDouble(dataSnapshot.child("highMoistureValue").getValue().toString());
-                if (!((value > lowRange) && (value < highRange))) {
-
+                Double lowRange, highRange;
+                if(dataSnapshot.child("lowMoistureValue").getValue() != null)
+                   lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
+                else
+                    lowRange = 0.0;
+                if(dataSnapshot.child("highMoistureValue").getValue() != null)
+                    highRange = Double.parseDouble(dataSnapshot.child("highMoistureValue").getValue().toString());
+                else
+                    highRange = 5.0;
+                if (!((value > lowRange) && (value < highRange)))
                     moistureNumberButton.setTextColor(Color.RED);
-                   /* //moisture color is out of range
-                 moistStatus=true;*/
-
-                } else {
+                else
                     moistureNumberButton.setTextColor(Color.GREEN);
-                    /*//moisture is in range
-                    moistStatus=false;*/
-                }
+
                 greenhouseStatus();
             }
 
@@ -306,26 +297,20 @@ public class MainActivity extends AppCompatActivity {
 
     //set the color of the humidity button
     void uvColorSet(final int value){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges").child("UV");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges").child("UV");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowUvValue").getValue().toString());
+                Double lowRange = Helper.retrieveRange("lowUvValue", dataSnapshot);
+                Double highRange = Helper.retrieveRange("highUvValue", dataSnapshot);
 
-                Double highRange = Double.parseDouble(dataSnapshot.child("highUvValue").getValue().toString());
-                if (!((value > lowRange) && (value < highRange))) {
-
+                if (!((value > lowRange) && (value < highRange)))
                     uvNumberButton.setTextColor(Color.RED);
-                   /* //uv is ouf of range
-                   uvStatus=true;*/
-
-                } else {
+                else
                     uvNumberButton.setTextColor(Color.GREEN);
-                   /* //uv is in range
-                    uvStatus=false;*/
-                }
+
                 greenhouseStatus();
             }
 
@@ -385,7 +370,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         helper.checkAuthentication();
         requestWeather();
-//        greenhouseStatus();
     }
 
     @Override
@@ -393,7 +377,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         helper.checkAuthentication();
         requestWeather();
-//        greenhouseStatus();
     }
 
     @Override
@@ -401,7 +384,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         helper.checkAuthentication();
         requestWeather();
-//        greenhouseStatus();
     }
 
     @Override
@@ -435,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Retrieve data from the database and store it as Sensor Data
     void retrieveSensorData(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Data");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override

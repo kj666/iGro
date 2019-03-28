@@ -87,6 +87,7 @@ public class Helper {
      */
     public void signout(){
         firebaseAuth.signOut();
+        resetGreenhouse();
     }
 
 
@@ -100,36 +101,13 @@ public class Helper {
         return dateReadable;
     }
 
-    public static ValueEventListener retrieveRange(final EditText lowTempEditText, final EditText highTempEditText, final Double tempDegree, final TextView indoorTempTextView) {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference tempRange = db.child("Temperature");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                lowTempEditText.setText(dataSnapshot.child("lowTempValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
-
-                highTempEditText.setText(dataSnapshot.child("highTempValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
-                if (!(tempDegree > lowRange)
-                        && tempDegree < highRange) {
-
-
-                    indoorTempTextView.setTextColor(Color.GREEN);
-                } else {
-                    indoorTempTextView.setTextColor(Color.RED);
-                }
-                indoorTempTextView.setText(tempDegree+"");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-        return eventListener;
+    public static double retrieveRange(String sensorType, DataSnapshot dataSnapshot){
+        double limitRange;
+        if(dataSnapshot.child(sensorType).getValue() != null)
+            limitRange = Double.parseDouble(dataSnapshot.child(sensorType).getValue().toString());
+        else
+            limitRange = 0.0;
+        return limitRange;
     }
 
 }
