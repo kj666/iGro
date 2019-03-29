@@ -67,6 +67,9 @@ public class HumidityActivity extends AppCompatActivity {
     Button setHumidityRange;
     Double ghHumidity;
     private FirebaseUser currentUser;
+    String currentUserName;
+    String currentUserId;
+    String currentUserEmail;
     public Boolean lastHumidState = false;
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
@@ -86,18 +89,17 @@ public class HumidityActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_humidity);
-
+//function call to initialize UI
         initializeUI();
-
+//funciton call to import the last sensor reading from the database
         retrieveSensorData();
-
+//function call to get outdoor humidity
         queue = Volley.newRequestQueue(this);
         requestHumidity();
-
-        initializeUI();
-        currentUser = helper.checkAuthentication();
-        retrieveSensorData();
-
+//get current user name and id
+        currentUserName = currentUser.getDisplayName() ;
+        currentUserId = currentUser.getUid() ;
+//call function to set humidity range from last stored value, and set onCLickListener fornew input
         retrieveRange();
         setHumidityRange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -369,12 +371,18 @@ public class HumidityActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String humOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
+        // get the id and name of the current user
+        currentUserName = currentUser.getDisplayName() ;
+        currentUserId = currentUser.getUid() ;
+        currentUserEmail = currentUser.getEmail();
+
         if (!(humSwitchState == lastHumidState)) {
 
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String humEventId = humidSwitchEventDB.push().getKey();
 
-            ApplianceControlEvents humSwitchClickEvent = new ApplianceControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, humSwitchState);
+            ApplianceControlEvents humSwitchClickEvent = new ApplianceControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat,
+                    currentUserId, currentUserEmail, humSwitchState);
             humidSwitchEventDB.child(humEventId).setValue(humSwitchClickEvent);
 
             if (!(humEventId == null)) {

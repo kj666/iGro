@@ -53,7 +53,8 @@ import java.util.Calendar;
 public class TemperatureActivity extends AppCompatActivity {
     private static final String TEMPERATURE_LOG_TAG = "TEMP_ACTIVITY_LOG_TAG";
     Button celsiusFahrenheitSwitchButton;
-    boolean celisusOrFahrenheit = true; // default is celsius
+    public boolean isCelsiusOrFahrenheit = true; // Celsius by default
+    String tempFormat = "C";
 
     //initialize the layout fields
     Button tempHistoryButton;
@@ -72,7 +73,12 @@ public class TemperatureActivity extends AppCompatActivity {
 
     // create database reference for ranges
     DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+
     private FirebaseUser currentUser;
+    String currentUserName;
+    String currentUserId;
+    String currentUserEmail;
+
     public Boolean lastHeaterState = false;
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
@@ -81,9 +87,12 @@ public class TemperatureActivity extends AppCompatActivity {
     //Get current user using the Helper class
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
+    //Database reference to store the C/F preference
+    DatabaseReference numberFormatDB = FirebaseDatabase.getInstance().getReference().child("NumberFormat").child("CelsiusFahrenheitSetting");
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
 
@@ -91,9 +100,14 @@ public class TemperatureActivity extends AppCompatActivity {
 // make temperature control switch clickable
         temperatureSwitch.setClickable(true);
 
+// get current user's name and id
         currentUser = helper.checkAuthentication();
-        retrieveSensorData();
+        currentUserName = currentUser.getDisplayName();
+        currentUserId = currentUser.getUid();
 
+// get sensor data to display
+        retrieveSensorData();
+// set temperature range user input
         setRangeTempButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +122,13 @@ public class TemperatureActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         requestWeather();
 
+        retrieveRange();
+
+        //set default database C/F value to C
+ /*      numberFormatDB.setValue("C");
+        celsiusFahrenheitSwitchButton.setText("C");
+        setCelsiusFahrenheitSettingFromRecord();
+*/
         celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,15 +137,13 @@ public class TemperatureActivity extends AppCompatActivity {
             }
         });
 
-        retrieveRange();
     }
-
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
-        inflater.inflate(R.menu.menu,menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -138,7 +157,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.sign_out:
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
@@ -152,7 +171,6 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -164,10 +182,11 @@ public class TemperatureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Context context = TemperatureActivity.this ;
+                Context context = TemperatureActivity.this;
                 Intent i = new Intent(context, HistoricalApplianceActivity.class);
-         //sends extra with the intent to distinguish from which activity intect came and which records to display
+                //sends extra with the intent to distinguish from which activity intect came and which records to display
                 i.putExtra("ApplianceType", "HEATER");
+
                 context.startActivity(i);
             }
         });
@@ -178,9 +197,9 @@ public class TemperatureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Context context = TemperatureActivity.this ;
+                Context context = TemperatureActivity.this;
                 Intent i = new Intent(context, SensorDataActivity.class);
-                if (celisusOrFahrenheit) { //Celsius
+                if (isCelsiusOrFahrenheit) { //Celsius
                     i.putExtra("SensorType", "TEMPERATURE-C");
                 } else { //Fahrenheit
                     i.putExtra("SensorType", "TEMPERATURE-F");
@@ -195,8 +214,8 @@ public class TemperatureActivity extends AppCompatActivity {
         heaterSwitchStateFromRecord();
 
 
-        temperatureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton tempSwitch, boolean SwitchState){
+        temperatureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton tempSwitch, boolean SwitchState) {
 
 
                 //Call heaterSwitchEvent function
@@ -210,12 +229,24 @@ public class TemperatureActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        //set C or F from Database from last recorded setting from clicklistener
+ /*       setCelsiusFahrenheitSettingFromRecord();
+
+        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                celsiusFahrenheitSwitch();
+            }
+
+        });
+*/
         final boolean switchState = temperatureSwitch.isChecked();
-            heaterSwitchStateFromRecord();
+        heaterSwitchStateFromRecord();
 
         //Listen for changes in switch status
-        temperatureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            public void onCheckedChanged(CompoundButton tempSwitch, boolean tempSwitchState){
+        temperatureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton tempSwitch, boolean tempSwitchState) {
 
                 //Call heaterSwitchEvent function
                 heaterSwitchEvent(tempSwitchState);
@@ -227,9 +258,9 @@ public class TemperatureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Context context = TemperatureActivity.this ;
+                Context context = TemperatureActivity.this;
                 Intent i = new Intent(context, SensorDataActivity.class);
-                if (celisusOrFahrenheit) { //Celsius
+                if (isCelsiusOrFahrenheit) { //Celsius
                     i.putExtra("SensorType", "TEMPERATURE-C");
                 } else { //Fahrenheit
                     i.putExtra("SensorType", "TEMPERATURE-F");
@@ -243,7 +274,7 @@ public class TemperatureActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Context context = TemperatureActivity.this ;
+                Context context = TemperatureActivity.this;
                 Intent i = new Intent(context, HistoricalApplianceActivity.class);
                 i.putExtra("ApplianceType", "HEATER");
                 context.startActivity(i);
@@ -253,7 +284,7 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
 
-    void retrieveRange(){
+    void retrieveRange() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
         DatabaseReference tempRange = db.child("Temperature");
 
@@ -270,9 +301,8 @@ public class TemperatureActivity extends AppCompatActivity {
                         && (tempDegree < highRange))) {
 
                     greenhouseTemperatureTextView.setTextColor(Color.RED);
-                    Toast.makeText(TemperatureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
-                }
-                else{
+                    Toast.makeText(TemperatureActivity.this, "THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
+                } else {
                     greenhouseTemperatureTextView.setTextColor(Color.GREEN);
                 }
             }
@@ -287,16 +317,16 @@ public class TemperatureActivity extends AppCompatActivity {
 
     }
 
-    void initializeUI(){
-        tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
-        heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
-        tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
-        temperatureSwitch = (Switch)findViewById(R.id.tempSwitch);
+    void initializeUI() {
+        tempHistoryButton = (Button) findViewById(R.id.tempHistoriyButton);
+        heaterUseHistoryButton = (Button) findViewById(R.id.heaterUseHistoryButton);
+        tempControlTextView = (TextView) findViewById(R.id.tempControlTextView);
+        temperatureSwitch = (Switch) findViewById(R.id.tempSwitch);
 
-        greenhouseTemperatureTextView=(TextView)findViewById(R.id.ghTempTextView);
+        greenhouseTemperatureTextView = (TextView) findViewById(R.id.ghTempTextView);
         //Get the values from the user
-        lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
-        highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+        lowTempEditText = (EditText) findViewById(R.id.lowTempEditText);
+        highTempEditText = (EditText) findViewById(R.id.highTempEditText);
 
         outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
         greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
@@ -305,17 +335,10 @@ public class TemperatureActivity extends AppCompatActivity {
         requestWeather();
 
         celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
-        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                celsiusFahrenheitSwitch();
-            }
-        });
 
         currentUser = helper.checkAuthentication();
-        setRangeTempButton=(Button)findViewById(R.id.setRangeTempButton);
+        setRangeTempButton = (Button) findViewById(R.id.setRangeTempButton);
     }
-
 
 
     private void heaterSwitchStateFromRecord() {
@@ -328,23 +351,23 @@ public class TemperatureActivity extends AppCompatActivity {
                 assert lastRecord != null;
                 final Boolean checkedStatus = lastRecord.getEventOnOff();
 
-                if(!(checkedStatus == null)){
+                if (!(checkedStatus == null)) {
 
                     lastHeaterState = checkedStatus;
                     temperatureSwitch.setChecked(checkedStatus);
-                    if(checkedStatus){
+                    if (checkedStatus) {
                         temperatureSwitch.setTextColor(Color.RED);
-                    }else{
+                    } else {
                         temperatureSwitch.setTextColor(Color.DKGRAY);
                     }
 
-                }else{
+                } else {
 
                     Log.d(TAG, "On/Off Status of heater can't be null, getHeaterEventOnOff points to null");
                 }
-                if(checkedStatus){
+                if (checkedStatus) {
                     Log.d(TAG, "The heater was on");
-                }else{
+                } else {
                     Log.d(TAG, "The heater was off");
                 }
 
@@ -375,44 +398,50 @@ public class TemperatureActivity extends AppCompatActivity {
 
     private void heaterSwitchEvent(boolean tempSwitchState) {
 
-            //record the time of the click
-            //DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+        //record the time of the click
+        //DateFormat heatOnDateTime = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
-            long heatOnOffDateUnixFormat = System.currentTimeMillis()/1000;
+        long heatOnOffDateUnixFormat = System.currentTimeMillis() / 1000;
 
-            String heatOnOffDateReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(heatOnOffDateUnixFormat*1000));
+        //           String heatOnOffDateReadable = new java.text.SimpleDateFormat("MM/dd/yy HH:mm:ss").format(new java.util.Date(heatOnOffDateUnixFormat*1000));
 
-            DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
-            String heatOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
+        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+        String heatOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
-            if(!(tempSwitchState==lastHeaterState)){
+// retrieve info of the user who triggered the appliance at the time it was triggered and record stored
+        currentUserName = currentUser.getDisplayName();
+        currentUserId = currentUser.getUid();
+        currentUserEmail = currentUser.getEmail();
 
-                //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
-                String heatEventId = heaterSwitchEventDB.push().getKey();
+        if (!(tempSwitchState == lastHeaterState)) {
 
-                ApplianceControlEvents heatSwitchClickEvent = new ApplianceControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat, tempSwitchState);
-                heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
+            //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
+            String heatEventId = heaterSwitchEventDB.push().getKey();
 
-                if(!(heatEventId == null)) {
+            ApplianceControlEvents heatSwitchClickEvent = new ApplianceControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat,
+                    currentUserId, currentUserEmail, tempSwitchState);
+            heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
 
-                    if (tempSwitchState) {
+            if (!(heatEventId == null)) {
 
-                        Log.d(TAG, "The heater was turned on " + heatOnTimeStampFormated);
-                        Toast.makeText(this, "The heater was switched ON on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
+                if (tempSwitchState) {
 
-                    } else {
-                        Log.d(TAG, "The heater was turned off on " + heatOnTimeStampFormated);
-                        Toast.makeText(this, "The heater was switched OFF on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
-                    }
-                }else{
-                    Log.d(TAG, "ERROR: heatEventId can't be null");
+                    Log.d(TAG, "The heater was turned on " + heatOnTimeStampFormated);
+                    Toast.makeText(this, "The heater was switched ON on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
+                } else {
+                    Log.d(TAG, "The heater was turned off on " + heatOnTimeStampFormated);
+                    Toast.makeText(this, "The heater was switched OFF on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }
-
+            } else {
+                Log.d(TAG, "ERROR: heatEventId can't be null");
 
             }
 
+
         }
+
+    }
 
     void retrieveSensorData() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
@@ -476,53 +505,49 @@ public class TemperatureActivity extends AppCompatActivity {
     }
 
 
-    public void setTempRange(){
+    public void setTempRange() {
 
-        String lowTemp=lowTempEditText.getText().toString();
-        String highTemp=highTempEditText.getText().toString();
+        String lowTemp = lowTempEditText.getText().toString();
+        String highTemp = highTempEditText.getText().toString();
 //check if the ranges are empty or not
         if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
- //theck if input is numerical
-            if((lowTemp.matches(".*[0-999].*"))&&(highTemp.matches(".*[0-999].*"))){
-  //Check if Lower limit is < upper limit
+            //theck if input is numerical
+            if ((lowTemp.matches(".*[0-999].*")) && (highTemp.matches(".*[0-999].*"))) {
+                //Check if Lower limit is < upper limit
                 if (Double.parseDouble(lowTemp) < Double.parseDouble(highTemp)) {
 
-                TempRange temperatureTempRange = new TempRange(lowTemp, highTemp);
-                databaseRange.child("Temperature").setValue(temperatureTempRange);
-                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+                    TempRange temperatureTempRange = new TempRange(lowTemp, highTemp);
+                    databaseRange.child("Temperature").setValue(temperatureTempRange);
+                    Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "", Toast.LENGTH_LONG).show();
                 }
 
-            } else{
+            } else {
                 Toast.makeText(this, "Please enter a number for lower and upper temperature limits", Toast.LENGTH_LONG).show();
 
             }
 
-        } else{
+        } else {
             Toast.makeText(this, "Please set a values to your desired Upper and Lower Temperature Limits", Toast.LENGTH_LONG).show();
 
         }
     }
 
-
-    /*
-    * Function that will convert all necessary parameters between celsius and fahrenheit
-     */
     void celsiusFahrenheitSwitch(){
         outdoorTemperatureTextView.setText(
                 celsiusFahrenheitConversion(outdoorTemperatureTextView.getText().toString()));
         greenhouseTemperatureTextView.setText(
                 celsiusFahrenheitConversion(greenhouseTemperatureTextView.getText().toString()));
-        celisusOrFahrenheit = !celisusOrFahrenheit;
+        isCelsiusOrFahrenheit = !isCelsiusOrFahrenheit;
     }
 
     /*
-    * Function that handles the mathematical aspect of the celsius <-> fahrenheit process
+     * Function that handles the mathematical aspect of the celsius <-> fahrenheit process
      */
     String celsiusFahrenheitConversion(String valueToBeConverted) {
         Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
-        if (celisusOrFahrenheit) { // number currently in celsius
+        if (isCelsiusOrFahrenheit) { // number currently in celsius
             numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
             numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
             return numberToBeConverted.toString();
@@ -532,9 +557,82 @@ public class TemperatureActivity extends AppCompatActivity {
             return numberToBeConverted.toString();
         }
     }
+
+
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
 }
 
+
+
+    /*
+     * Function that will convert all necessary parameters between celsius and fahrenheit
+
+    void celsiusFahrenheitSwitch() {
+        outdoorTemperatureTextView.setText(
+                celsiusFahrenheitConversion(outdoorTemperatureTextView.getText().toString()));
+        greenhouseTemperatureTextView.setText(
+                celsiusFahrenheitConversion(greenhouseTemperatureTextView.getText().toString()));
+    }
+
+    /*
+     * Function that handles the mathematical aspect of the celsius <-> fahrenheit process
+     */
+ /*   String celsiusFahrenheitConversion(String valueToBeConverted) {
+        Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
+        if (isCelsiusOrFahrenheit) { // number currently in celsius
+            numberToBeConverted = (9.0 / 5.0) * numberToBeConverted + 32.0;
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            celsiusFahrenheitSwitchButton.setText("F");
+            numberFormatDB.setValue("F");
+            isCelsiusOrFahrenheit = false; // becomes F
+            tempFormat = "F";
+            return numberToBeConverted.toString();
+
+        } else { //number currently in fahrenheit
+            numberToBeConverted = (5.0 / 9.0) * (numberToBeConverted - 32.0);
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            celsiusFahrenheitSwitchButton.setText("C");
+            numberFormatDB.setValue("C");
+            isCelsiusOrFahrenheit = true; // becomes C
+            tempFormat = "C";
+            return numberToBeConverted.toString();
+        }
+    }
+
+    protected void setCelsiusFahrenheitSettingFromRecord() {
+
+        //set listener for the value of the celsiusFahrenheitSetting Value change
+        numberFormatDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String tempFormatDB = dataSnapshot.getValue().toString();
+                if (!(tempFormatDB.isEmpty())) {
+                    tempFormat = tempFormatDB;
+                    if (((tempFormatDB == "F") && (isCelsiusOrFahrenheit)) || ((tempFormatDB == "C") && (!isCelsiusOrFahrenheit))) {
+                        celsiusFahrenheitSwitch();
+
+                    } else {
+                        celsiusFahrenheitSwitchButton.setText(tempFormatDB);
+                    }
+
+                } else {
+                    tempFormat = "C";
+                    isCelsiusOrFahrenheit = true;
+                    numberFormatDB.setValue("C");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+*/
+
+    /*
+     * Function that will convert all necessary parameters between celsius and fahrenheit
+     */

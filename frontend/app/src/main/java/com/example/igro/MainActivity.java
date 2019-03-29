@@ -1,6 +1,5 @@
 package com.example.igro;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private Button temperatureTitleButton;
     private Button temperatureNumberButton;
     Button celsiusFahrenheitSwitchButton;
-    boolean celsiusOrFahrenheit = true; // default is celsius
+    protected boolean isCelsiusOrFahrenheit = true; // default is celsius
+    protected String tempFormat = "C";
 
     private Button uvTitleButton;
     private Button uvNumberButton;
@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
     // uv status
     private boolean uvStatus;
 
-
-
+    //Database reference to store the C/F preference
+    DatabaseReference numberFormatDB = FirebaseDatabase.getInstance().getReference().child("NumberFormat").child("CelsiusFahrenheitSetting");
 
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
@@ -96,6 +96,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Retrieve data from DB
         retrieveSensorData();
+
+        //set default database C/F value to C
+ //       numberFormatDB.setValue("C");
+//        celsiusFahrenheitSwitchButton.setText("C");
+  //      setCelsiusFahrenheitSettingFromRecord();
 
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -371,6 +376,21 @@ public class MainActivity extends AppCompatActivity {
         helper.checkAuthentication();
         requestWeather();
 //        greenhouseStatus();
+        // set temperature from last recorded setting from DB
+
+        //set C or F from Database from last recorded setting from clicklistener
+ //       setCelsiusFahrenheitSettingFromRecord();
+
+
+        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               celsiusFahrenheitSwitch();
+
+            }
+
+        });
+
     }
 
     @Override
@@ -490,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
     void celsiusFahrenheitSwitch(){
         temperatureNumberButton.setText(
                 celsiusFahrenheitConversion(temperatureNumberButton.getText().toString()));
-        celsiusOrFahrenheit = !celsiusOrFahrenheit;
+        isCelsiusOrFahrenheit = !isCelsiusOrFahrenheit;
     }
 
     /*
@@ -498,7 +518,7 @@ public class MainActivity extends AppCompatActivity {
      */
     String celsiusFahrenheitConversion(String valueToBeConverted) {
         Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
-        if (celsiusOrFahrenheit) { // number currently in celsius
+        if (isCelsiusOrFahrenheit) { // number currently in celsius
             numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
             numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
             return numberToBeConverted.toString();
@@ -514,3 +534,88 @@ public class MainActivity extends AppCompatActivity {
         dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
 }
+
+    /*
+     * Function that will convert all necessary parameters between celsius and fahrenheit
+
+    void celsiusFahrenheitSwitch(){
+        temperatureNumberButton.setText(
+                celsiusFahrenheitConversion(temperatureNumberButton.getText().toString()));
+    }
+
+    /*
+     * Function that handles the mathematical aspect of the celsius <-> fahrenheit process
+
+    String celsiusFahrenheitConversion(String valueToBeConverted) {
+        Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
+        if (isCelsiusOrFahrenheit) { // number currently in celsius
+            numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            celsiusFahrenheitSwitchButton.setText("F");
+            numberFormatDB.setValue("F");
+            isCelsiusOrFahrenheit = false; //becomes F
+            tempFormat = "F";
+            return numberToBeConverted.toString();
+
+        } else { //number currently in fahrenheit
+            numberToBeConverted = (5.0/9.0) * (numberToBeConverted - 32.0);
+            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+            celsiusFahrenheitSwitchButton.setText("C");
+            numberFormatDB.setValue("C");
+            isCelsiusOrFahrenheit = true; //becomes C
+            tempFormat = "C";
+            return numberToBeConverted.toString();
+        }
+    }
+
+    protected void setCelsiusFahrenheitSettingFromRecord(){
+
+        //set listener for the value of the celsiusFahrenheitSetting Value change
+        numberFormatDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               String tempFormatDB = dataSnapshot.getValue().toString();
+                if(!(tempFormatDB.isEmpty())){
+                        tempFormat = tempFormatDB;
+                    if(((tempFormatDB == "F")&&(isCelsiusOrFahrenheit))||((tempFormatDB == "C")&&(!isCelsiusOrFahrenheit))){
+                        celsiusFahrenheitSwitch();
+
+                    }else{
+                        celsiusFahrenheitSwitchButton.setText(tempFormatDB);
+                        }
+
+                }else{
+                    tempFormat = "C";
+                    isCelsiusOrFahrenheit = true;
+                    numberFormatDB.setValue("C");
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    protected void celsiusFahrenheitConvert(){
+        Integer tempToBeConverted = Integer.parseInt(temperatureNumberButton.getText().toString());
+        if (isCelsiusOrFahrenheit) { // number currently in celsius
+            tempToBeConverted = (9/5) * tempToBeConverted + 32;
+            temperatureNumberButton.setText(tempToBeConverted.toString());
+            celsiusFahrenheitSwitchButton.setText("F");
+            numberFormatDB.setValue("F");
+            isCelsiusOrFahrenheit = false; //becomes F
+            tempFormat = "F";
+        } else { //number currently in fahrenheit
+            tempToBeConverted = (5/9) * (tempToBeConverted - 32);
+            temperatureNumberButton.setText(tempToBeConverted.toString());
+            celsiusFahrenheitSwitchButton.setText("C");
+            numberFormatDB.setValue("C");
+            isCelsiusOrFahrenheit = true; //becomes C
+            tempFormat = "C";
+        }
+    }
+*/
+

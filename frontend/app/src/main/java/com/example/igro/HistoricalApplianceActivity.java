@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
 import com.example.igro.Models.ActuatorControl.ApplianceEventsListConfig;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,8 +31,14 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     TextView historicalApplianceTitleTextView;
     TextView listCounterTitleTextView;
     TextView listDateTitleTextView;
+    TextView listUserNameTitleTextView;
     TextView listOnOffTitleTextView;
     ListView applianceEventListView;
+
+    private FirebaseUser currentUser;
+    String currentUserName;
+    String currentUserId;
+
 
     List<ApplianceControlEvents> applianceList = new ArrayList<>();
 
@@ -43,9 +50,12 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 //initialization for all the fields
         historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
         listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
-        listDateTitleTextView = (TextView)findViewById(R.id.listDateTitleTextView);
+        listDateTitleTextView = (TextView)findViewById(R.id.listItemDateTextView);
+        listUserNameTitleTextView = (TextView)findViewById(R.id.listItemUserNameTextView);
         listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
+
+
 
 //getting intent and retrieving the extra
         Intent intent = getIntent();
@@ -65,13 +75,14 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 //initializations
         historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
         listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
-        listDateTitleTextView = (TextView)findViewById(R.id.listDateTitleTextView);
+        listDateTitleTextView = (TextView)findViewById(R.id.listItemDateTextView);
+        listUserNameTitleTextView = (TextView)findViewById(R.id.listItemUserNameTextView);
         listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
 //getting intent
         Intent intent = getIntent();
-        String userName = intent.getStringExtra("UserName");
+        String userAccessingRecords = intent.getStringExtra("CurrentUser");
         String applianceType = intent.getStringExtra("ApplianceType");
         String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
 

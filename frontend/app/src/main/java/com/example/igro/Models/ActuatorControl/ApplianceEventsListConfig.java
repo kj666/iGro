@@ -34,6 +34,7 @@ public class ApplianceEventsListConfig extends ArrayAdapter<ApplianceControlEven
 
         TextView listItemCounterTextView = (TextView)listViewItem.findViewById(R.id.listItemCounterTextView);
         TextView listItemDateTextView = (TextView)listViewItem.findViewById(R.id.listItemDateTextView);
+        TextView listItemUserNameTextView = (TextView)listViewItem.findViewById(R.id.listItemUserNameTextView);
         TextView listItemOnOffStatusTextView = (TextView)listViewItem.findViewById(R.id.listItemOnOffStatusTextView);
 
         ApplianceControlEvents applianceEvent = applianceEventList.get(position);
@@ -48,6 +49,7 @@ public class ApplianceEventsListConfig extends ArrayAdapter<ApplianceControlEven
 
         listItemCounterTextView.setText(String.valueOf(position+1));
         listItemDateTextView.setText(applianceEvent.getEventDateTime());
+        listItemUserNameTextView.setText( applianceEvent.getUserEmailWhoTriggeredEvent());
         listItemOnOffStatusTextView.setText(onOffStr);
 
         return listViewItem;

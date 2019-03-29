@@ -71,6 +71,9 @@ public class UvIndexActivity extends AppCompatActivity {
     TextView ghUvTextView;
     Double ghUv;
     private FirebaseUser currentUser;
+    String currentUserName;
+    String currentUserId;
+    String currentUserEmail;
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     public Boolean lastUvState = false;
@@ -89,10 +92,12 @@ public class UvIndexActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uv_index);
 
+        // get current user's name and id
+        currentUserName = currentUser.getDisplayName() ;
+        currentUserId = currentUser.getUid() ;
 
         initializeUI();
 
-        currentUser = helper.checkAuthentication();
         retrieveSensorData();
         retrieveRange();
         setUvRange.setOnClickListener(new View.OnClickListener() {
@@ -208,6 +213,8 @@ public class UvIndexActivity extends AppCompatActivity {
         ghUvTextView = (TextView) findViewById(R.id.ghUvTextView);
         //set range button
         setUvRange = (Button) findViewById(R.id.setUvRange);
+
+        currentUser = helper.checkAuthentication();
     }
 
 
@@ -335,13 +342,19 @@ public class UvIndexActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String uvOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
+        // get current user's name and id
+        currentUserName = currentUser.getDisplayName() ;
+        currentUserId = currentUser.getUid() ;
+        currentUserEmail = currentUser.getEmail();
+
         if(!(uvSwitchState==lastUvState)){
 
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String uvEventId = uvSwitchEventDB.push().getKey();
 
 
-            ApplianceControlEvents uvSwitchClickEvent = new ApplianceControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
+            ApplianceControlEvents uvSwitchClickEvent = new ApplianceControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat,
+                    currentUserId   , currentUserEmail, uvSwitchState);
             uvSwitchEventDB.child(uvEventId).setValue(uvSwitchClickEvent);
 
             if(!(uvEventId == null)) {

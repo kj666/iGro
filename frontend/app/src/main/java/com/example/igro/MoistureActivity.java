@@ -55,6 +55,9 @@ public class MoistureActivity extends AppCompatActivity {
     Double ghMoisture;
     TextView ghMoistureTextView;
     private FirebaseUser currentUser;
+    String currentUserName;
+    String currentUserId;
+    String currentUserEmail;
     public Boolean lastMoistureState = false;
     //Get current user using the Helper class
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
@@ -73,9 +76,14 @@ public class MoistureActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moisture);
+
         initializeUI();
-        currentUser = helper.checkAuthentication();
+ // get the id and name of the current user
+        currentUserName = currentUser.getDisplayName() ;
+        currentUserId = currentUser.getUid() ;
+ //get soil moisture data to display
         retrieveSensorData();
+// get user-defined range for soil moisture ideal threshold
         retrieveRange();
 
         moistureSwitch.setClickable(true);
@@ -97,7 +105,6 @@ public class MoistureActivity extends AppCompatActivity {
 
 
         //call function check last child in heaterSwitchEventDB and set switch to that state
-
         final Boolean switchState = moistureSwitch.isChecked();
         moistureSwitchStateFromRecord();
 
@@ -180,6 +187,31 @@ public class MoistureActivity extends AppCompatActivity {
     }
 
 
+    void initializeUI(){
+
+        //Initialization
+        ghMoistureTextView = (TextView)findViewById(R.id.numMoistureTextView);
+        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
+        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
+        setRangeMoistureButton=(Button)findViewById(R.id.setRangeMoistureButton);
+        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
+        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
+        moistureSwitch.setClickable(true);
+
+        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
+        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
+
+        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
+        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
+
+        moistureHistoryButton = findViewById(R.id.moistureHistoryButton);
+        irrigationUseButton = findViewById(R.id.irrigationUseHistoryButton);
+        moistureDataTextView = findViewById(R.id.numMoistureTextView);
+
+        currentUser = helper.checkAuthentication();
+    }
+
+
     public void setMoistureRange(){
 
         String lowMoisture=lowMoistureEditText.getText().toString();
@@ -259,28 +291,6 @@ public class MoistureActivity extends AppCompatActivity {
         db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
-    void initializeUI(){
-
-        //Initialization
-        ghMoistureTextView = (TextView)findViewById(R.id.numMoistureTextView);
-        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
-        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
-        setRangeMoistureButton=(Button)findViewById(R.id.setRangeMoistureButton);
-        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
-        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
-        moistureSwitch.setClickable(true);
-
-        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
-        moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
-
-        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
-        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
-
-        moistureHistoryButton = findViewById(R.id.moistureHistoryButton);
-        irrigationUseButton = findViewById(R.id.irrigationUseHistoryButton);
-        moistureDataTextView = findViewById(R.id.numMoistureTextView);
-    }
-
 
     private void moistureSwitchStateFromRecord() {
 
@@ -350,13 +360,19 @@ public class MoistureActivity extends AppCompatActivity {
         DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
         String moistOnTimeStampFormated = df.format(Calendar.getInstance().getTime());
 
+        // get the id and name of the current user
+        currentUserName = currentUser.getDisplayName() ;
+        currentUserId = currentUser.getUid() ;
+        currentUserEmail = currentUser.getEmail();
+
         if(!(moistSwitchState==lastMoistureState)){
 
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String moistEventId = moistureSwitchEventDB.push().getKey();
 
 // creates a record as an object of class HeaterControlEvents, which includes id, dates in 2 formats and on/off state to be recorded
-            ApplianceControlEvents moistSwitchClickEvent = new ApplianceControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
+            ApplianceControlEvents moistSwitchClickEvent = new ApplianceControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat,
+                    currentUserId, currentUserEmail, moistSwitchState);
             moistureSwitchEventDB.child(moistEventId).setValue(moistSwitchClickEvent);
 
             if(!(moistEventId == null)) {
