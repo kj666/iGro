@@ -28,7 +28,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.TempRange;
+import com.example.igro.Models.SensorData.Range.TempRange;
 import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

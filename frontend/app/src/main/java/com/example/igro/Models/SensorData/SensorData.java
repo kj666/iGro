@@ -25,8 +25,8 @@ public class SensorData {
         this.uv = uv;
         this.soil = soil;
         this.time = time;
-
     }
+
 
     public double getHumidity() {
         return humidity;

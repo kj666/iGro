@@ -1,4 +1,4 @@
-package com.example.igro.Models.SensorData;
+package com.example.igro.Models.SensorData.Range;
 
 public class UvRange {
     private String lowUvValue;

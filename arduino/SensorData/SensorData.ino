@@ -19,8 +19,12 @@ BME280 mySensor;
 Si1145 uv = Si1145();
 
 double soil_value;
-int t = 0;
-int poll = 0;
+int tempT = 0;
+int soilT = 0;
+int humT = 0;
+int uvT = 0;
+
+int poll = 2000;
 String greenHouseID;
 
 void setup() {
@@ -60,6 +64,7 @@ void setup() {
   Serial.println("Si1145 Init success !\r\n");
 
   greenHouseID = Firebase.getString("mcuGreenhouseIDSensor")+"/";
+  
 }
 
 
@@ -67,28 +72,27 @@ void loop() {
 
   poll = Firebase.getInt(greenHouseID+"SensorConfig/poll");
   delay(100);
-  t = Firebase.getInt(greenHouseID+"SensorConfig/lastID");
-  t++;
+  tempT = Firebase.getInt(greenHouseID+"SensorConfig/TempLastID");
+  tempT++;
+  soilT = Firebase.getInt(greenHouseID+"SensorConfig/SoilLastID");
+  soilT++;
+  humT = Firebase.getInt(greenHouseID+"SensorConfig/HumLastID");
+  humT++;
+  uvT = Firebase.getInt(greenHouseID+"SensorConfig/UVLastID");
+  uvT++;
 
   
   //TemperatureC
-  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/temperatureC", mySensor.readTempC());
+  Firebase.setFloat(greenHouseID+"Data/TemperatureSensor1/"+String(tempT)+"/value", mySensor.readTempC());
   Serial.print(" temp: "+ String(mySensor.readTempC()));
   if (Firebase.failed()) {
       Serial.println("temperatureC/ failed:");
       Serial.println(Firebase.error());  
       return;
   }
-  //TemperatureF
-  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/temperatureF", mySensor.readTempF());
-  if (Firebase.failed()) {
-      Serial.println("temperatureF/ failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
   
   //Humidity
-  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/humidity", mySensor.readFloatHumidity());
+  Firebase.setFloat(greenHouseID+"Data/HumiditySensor1/"+String(humT)+"/value", mySensor.readFloatHumidity());
   Serial.print(" hum: "+ String(mySensor.readFloatHumidity()));
   if (Firebase.failed()) {
       Serial.println("humidity/ failed:");
@@ -99,26 +103,8 @@ void loop() {
   //UV index
   float UVindex = uv.readUV();
   UVindex /= 100.0;  
-  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/uvIndex",UVindex);
+  Firebase.setFloat(greenHouseID+"Data/UVSensor1/"+String(uvT)+"/value",UVindex);
   Serial.println(" UVindex: "+ String(UVindex));
-  if (Firebase.failed()) {
-      Serial.println("uv/ failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-
-  //Visible light
-  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/visibleLight",uv.readVisible());
-  Serial.println(" VIS: "+ String(uv.readVisible()));
-  if (Firebase.failed()) {
-      Serial.println("uv/ failed:");
-      Serial.println(Firebase.error());  
-      return;
-  }
-
-  //IR visble
-  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/IR",uv.readIR());
-  Serial.println(" IR: "+ String(uv.readIR()));
   if (Firebase.failed()) {
       Serial.println("uv/ failed:");
       Serial.println(Firebase.error());  
@@ -127,21 +113,25 @@ void loop() {
 
   //Soil Moisture
   soil_value = readSoil();
-  Firebase.setFloat(greenHouseID+"Data/"+String(t)+"/soil",soil_value);
+  Firebase.setFloat(greenHouseID+"Data/SoilSensor1/"+String(soilT)+"/value",soil_value);
   Serial.println(" soil: "+ String(soil_value));
   if (Firebase.failed()) {
       Serial.print("soil/ failed:");
-      Serial.println(Firebase.error());  
+      Serial.println(Firebase.error()); 
       return;
   }
   
  //keep track of time ID
-  Firebase.setInt(greenHouseID+"SensorConfig/lastID",t);
+  Firebase.setInt(greenHouseID+"SensorConfig/TempLastID",tempT);
+  Firebase.setInt(greenHouseID+"SensorConfig/HumLastID",humT);
+  Firebase.setInt(greenHouseID+"SensorConfig/UVLastID",uvT);
+  Firebase.setInt(greenHouseID+"SensorConfig/SoilLastID",soilT);
   if (Firebase.failed()) {
       Serial.print("lastId failed:");
       Serial.println(Firebase.error());  
       return;
   }
+
 
   Serial.println("poll: " + poll);
 

@@ -22,7 +22,7 @@ import android.text.TextUtils;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.UvRange;
+import com.example.igro.Models.SensorData.Range.UvRange;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.android.volley.Request;
@@ -107,7 +107,6 @@ public class UvIndexActivity extends AppCompatActivity {
                 setUvRange();
             }
         });
-        retrieveSensorData();
 
     }
 
@@ -381,7 +380,7 @@ public class UvIndexActivity extends AppCompatActivity {
                     DecimalFormat df = new DecimalFormat("####0.0");
 
                     //UVindex
-                    uvTextView.setText(df.format(sensorData.getUv())+"");
+                    uvTextView.setText(df.format(sensorData.getUvIndex())+"");
                     ghUv = Double.parseDouble(uvTextView.getText().toString());
 
                 }
