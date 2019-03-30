@@ -30,6 +30,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
 import com.example.igro.Models.SensorData.Range.HumidityRange;
 import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -241,28 +242,20 @@ public class HumidityActivity extends AppCompatActivity {
 
     }
 
-
     void retrieveSensorData() {
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
-                    //Humidity
-                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    humTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
                     ghHumidity = Double.parseDouble(humTextView.getText().toString());
-
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
-
+        db.child("HumiditySensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
 
@@ -274,13 +267,10 @@ public class HumidityActivity extends AppCompatActivity {
 
                 Double lowRange = Helper.retrieveRange("lowHumidityValue", dataSnapshot);
                 Double highRange = Helper.retrieveRange("highHumidityValue", dataSnapshot);
-
                 highHumEditText.setText(highRange.toString());
                 lowHumEditText.setText(lowRange.toString());
 
-                if (!((ghHumidity > lowRange)
-                        && (ghHumidity< highRange))) {
-
+                if (!((ghHumidity > lowRange) && (ghHumidity< highRange))) {
                     humTextView.setTextColor(Color.RED);
                     Toast.makeText(HumidityActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
@@ -290,11 +280,8 @@ public class HumidityActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-
         humidityRange.addValueEventListener(eventListener);
 
     }

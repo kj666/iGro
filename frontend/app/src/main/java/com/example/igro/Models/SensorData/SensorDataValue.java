@@ -2,14 +2,14 @@ package com.example.igro.Models.SensorData;
 
 public class SensorDataValue {
     private long time;
-    private double valule;
+    private double value;
 
     public SensorDataValue() {
     }
 
-    public SensorDataValue(long time, double valule) {
+    public SensorDataValue(long time, double value) {
         this.time = time;
-        this.valule = valule;
+        this.value = value;
     }
 
     public long getTime() {
@@ -20,11 +20,11 @@ public class SensorDataValue {
         this.time = time;
     }
 
-    public double getValule() {
-        return valule;
+    public double getValue() {
+        return value;
     }
 
-    public void setValule(double valule) {
-        this.valule = valule;
+    public void setValue(double value) {
+        this.value = value;
     }
 }

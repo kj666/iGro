@@ -30,6 +30,7 @@ import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
 import com.example.igro.Models.SensorData.Range.TempRange;
 import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -411,9 +412,7 @@ public class TemperatureActivity extends AppCompatActivity {
                     Log.d(TAG, "ERROR: heatEventId can't be null");
 
                 }
-
             }
-
         }
 
     void retrieveSensorData() {
@@ -421,21 +420,16 @@ public class TemperatureActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
-                    //Temperature
-                    greenhouseTemperatureTextView.setText(df.format(sensorData.getTemperatureC()) + "");
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    greenhouseTemperatureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) +"");
                     tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
-
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+        db.child("TemperatureSensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
     void requestWeather() {

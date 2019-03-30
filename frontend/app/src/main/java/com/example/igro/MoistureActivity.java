@@ -24,6 +24,7 @@ import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
 import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.Range.MoistureRange;
+import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -215,13 +216,10 @@ public class MoistureActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Double highRange = Helper.retrieveRange("highMoistureValue", dataSnapshot);
                 highMoistureEditText.setText(highRange.toString());
-
                 Double lowRange = Helper.retrieveRange("lowMoistureValue", dataSnapshot);
                 lowMoistureEditText.setText(lowRange.toString());
 
-                if (!((ghMoisture > lowRange)
-                        && (ghMoisture< highRange))) {
-
+                if (!((ghMoisture > lowRange) && (ghMoisture< highRange))) {
                     ghMoistureTextView.setTextColor(Color.RED);
                     Toast.makeText(MoistureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
@@ -231,9 +229,7 @@ public class MoistureActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
 
         moistureRange.addValueEventListener(eventListener);
@@ -244,21 +240,15 @@ public class MoistureActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.0");
-                    //Moisture
-                    ghMoistureTextView.setText(df.format(sensorData.getSoil())+"");
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    ghMoistureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue())+"");
                     ghMoisture = Double.parseDouble(ghMoistureTextView.getText().toString());
-
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+        db.child("SoilSensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
     void initializeUI(){
