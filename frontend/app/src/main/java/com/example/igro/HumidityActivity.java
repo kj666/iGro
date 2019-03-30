@@ -97,8 +97,9 @@ public class HumidityActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         requestHumidity();
 //get current user name and id
-        currentUserName = currentUser.getDisplayName() ;
+        currentUserEmail = currentUser.getEmail() ;
         currentUserId = currentUser.getUid() ;
+        currentUserName = currentUser.getDisplayName();
 //call function to set humidity range from last stored value, and set onCLickListener fornew input
         retrieveRange();
         setHumidityRange.setOnClickListener(new View.OnClickListener() {
@@ -215,6 +216,8 @@ public class HumidityActivity extends AppCompatActivity {
 
         humidityHistoryButton = findViewById(R.id.humidityHistoryButton);
         humidifierUseButton = findViewById(R.id.humidifierUseHistoryButton);
+
+        currentUser = helper.checkAuthentication();
     }
 
     public void setHumidityRange() {

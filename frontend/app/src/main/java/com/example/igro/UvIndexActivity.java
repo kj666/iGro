@@ -91,10 +91,11 @@ public class UvIndexActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uv_index);
-
+        currentUser = helper.checkAuthentication();
         // get current user's name and id
-        currentUserName = currentUser.getDisplayName() ;
+        currentUserName = currentUser.getEmail() ;
         currentUserId = currentUser.getUid() ;
+        currentUserName = currentUser.getDisplayName();
 
         initializeUI();
 

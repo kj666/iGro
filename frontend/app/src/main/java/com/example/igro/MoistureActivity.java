@@ -81,6 +81,7 @@ public class MoistureActivity extends AppCompatActivity {
  // get the id and name of the current user
         currentUserName = currentUser.getDisplayName() ;
         currentUserId = currentUser.getUid() ;
+        currentUserEmail = currentUser.getEmail();
  //get soil moisture data to display
         retrieveSensorData();
 // get user-defined range for soil moisture ideal threshold

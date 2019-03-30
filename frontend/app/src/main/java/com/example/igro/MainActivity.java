@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
 import com.android.volley.Request;
@@ -423,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
                 helper.goToActivity(LoginActivity.class);
                 return true;
             case R.id.polling_menu:
-                openDialog();
+                openPollingFrequencyDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -529,7 +528,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openDialog(){
+    public void openPollingFrequencyDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
