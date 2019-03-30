@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     //Greenhouse status textview
     private TextView ghStatus;
 
-    private Helper helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
+    private Helper helper;
 
     protected TextView userWelcomeMessage;
     FirebaseAuth firebaseAuth;
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 //        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             // current user validated
-
+            helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //Initialize all the UI elements
