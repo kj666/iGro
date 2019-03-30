@@ -22,7 +22,8 @@ import android.text.TextUtils;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.UvRange;
+import com.example.igro.Models.SensorData.Range.UvRange;
+import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.android.volley.Request;
@@ -107,7 +108,6 @@ public class UvIndexActivity extends AppCompatActivity {
                 setUvRange();
             }
         });
-        retrieveSensorData();
 
     }
 
@@ -218,8 +218,6 @@ public class UvIndexActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference uvRange = databaseRange.child("UV");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -229,9 +227,7 @@ public class UvIndexActivity extends AppCompatActivity {
 
                 lowUvEditText.setText(lowRange.toString());
                 highUvEditText.setText(highRange.toString());
-                if (!((ghUv > lowRange)
-                        && (ghUv< highRange))) {
-
+                if (!((ghUv > lowRange) && (ghUv< highRange))) {
                     ghUvTextView.setTextColor(Color.RED);
                     Toast.makeText(UvIndexActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
@@ -241,12 +237,10 @@ public class UvIndexActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
 
-        uvRange.addValueEventListener(eventListener);
+        databaseRange.child("UV").addValueEventListener(eventListener);
 
     }
 
@@ -327,7 +321,6 @@ public class UvIndexActivity extends AppCompatActivity {
 
     }
 
-
     private void uvSwitchEvent(boolean uvSwitchState) {
 
         //record the time of the click
@@ -345,18 +338,14 @@ public class UvIndexActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String uvEventId = uvSwitchEventDB.push().getKey();
 
-
             ApplianceControlEvents uvSwitchClickEvent = new ApplianceControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
             uvSwitchEventDB.child(uvEventId).setValue(uvSwitchClickEvent);
 
             if(!(uvEventId == null)) {
-
-
                 if (!lastUvState) {
                     appliances.child("LightCtrl").setValue(true);
                     Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
                     Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
-
                 } else {
                     appliances.child("LightCtrl").setValue(false);
                     Log.d(TAG, "Thelights were turned off on " + uvOnTimeStampFormated);
@@ -366,10 +355,7 @@ public class UvIndexActivity extends AppCompatActivity {
                 Log.d(TAG, "ERROR: uvEventId can't be null");
 
             }
-
         }
-
-
     }
 
     void retrieveSensorData(){
@@ -377,22 +363,15 @@ public class UvIndexActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.0");
-
-                    //UVindex
-                    uvTextView.setText(df.format(sensorData.getUv())+"");
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    uvTextView.setText(new DecimalFormat("####0.00").format(sensorDataValue.getValue())+"");
                     ghUv = Double.parseDouble(uvTextView.getText().toString());
-
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+        db.child("UVSensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
     void requestUVIndex() {

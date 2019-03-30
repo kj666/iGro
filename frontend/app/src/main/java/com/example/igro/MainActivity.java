@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.SensorData.SensorDataValue;
 import com.example.igro.Models.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,6 +36,7 @@ import com.google.rpc.Help;
 
 import org.json.JSONObject;
 import java.text.DecimalFormat;
+import java.util.EventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
     DecimalFormat df = new DecimalFormat("####0.00");
     private RequestQueue queue;
     private TextView cityWeatherMessage;
+
+    DatabaseReference DBrange, DBsensorData;
+
+    void intitializeDB(){
+        DBrange = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges");
+        DBsensorData = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Data");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
                 helper.setSharedPreferences(getApplicationContext());
                 helper.saveGreenHouseID(users.getGreenhouseID());
+                intitializeDB();
                 retrieveSensorData();
 
             }
@@ -191,8 +201,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void tempColorSet(final Double tempData){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges").child("Temperature");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -221,13 +229,11 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        db.addValueEventListener(eventListener);
+        DBrange.child("Temperature").addValueEventListener(eventListener);
 
     }
     //set the color of the humidity button
     void humColorSet(final Double value){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges").child("Humidity");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -256,14 +262,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-
-        db.addValueEventListener(eventListener);
-
+        DBrange.child("Humidity").addValueEventListener(eventListener);
     }
     //set the color of the humidity button
     void moistColorSet(final Double value){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges").child("Moisture");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -284,21 +286,16 @@ public class MainActivity extends AppCompatActivity {
                 greenhouseStatus();
             }
 
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         };
-
-        db.addValueEventListener(eventListener);
-
+        DBrange.child("Moisture").addValueEventListener(eventListener);
     }
 
     //set the color of the humidity button
-    void uvColorSet(final int value){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges").child("UV");
-
+    void uvColorSet(final Double value){
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -314,15 +311,12 @@ public class MainActivity extends AppCompatActivity {
                 greenhouseStatus();
             }
 
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         };
-
-        db.addValueEventListener(eventListener);
-
+        DBrange.child("UV").addValueEventListener(eventListener);
     }
 
     void greenhouseStatus(){
@@ -414,42 +408,46 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     //Retrieve data from the database and store it as Sensor Data
     void retrieveSensorData(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Data");
 
-        ValueEventListener eventListener = new ValueEventListener() {
+        DBsensorData.child("HumiditySensor1").orderByKey().limitToLast(1).addValueEventListener(getSensorDataListener("HUMIDITY"));
+        DBsensorData.child("TemperatureSensor1").orderByKey().limitToLast(1).addValueEventListener(getSensorDataListener("TEMPERATURE"));
+        DBsensorData.child("UVSensor1").orderByKey().limitToLast(1).addValueEventListener(getSensorDataListener("UV"));
+        DBsensorData.child("SoilSensor1").orderByKey().limitToLast(1).addValueEventListener(getSensorDataListener("MOISTURE"));
+    }
+
+    public ValueEventListener getSensorDataListener(final String type){
+
+        ValueEventListener eventListener1 = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-
-                    //Temperature
-                    temperatureNumberButton.setText(df.format(sensorData.getTemperatureC())+"");
-
-                    //Humidity
-                    humidityNumberButton.setText(df.format(sensorData.getHumidity())+"");
-
-                    //UVIndex
-                    uvNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getUvIndex())+"");
-
-                    //SoilMoisture
-                    moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getSoil())+"");
-
-                    tempColorSet(sensorData.getTemperatureC());
-                    humColorSet(sensorData.getHumidity());
-                    moistColorSet(sensorData.getSoil());
-                    uvColorSet(sensorData.getUv());
+                for(DataSnapshot snap: dataSnapshot.getChildren()){
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    if(type.equals("HUMIDITY")) {
+                        humidityNumberButton.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
+                        humColorSet(sensorDataValue.getValue());
+                    }
+                    else if(type.equals("TEMPERATURE")) {
+                        temperatureNumberButton.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
+                        tempColorSet(sensorDataValue.getValue());
+                    }
+                    else if(type.equals("UV")) {
+                        uvNumberButton.setText(new DecimalFormat("####0.00").format(sensorDataValue.getValue()) + "");
+                        uvColorSet(sensorDataValue.getValue());
+                    }
+                    else if(type.equals("MOISTURE")) {
+                        moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
+                        moistColorSet(sensorDataValue.getValue());
+                    }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+        return eventListener1;
     }
 
     void requestWeather() {
