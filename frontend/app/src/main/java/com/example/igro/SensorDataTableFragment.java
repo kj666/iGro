@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.SensorData.SensorDataValue;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,10 +28,10 @@ import java.util.List;
 
 public class SensorDataTableFragment extends Fragment {
     private static final String PARAM = "type";
-
+    private Helper helper = new Helper(getContext(), FirebaseAuth.getInstance());
     private String sensorType;
     ListView listView;
-    private List<SensorData> sensorDataList = new ArrayList<>();
+    private List<SensorDataValue> sensorDataList = new ArrayList<>();
 
     public SensorDataTableFragment() {
         // Required empty public constructor
@@ -57,6 +59,7 @@ public class SensorDataTableFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_sensor_data_table, container, false);
         listView = view.findViewById(R.id.sensorDataListView);
 
+        helper.setSharedPreferences(getContext());
         retrieveSensorDataFromDB();
         return view;
     }
@@ -66,16 +69,16 @@ public class SensorDataTableFragment extends Fragment {
         listView.setAdapter(sensorDataListAdapter);
     }
     void retrieveSensorDataFromDB(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Data");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    Log.d("FIREBASE", sensorData.getTime()+"");
-                    sensorDataList.add(sensorData);
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    Log.d("FIREBASE", sensorDataValue.getTime()+"");
+                    sensorDataList.add(sensorDataValue);
                 }
                 populateTable();
             }
@@ -84,15 +87,24 @@ public class SensorDataTableFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         };
-        db.addValueEventListener(eventListener);
+        if(sensorType.equals("TEMPERATURE-C"))
+            db.child("TemperatureSensor1").addValueEventListener(eventListener);
+        else if (sensorType.equals("TEMPERATURE-F"))
+            db.child("TemperatureSensor1").addValueEventListener(eventListener);
+        else if(sensorType.equals("UV"))
+            db.child("UVSensor1").addValueEventListener(eventListener);
+        else if(sensorType.equals("HUMIDITY"))
+            db.child("HumiditySensor1").addValueEventListener(eventListener);
+        else if(sensorType.equals("MOISTURE"))
+            db.child("SoilSensor1").addValueEventListener(eventListener);
     }
 
     class SensorDataListAdapter extends BaseAdapter {
 
-        private List<SensorData> sensorDataList;
+        private List<SensorDataValue> sensorDataList;
         private String sensorType;
 
-        public SensorDataListAdapter(List<SensorData> sensorDataList, String sensorType) {
+        public SensorDataListAdapter(List<SensorDataValue> sensorDataList, String sensorType) {
             this.sensorDataList = sensorDataList;
             this.sensorType = sensorType;
         }
@@ -119,17 +131,18 @@ public class SensorDataTableFragment extends Fragment {
             TextView sensorData = convertView.findViewById(R.id.sensorDataTextView);
 
             sensorDate.setText(Helper.convertTime(sensorDataList.get(position).getTime()));
+            sensorData.setText(sensorDataList.get(position).getValue()+"");
 
-            if(sensorType.equals("TEMPERATURE-C"))
-                sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
-            else if (sensorType.equals("TEMPERATURE-F"))
-                sensorData.setText(sensorDataList.get(position).getTemperatureF()+"");
-            else if(sensorType.equals("UV"))
-                sensorData.setText(sensorDataList.get(position).getUv()+"");
-            else if(sensorType.equals("HUMIDITY"))
-                sensorData.setText(sensorDataList.get(position).getHumidity()+"");
-            else if(sensorType.equals("MOISTURE"))
-                sensorData.setText(sensorDataList.get(position).getSoil()+"");
+//            if(sensorType.equals("TEMPERATURE-C"))
+//                sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
+//            else if (sensorType.equals("TEMPERATURE-F"))
+//                sensorData.setText(sensorDataList.get(position).getTemperatureF()+"");
+//            else if(sensorType.equals("UV"))
+//                sensorData.setText(sensorDataList.get(position).getUv()+"");
+//            else if(sensorType.equals("HUMIDITY"))
+//                sensorData.setText(sensorDataList.get(position).getHumidity()+"");
+//            else if(sensorType.equals("MOISTURE"))
+//                sensorData.setText(sensorDataList.get(position).getSoil()+"");
 
             return convertView;
         }

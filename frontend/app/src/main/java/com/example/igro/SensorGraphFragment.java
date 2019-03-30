@@ -11,7 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.igro.Controller.Helper;
 import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.SensorData.SensorDataValue;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,20 +34,23 @@ import java.util.List;
 public class SensorGraphFragment extends Fragment {
     private static final String PARAM = "type";
 
+    private Helper helper = new Helper(getContext(), FirebaseAuth.getInstance());
     private String sensorType;
     GraphView graphView;
+    String xAxisTitle;
 
     TextView sensorTypeTextView;
-    private List<SensorData> sensorDataList = new ArrayList<>();
-    DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
+    private List<SensorDataValue> sensorDataList = new ArrayList<>();
+    DatabaseReference db;
+
     ValueEventListener eventListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
             for(DataSnapshot snap : dataSnapshot.getChildren()){
-                SensorData sensorData = snap.getValue(SensorData.class);
-                Log.d("FIREBASE", sensorData.getTime()+"");
-                sensorDataList.add(sensorData);
+                SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                Log.d("FIREBASE", sensorDataValue.getTime()+"");
+                sensorDataList.add(sensorDataValue);
             }
             populateGraph();
         }
@@ -53,7 +59,6 @@ public class SensorGraphFragment extends Fragment {
         public void onCancelled(@NonNull DatabaseError databaseError) {
         }
     };
-
 
     public SensorGraphFragment() {
         // Required empty public constructor
@@ -77,8 +82,7 @@ public class SensorGraphFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sensor_graph, container, false);
@@ -87,6 +91,8 @@ public class SensorGraphFragment extends Fragment {
         sensorTypeTextView = view.findViewById(R.id.graphTypeTextView);
         sensorTypeTextView.setText(sensorType);
 
+        helper.setSharedPreferences(getContext());
+        db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Data");
         retrieveSensorDataFromDB();
 
         return view;
@@ -98,32 +104,12 @@ public class SensorGraphFragment extends Fragment {
     void populateGraph(){
 
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
-        for(SensorData data: sensorDataList){
+        for(SensorDataValue data: sensorDataList){
             long t = data.getTime();
             Date time = new Date(t);
 
-            double y = 0;
-            if(sensorType.equals("TEMPERATURE-C")) {
-                y = data.getTemperatureC();
-                graphView.getGridLabelRenderer().setVerticalAxisTitle("Celsius");
-            }
-            else if (sensorType.equals("TEMPERATURE-F")) {
-                y = data.getTemperatureF();
-                graphView.getGridLabelRenderer().setVerticalAxisTitle("Fahrenheit");
-            }
-            else if(sensorType.equals("UV")) {
-                y = data.getUv();
-                graphView.getGridLabelRenderer().setVerticalAxisTitle("Index");
-            }
-            else if(sensorType.equals("HUMIDITY")) {
-                y = data.getHumidity();
-                graphView.getGridLabelRenderer().setVerticalAxisTitle("%");
-            }
-            else if(sensorType.equals("MOISTURE")) {
-                y = data.getSoil();
-                graphView.getGridLabelRenderer().setVerticalAxisTitle("%");
-            }
-
+            double y = data.getValue();
+            graphView.getGridLabelRenderer().setVerticalAxisTitle(xAxisTitle);
             series.appendData(new DataPoint(time.getTime(),y), true, 500);
         }
         graphView.addSeries(series);
@@ -147,6 +133,28 @@ public class SensorGraphFragment extends Fragment {
     }
 
     void retrieveSensorDataFromDB(){
-        db.orderByChild("time").addValueEventListener(eventListener);
+        if(sensorType.equals("TEMPERATURE-C")) {
+            db.child("TemperatureSensor1").orderByChild("time").addValueEventListener(eventListener);
+            xAxisTitle = "Celcius";
+        }
+
+        else if (sensorType.equals("TEMPERATURE-F")) {
+            db.child("TemperatureSensor1").orderByChild("time").addValueEventListener(eventListener);
+            xAxisTitle = "Fahrenheit";
+        }
+        else if(sensorType.equals("UV")){
+            db.child("UVSensor1").orderByChild("time").addValueEventListener(eventListener);
+            xAxisTitle = "Index";
+        }
+
+        else if(sensorType.equals("HUMIDITY")) {
+            db.child("HumiditySensor1").orderByChild("time").addValueEventListener(eventListener);
+            xAxisTitle = "%";
+        }
+
+        else if(sensorType.equals("MOISTURE")) {
+            db.child("SoilSensor1").orderByChild("time").addValueEventListener(eventListener);
+            xAxisTitle = "%";
+        }
     }
 }
