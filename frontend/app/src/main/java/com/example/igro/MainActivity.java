@@ -82,13 +82,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        helper = new Helper(getApplication(), firebaseAuth);
 
 //        currentUser = helper.checkAuthentication();
 //        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             // current user validated
             helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
+//            helper.checkAuthentication();
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //Initialize all the UI elements
@@ -180,9 +180,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         } else {
-            Intent test = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(test);
-//            helper.goToActivity(LoginActivity.class);
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
         }
     }
 
