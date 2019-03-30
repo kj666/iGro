@@ -41,7 +41,8 @@ public class Helper {
     public Helper(Context contexts, FirebaseAuth firebaseAuth) {
         this.context = contexts;
         this.firebaseAuth = firebaseAuth;
-        this.user = firebaseAuth.getCurrentUser();
+//        this.user = firebaseAuth.getCurrentUser();
+
     }
 
     public void setSharedPreferences(Context context){

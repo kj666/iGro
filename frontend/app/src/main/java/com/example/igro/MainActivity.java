@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private Helper helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
 
     protected TextView userWelcomeMessage;
-
+    FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
 
     DecimalFormat df = new DecimalFormat("####0.00");
@@ -82,8 +82,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        helper = new Helper(getApplication(), firebaseAuth);
 
-        currentUser = helper.checkAuthentication();
+//        currentUser = helper.checkAuthentication();
+//        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            // current user validated
+
+            currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //Initialize all the UI elements
         initializeUI();
@@ -173,6 +179,11 @@ public class MainActivity extends AppCompatActivity {
                 helper.goToActivity(MoistureActivity.class);
             }
         });
+        } else {
+            Intent test = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(test);
+//            helper.goToActivity(LoginActivity.class);
+        }
     }
 
     void retriveUserData(){
@@ -183,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 Users users = dataSnapshot.getValue(Users.class);
-                userWelcomeMessage.setText(users.getName() +"   "+users.getGreenhouseID());
+//                userWelcomeMessage.setText(users.getName() +"   "+users.getGreenhouseID());
 
                 helper.setSharedPreferences(getApplicationContext());
                 helper.saveGreenHouseID(users.getGreenhouseID());
@@ -358,27 +369,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        helper.checkAuthentication();
-        requestWeather();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        helper.checkAuthentication();
-        requestWeather();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        helper.checkAuthentication();
-        requestWeather();
-    }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        helper.checkAuthentication();
+//        requestWeather();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        helper.checkAuthentication();
+//        requestWeather();
+//    }
+//
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//        helper.checkAuthentication();
+//        requestWeather();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
