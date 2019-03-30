@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         currentUser = helper.checkAuthentication();
-        helper.setSharedPreferences(getApplicationContext());
 
         //Initialize all the UI elements
         initializeUI();
@@ -88,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
         requestWeather();
 
         retriveUserData();
-        //Retrieve data from DB
-        retrieveSensorData();
+
 
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,8 +175,10 @@ public class MainActivity extends AppCompatActivity {
 
                 Users users = dataSnapshot.getValue(Users.class);
                 userWelcomeMessage.setText(users.getName() +"   "+users.getGreenhouseID());
+
                 helper.setSharedPreferences(getApplicationContext());
                 helper.saveGreenHouseID(users.getGreenhouseID());
+                retrieveSensorData();
 
             }
 
@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
                     humidityNumberButton.setText(df.format(sensorData.getHumidity())+"");
 
                     //UVIndex
-                    uvNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getUv())+"");
+                    uvNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getUvIndex())+"");
 
                     //SoilMoisture
                     moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getSoil())+"");
