@@ -2,6 +2,7 @@ package com.example.igro;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,8 +30,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
 import com.example.igro.Models.SensorData.Range.TempRange;
-import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.SensorDataValue;
+import com.example.igro.Models.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -76,11 +77,21 @@ public class TemperatureActivity extends AppCompatActivity {
     // create database reference for ranges
 
     private FirebaseUser currentUser;
+    String currentUserID;
+    String currentUserName;
+    String currentUserEmail;
+    private FirebaseUser currentuser;
+    String currentuserID;
+    String currentuserName;
+    String currentuserEmail;
+
+    //get last heater states from record
+    public Long previousHeaterTriggerTime;
     public Boolean lastHeaterState = false;
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
     //create heater database reference
-    DatabaseReference heaterSwitchEventDB, appliances, databaseRange, db;
+    DatabaseReference heaterSwitchEventDB, appliances, databaseRange, db, userDB;
 
 
     public void initializeDB(String greenhouseID){
@@ -88,7 +99,7 @@ public class TemperatureActivity extends AppCompatActivity {
         appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
         databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
         db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
-
+        userDB = FirebaseDatabase.getInstance().getReference().child("Users");
     }
 
     @Override
@@ -105,6 +116,16 @@ public class TemperatureActivity extends AppCompatActivity {
         temperatureSwitch.setClickable(true);
 
         currentUser = helper.checkAuthentication();
+        currentuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        currentUserID = currentUser.getUid();
+        currentUserName = currentUser.getDisplayName();
+        currentUserEmail = currentUser.getEmail();
+
+        currentuserID = currentuser.getUid();
+        currentuserName = currentuser.getDisplayName();
+        currentUserEmail = currentUser.getEmail();
+
         retrieveSensorData();
 
         setRangeTempButton.setOnClickListener(new View.OnClickListener() {
@@ -330,6 +351,11 @@ public class TemperatureActivity extends AppCompatActivity {
                 ApplianceControlEvents lastRecord = dataSnapshot.getValue(ApplianceControlEvents.class);
                 assert lastRecord != null;
                 final Boolean checkedStatus = lastRecord.getEventOnOff();
+                    previousHeaterTriggerTime = lastRecord.getEventUnixEpoch();
+
+                SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.AppliancePreviousTriggerTimesFile), MODE_PRIVATE).edit();
+                editor.putLong(getString(R.string.PreviousHeaterTriggerTime), previousHeaterTriggerTime);
+                editor.apply();
 
                 if(!(checkedStatus == null)){
 
@@ -393,7 +419,7 @@ public class TemperatureActivity extends AppCompatActivity {
                 //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
                 String heatEventId = heaterSwitchEventDB.push().getKey();
 
-                ApplianceControlEvents heatSwitchClickEvent = new ApplianceControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat, tempSwitchState);
+                ApplianceControlEvents heatSwitchClickEvent = new ApplianceControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat, previousHeaterTriggerTime, currentUserID, currentUserName, currentUserEmail, tempSwitchState);
                 heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
 
                 if(!(heatEventId == null)) {

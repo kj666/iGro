@@ -32,6 +32,8 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     TextView historicalApplianceTitleTextView;
     TextView listCounterTitleTextView;
     TextView listDateTitleTextView;
+    TextView listUserNameTitleTextView;
+    TextView listTimeSinceLastTriggerTitleTextView;
     TextView listOnOffTitleTextView;
     ListView applianceEventListView;
 
@@ -48,7 +50,9 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 //initialization for all the fields
         historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
         listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
-        listDateTitleTextView = (TextView)findViewById(R.id.listDateTitleTextView);
+        listDateTitleTextView = (TextView)findViewById(R.id.listItemDateTextView);
+        listUserNameTitleTextView = findViewById(R.id.listItemUserNameTextView);
+        listTimeSinceLastTriggerTitleTextView = findViewById(R.id.listItemCounterTextView);
         listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
@@ -70,7 +74,9 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 //initializations
         historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
         listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
-        listDateTitleTextView = (TextView)findViewById(R.id.listDateTitleTextView);
+        listDateTitleTextView = (TextView)findViewById(R.id.listItemDateTextView);
+        listUserNameTitleTextView = findViewById(R.id.listItemUserNameTextView);
+        listTimeSinceLastTriggerTitleTextView = findViewById(R.id.listItemTimeSinceLastTriggerTextView);
         listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
 
