@@ -90,6 +90,11 @@ public class MainActivity extends AppCompatActivity {
             helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
 //            helper.checkAuthentication();
             currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            String currentUserID = currentUser.toString();
+
+            SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.CurrentUserFile), MODE_PRIVATE).edit();
+            editor.putString(getString(R.string.CurrentUserID), currentUserID);
+            editor.apply();
 
         //Initialize all the UI elements
         initializeUI();

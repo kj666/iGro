@@ -30,5 +30,12 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="AppliancePreviousTriggerTimesFile">AppliancePreviousTriggerTimesFile</string>
+    <string name="PreviousHeaterTriggerTime">previousHeaterTriggerTime</string>
+    <string name="CurrentUserFile">CurrentUserFile</string>
+    <string name="CurrentUserID">CurrentUserID</string>
+    <string name="CurrentUserName">CurrentUserName</string>
+    <string name="CurrentUserEmail">CurrentUserEmail</string>
+    <string name="PreviousLightsTriggerTime">PreviousLightsTriggerTime</string>
 
 </resources>

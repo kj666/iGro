@@ -2,6 +2,7 @@ package com.example.igro;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -71,22 +72,31 @@ public class UvIndexActivity extends AppCompatActivity {
     Button setUvRange;
     TextView ghUvTextView;
     Double ghUv;
+
+    private FirebaseUser currentuser;
+    String currentuserID;
+    String currentuserName;
+    String currentuserEmail;
     private FirebaseUser currentUser;
+    String currentUserID;
+    String currentUserName;
+    String currentUserEmail;
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
-
+    //last Lights switch state and time of previous trigger to calculated how long they were on
     public Boolean lastUvState = false;
-
+    Long previousLightsTriggerTime;
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "LightsAreOnTag";
 
     //create heater database reference for the correct node
-    DatabaseReference uvSwitchEventDB, databaseRange, db, appliances;
+    DatabaseReference uvSwitchEventDB, databaseRange, db, appliances, userDB;
 
     public void initializeDB(String greenhouseID){
         databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
         uvSwitchEventDB = FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("UVControlLog");
         db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
         appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+        userDB = FirebaseDatabase.getInstance().getReference().child("Users");
     }
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -94,12 +104,21 @@ public class UvIndexActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uv_index);
 
-
         initializeUI();
         helper.setSharedPreferences(getApplicationContext());
         initializeDB(helper.retrieveGreenhouseID());
 
         currentUser = helper.checkAuthentication();
+        currentuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        currentuserID = currentuser.getUid();
+        currentuserName = currentuser.getDisplayName();
+        currentuserEmail = currentUser.getEmail();
+
+        currentUserID = currentUser.getUid();
+        currentUserName = currentUser.getDisplayName();
+        currentUserEmail = currentUser.getEmail();
+
         retrieveSensorData();
         retrieveRange();
         setUvRange.setOnClickListener(new View.OnClickListener() {
@@ -278,6 +297,11 @@ public class UvIndexActivity extends AppCompatActivity {
                 ApplianceControlEvents lastRecord = dataSnapshot.getValue(ApplianceControlEvents.class);
                 assert lastRecord != null;
                 final Boolean checkedStatus = lastRecord.getEventOnOff();
+                previousLightsTriggerTime = lastRecord.getEventUnixEpoch();
+
+                SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.AppliancePreviousTriggerTimesFile), MODE_PRIVATE).edit();
+                editor.putLong(getString(R.string.PreviousLightsTriggerTime), previousLightsTriggerTime);
+                editor.apply();
 
                 if(!(checkedStatus == null)){
                     lastUvState = checkedStatus;
@@ -338,7 +362,7 @@ public class UvIndexActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String uvEventId = uvSwitchEventDB.push().getKey();
 
-            ApplianceControlEvents uvSwitchClickEvent = new ApplianceControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
+            ApplianceControlEvents uvSwitchClickEvent = new ApplianceControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, previousLightsTriggerTime, currentUserID, currentUserName, currentUserEmail, uvSwitchState);
             uvSwitchEventDB.child(uvEventId).setValue(uvSwitchClickEvent);
 
             if(!(uvEventId == null)) {

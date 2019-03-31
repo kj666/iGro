@@ -2,6 +2,7 @@ package com.example.igro;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,7 +30,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
 import com.example.igro.Models.SensorData.Range.HumidityRange;
-import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -67,8 +67,19 @@ public class HumidityActivity extends AppCompatActivity {
     Button humidifierUseButton;
     Button setHumidityRange;
     Double ghHumidity;
+    private FirebaseUser currentuser;
+    String currentuserID;
+    String currentuserName;
+    String currentuserEmail;
+    String getCurrentuserID;
+    String getCurrentuserName;
+    String getCurrentuserEmail;
     private FirebaseUser currentUser;
+    String currentUserID;
+    String currentUserName;
+    String currentUserEmail;
     public Boolean lastHumidState = false;
+    Long previousHumidifierTriggerTime;
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     //log tag to test the on/off state on changeState event of heaterSwitch
@@ -78,13 +89,14 @@ public class HumidityActivity extends AppCompatActivity {
     TextView outdoorHumidityTextView; // displays the humidity in percentage
     private RequestQueue queue;
     //create database reference for ranges
-    DatabaseReference databaseRange, humidSwitchEventDB, db, appliances ;
+    DatabaseReference databaseRange, humidSwitchEventDB, db, appliances, userDB ;
 
     public void initializeDB(String greenhouseID){
         databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
         humidSwitchEventDB = FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("HumidityControlLog");
         db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
         appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+        userDB = FirebaseDatabase.getInstance().getReference().child("Users");
     }
 
     @Override
@@ -100,6 +112,17 @@ public class HumidityActivity extends AppCompatActivity {
         requestHumidity();
 
         currentUser = helper.checkAuthentication();
+        currentuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        currentuserID = currentuser.getUid();
+        currentuserName = currentuser.getDisplayName();
+        currentuserEmail = currentUser.getEmail();
+
+        currentUserID = currentUser.getUid();
+        currentUserName = currentUser.getDisplayName();
+        currentUserEmail = currentUser.getEmail();
+
+
         retrieveSensorData();
         retrieveRange();
         setHumidityRange.setOnClickListener(new View.OnClickListener() {
@@ -296,6 +319,11 @@ public class HumidityActivity extends AppCompatActivity {
                 ApplianceControlEvents lastRecord = dataSnapshot.getValue(ApplianceControlEvents.class);
                 assert lastRecord != null;
                 final Boolean checkedStatus = lastRecord.getEventOnOff();
+                previousHumidifierTriggerTime = lastRecord.getEventUnixEpoch();
+
+                SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.AppliancePreviousTriggerTimesFile), MODE_PRIVATE).edit();
+                editor.putLong(getString(R.string.PreviousLightsTriggerTime), previousHumidifierTriggerTime);
+                editor.apply();
 
                 if (!(checkedStatus == null)) {
 
@@ -359,7 +387,7 @@ public class HumidityActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String humEventId = humidSwitchEventDB.push().getKey();
 
-            ApplianceControlEvents humSwitchClickEvent = new ApplianceControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, humSwitchState);
+            ApplianceControlEvents humSwitchClickEvent = new ApplianceControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, previousHumidifierTriggerTime, currentUserID, currentUserName, currentUserEmail, humSwitchState);
             humidSwitchEventDB.child(humEventId).setValue(humSwitchClickEvent);
 
             if (!(humEventId == null)) {
