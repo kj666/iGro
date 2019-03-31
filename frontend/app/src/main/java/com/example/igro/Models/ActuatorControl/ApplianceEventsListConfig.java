@@ -61,7 +61,7 @@ public class ApplianceEventsListConfig extends ArrayAdapter<ApplianceControlEven
 
         Long thisTrigger = applianceEvent.getEventUnixEpoch();
         Long lastTrigger = applianceEvent.getPreviousEventUnixEpoch();
-        if(!lastTrigger.toString().isEmpty()){
+        if(applianceEvent.getPreviousEventUnixEpoch()!=null){
             timeSinceLastTriggerSeconds = thisTrigger-lastTrigger;
 
             timeSinceStr = timeSinceLastTriggerSeconds.toString();
