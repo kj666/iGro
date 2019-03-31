@@ -120,7 +120,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         final List<ApplianceControlEvents> heaterList = new ArrayList<>();
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
-        heaterSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
+        heaterSwitchEventDB.orderByKey().limitToLast(10).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -130,6 +130,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
                 for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
 //retrieves each of the 20 nodes of object of HeaterControlEvents class to build the array
                     ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
+
                     heaterList.add(heaterEvent);
 
                 }
@@ -162,7 +163,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
 
-        humidSwitchEventDB.orderByChild("eventUnixEpoch").limitToLast(20).addValueEventListener(new ValueEventListener() {
+        humidSwitchEventDB.orderByChild("eventUnixEpoch").limitToLast(10).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -202,7 +203,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
 
-        moistSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
+        moistSwitchEventDB.orderByKey().limitToLast(10).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -242,7 +243,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
 
-        uvSwitchEventDB.orderByChild("uvEventUnixEpoch").limitToLast(20).addValueEventListener(new ValueEventListener() {
+        uvSwitchEventDB.orderByChild("uvEventUnixEpoch").limitToLast(10).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
