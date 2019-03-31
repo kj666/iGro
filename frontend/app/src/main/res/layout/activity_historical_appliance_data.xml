@@ -45,7 +45,7 @@
     <ListView
         android:id="@+id/applianceEventListView"
         android:layout_width="match_parent"
-        android:layout_height="528dp"
+        android:layout_height="517dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
@@ -55,7 +55,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="29dp" />
+        android:layout_marginBottom="28dp" />
 
     <TextView
         android:id="@+id/listOnOffTitleTextView"
@@ -126,12 +126,13 @@
     <TextView
         android:id="@+id/listTimeSinceLastTriggerTitleTextView"
         android:layout_width="88dp"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
         android:layout_marginTop="128dp"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
+        android:layout_marginBottom="8dp"
         android:layout_toStartOf="@+id/listOnOffTitleTextView"
         android:layout_toLeftOf="@+id/listOnOffTitleTextView"
         android:text="Hours Since\nLast Trigger" />
