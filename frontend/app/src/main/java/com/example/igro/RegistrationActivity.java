@@ -9,8 +9,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,6 +50,7 @@ public class RegistrationActivity extends AppCompatActivity {
     protected Button signUpButton;
     protected Button cancelButton;
     FirebaseFirestore userDatabase;
+    Spinner listOfAvailableGreenhouses;
 
 
 
@@ -66,6 +69,11 @@ public class RegistrationActivity extends AppCompatActivity {
         userPasswordConfirmation = findViewById(R.id.confirmUserPasswordText);
         signUpButton = findViewById(R.id.singUpButton);
         cancelButton = findViewById(R.id.cancelButton);
+        listOfAvailableGreenhouses = findViewById(R.id.listOfAvailableGreenhouses);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.greenhouse_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        listOfAvailableGreenhouses.setAdapter(adapter);
         //Allowing entry fields to be modified
         userName.setFocusable(true);
         userEmail.setFocusable(true);

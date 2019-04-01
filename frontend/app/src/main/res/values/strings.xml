@@ -38,4 +38,9 @@
     <string name="CurrentUserEmail">CurrentUserEmail</string>
     <string name="PreviousLightsTriggerTime">PreviousLightsTriggerTime</string>
 
+    <string-array name="greenhouse_array">
+        <item>Greenhouse1</item>
+        <item>Greenhouse2</item>
+        <item>Greenhouse3</item>
+    </string-array>
 </resources>
