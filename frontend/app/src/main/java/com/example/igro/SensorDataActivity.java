@@ -53,7 +53,6 @@ public class SensorDataActivity extends AppCompatActivity {
         dataLimitDB = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/SensorConfig/DataLimit");
         fragmentManager =  getSupportFragmentManager();
 
-
         fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         retrieveDataLimit();
@@ -65,8 +64,6 @@ public class SensorDataActivity extends AppCompatActivity {
         Intent intent = getIntent();
         sensorType = intent.getStringExtra("SensorType");
         String pageTitle = "HISTORICAL " + sensorType + " SENSOR DATA";
-
-//        createGraphFrag(sensorType, setDataLimit());
 
         historicalSensorDataTextView.setText(pageTitle);
 
@@ -88,18 +85,21 @@ public class SensorDataActivity extends AppCompatActivity {
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(tableMode) {
-                    setDataLimit();
-                    removeTableFrag();
-                    createTableFrag(sensorType);
-                }
-                else {
-                    removeGraphFrag();
-                    createGraphFrag(sensorType, setDataLimit());
-                }
+                checkTableGrpah();
             }
         });
 
+    }
+
+    void checkTableGrpah(){
+        if(tableMode) {
+            removeFragments();
+            createTableFrag(sensorType, setDataLimit());
+        }
+        else {
+            removeFragments();
+            createGraphFrag(sensorType, setDataLimit());
+        }
     }
 
     @Override
@@ -112,7 +112,7 @@ public class SensorDataActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 limitEditText.setText(dataSnapshot.getValue().toString());
-                createGraphFrag(sensorType, setDataLimit());
+                checkTableGrpah();
             }
 
             @Override
@@ -142,19 +142,19 @@ public class SensorDataActivity extends AppCompatActivity {
         fragmentTransaction.commitAllowingStateLoss();
     }
 
-    void removeGraphFrag(){
-        fragmentManager.popBackStack("graph",fragmentManager.POP_BACK_STACK_INCLUSIVE);
-    }
-
-    void createTableFrag(String type){
-        sensorDataTableFragment = SensorDataTableFragment.newInstance(type);
+    void createTableFrag(String type, int dataLimit){
+        sensorDataTableFragment = SensorDataTableFragment.newInstance(type, dataLimit);
         fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorDataTableFragment);
         fragmentTransaction.addToBackStack("table");
         fragmentTransaction.commitAllowingStateLoss();
     }
 
-    void removeTableFrag(){
-        fragmentManager.popBackStack("table",fragmentManager.POP_BACK_STACK_INCLUSIVE);
+    void removeFragments(){
+        try {
+            fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }catch (IllegalStateException e){
+
+        }
     }
 
     @Override
@@ -177,27 +177,20 @@ public class SensorDataActivity extends AppCompatActivity {
                 if(tableMode) {
                     tableMode = false;
                     item.setChecked(false);
-                    removeTableFrag();
+                    removeFragments();
                     createGraphFrag(sensorType, setDataLimit());
 
                 }
                 else {
                     tableMode = true;
                     item.setChecked(true);
-                    removeGraphFrag();
-                    createTableFrag(sensorType);
+                    removeFragments();
+                    createTableFrag(sensorType, setDataLimit());
                 }
                 return true;
 
             case R.id.refreshButton:
-                if(tableMode) {
-                    removeTableFrag();
-                    createTableFrag(sensorType);
-                }
-                else {
-                    removeGraphFrag();
-                    createGraphFrag(sensorType, setDataLimit());
-                }
+                checkTableGrpah();
                 return true;
         }
 

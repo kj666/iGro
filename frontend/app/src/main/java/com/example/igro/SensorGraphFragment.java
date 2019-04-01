@@ -50,7 +50,6 @@ public class SensorGraphFragment extends Fragment {
 
             for(DataSnapshot snap : dataSnapshot.getChildren()){
                 SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
-                Log.d("FIREBASE", sensorDataValue.getTime()+"");
                 sensorDataList.add(sensorDataValue);
             }
             populateGraph();
