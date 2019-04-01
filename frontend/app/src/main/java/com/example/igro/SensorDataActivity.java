@@ -53,6 +53,9 @@ public class SensorDataActivity extends AppCompatActivity {
         dataLimitDB = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/SensorConfig/DataLimit");
         fragmentManager =  getSupportFragmentManager();
 
+
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
         retrieveDataLimit();
 
         historicalSensorDataTextView = (TextView) findViewById(R.id.historicalSensorDataTextView);
@@ -63,7 +66,7 @@ public class SensorDataActivity extends AppCompatActivity {
         sensorType = intent.getStringExtra("SensorType");
         String pageTitle = "HISTORICAL " + sensorType + " SENSOR DATA";
 
-        createGraphFrag(sensorType, setDataLimit());
+//        createGraphFrag(sensorType, setDataLimit());
 
         historicalSensorDataTextView.setText(pageTitle);
 
@@ -99,11 +102,17 @@ public class SensorDataActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     void retrieveDataLimit(){
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 limitEditText.setText(dataSnapshot.getValue().toString());
+                createGraphFrag(sensorType, setDataLimit());
             }
 
             @Override
@@ -115,32 +124,37 @@ public class SensorDataActivity extends AppCompatActivity {
     }
 
     int setDataLimit(){
-        int dataLimit = Integer.parseInt(limitEditText.getText().toString());
+        int dataLimit;
+        if(limitEditText.getText().toString().equals("")){
+            dataLimit = Integer.parseInt(limitEditText.getText().toString());
+        }else {
+            dataLimit = Integer.parseInt(limitEditText.getText().toString());
+        }
 
         dataLimitDB.setValue(dataLimit);
         return  dataLimit;
     }
 
     void createGraphFrag(String type, int dataLimit){
-        sensorGraphFragment = SensorGraphFragment.newInstance(type, setDataLimit());
+        sensorGraphFragment = SensorGraphFragment.newInstance(type, dataLimit);
         fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorGraphFragment);
         fragmentTransaction.addToBackStack("graph");
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     void removeGraphFrag(){
-        fragmentManager.popBackStack("graph",1);
+        fragmentManager.popBackStack("graph",fragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     void createTableFrag(String type){
         sensorDataTableFragment = SensorDataTableFragment.newInstance(type);
         fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorDataTableFragment);
         fragmentTransaction.addToBackStack("table");
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     void removeTableFrag(){
-        fragmentManager.popBackStack("table",1);
+        fragmentManager.popBackStack("table",fragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @Override
