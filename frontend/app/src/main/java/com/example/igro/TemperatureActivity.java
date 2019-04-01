@@ -2,6 +2,7 @@ package com.example.igro;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,8 +29,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.TempRange;
-import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.SensorData.Range.TempRange;
+import com.example.igro.Models.SensorData.SensorDataValue;
+import com.example.igro.Models.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -69,29 +71,61 @@ public class TemperatureActivity extends AppCompatActivity {
     TextView outdoorTemperatureTextView;
     TextView greenhouseTemperatureTextView;
     private RequestQueue queue;
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+    String greenhouseID;
 
     // create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+
     private FirebaseUser currentUser;
+    String currentUserID;
+    String currentUserName;
+    String currentUserEmail;
+    private FirebaseUser currentuser;
+    String currentuserID;
+    String currentuserName;
+    String currentuserEmail;
+
+    //get last heater states from record
+    public Long previousHeaterTriggerTime;
     public Boolean lastHeaterState = false;
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HeaterIsOnTag";
     //create heater database reference
-    DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog").child("HeaterControlLog");
-    //Get current user using the Helper class
-    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+    DatabaseReference heaterSwitchEventDB, appliances, databaseRange, db, userDB;
 
+
+    public void initializeDB(String greenhouseID){
+        heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/ApplianceControlLog").child("HeaterControlLog");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+        databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
+        db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+        userDB = FirebaseDatabase.getInstance().getReference().child("Users");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
 
+        helper.setSharedPreferences(getApplicationContext());
+        greenhouseID = helper.retrieveGreenhouseID();
+
+        initializeDB(greenhouseID);
         initializeUI();
-// make temperature control switch clickable
+        // make temperature control switch clickable
         temperatureSwitch.setClickable(true);
 
         currentUser = helper.checkAuthentication();
+        currentuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        currentUserID = currentUser.getUid();
+        currentUserName = currentUser.getDisplayName();
+        currentUserEmail = currentUser.getEmail();
+
+        currentuserID = currentuser.getUid();
+        currentuserName = currentuser.getDisplayName();
+        currentUserEmail = currentUser.getEmail();
+
         retrieveSensorData();
 
         setRangeTempButton.setOnClickListener(new View.OnClickListener() {
@@ -128,13 +162,6 @@ public class TemperatureActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-  /*  //Create option menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }*/
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -150,8 +177,6 @@ public class TemperatureActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     protected void onStart() {
@@ -254,18 +279,17 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference tempRange = db.child("Temperature");
+        DatabaseReference tempRange = databaseRange.child("Temperature");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                lowTempEditText.setText(dataSnapshot.child("lowTempValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
+                Double lowRange = Helper.retrieveRange("lowTempValue", dataSnapshot);
+                Double highRange = Helper.retrieveRange("highTempValue", dataSnapshot);
 
-                highTempEditText.setText(dataSnapshot.child("highTempValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+                lowTempEditText.setText(lowRange.toString());
+                highTempEditText.setText(highRange.toString());
                 if (!((tempDegree > lowRange)
                         && (tempDegree < highRange))) {
 
@@ -327,6 +351,11 @@ public class TemperatureActivity extends AppCompatActivity {
                 ApplianceControlEvents lastRecord = dataSnapshot.getValue(ApplianceControlEvents.class);
                 assert lastRecord != null;
                 final Boolean checkedStatus = lastRecord.getEventOnOff();
+                    previousHeaterTriggerTime = lastRecord.getEventUnixEpoch();
+
+                SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.AppliancePreviousTriggerTimesFile), MODE_PRIVATE).edit();
+                editor.putLong(getString(R.string.PreviousHeaterTriggerTime), previousHeaterTriggerTime);
+                editor.apply();
 
                 if(!(checkedStatus == null)){
 
@@ -390,17 +419,18 @@ public class TemperatureActivity extends AppCompatActivity {
                 //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
                 String heatEventId = heaterSwitchEventDB.push().getKey();
 
-                ApplianceControlEvents heatSwitchClickEvent = new ApplianceControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat, tempSwitchState);
+                ApplianceControlEvents heatSwitchClickEvent = new ApplianceControlEvents(heatEventId, heatOnTimeStampFormated, heatOnOffDateUnixFormat, previousHeaterTriggerTime, currentUserID, currentUserName, currentUserEmail, tempSwitchState);
                 heaterSwitchEventDB.child(heatEventId).setValue(heatSwitchClickEvent);
 
                 if(!(heatEventId == null)) {
 
                     if (tempSwitchState) {
-
+                        appliances.child("HeaterCtrl").setValue(true);
                         Log.d(TAG, "The heater was turned on " + heatOnTimeStampFormated);
                         Toast.makeText(this, "The heater was switched ON on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
 
                     } else {
+                        appliances.child("HeaterCtrl").setValue(false);
                         Log.d(TAG, "The heater was turned off on " + heatOnTimeStampFormated);
                         Toast.makeText(this, "The heater was switched OFF on " + heatOnTimeStampFormated, Toast.LENGTH_LONG).show();
                     }
@@ -408,34 +438,24 @@ public class TemperatureActivity extends AppCompatActivity {
                     Log.d(TAG, "ERROR: heatEventId can't be null");
 
                 }
-
-
             }
-
         }
 
     void retrieveSensorData() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
-                    //Temperature
-                    greenhouseTemperatureTextView.setText(df.format(sensorData.getTemperatureC()) + "");
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    greenhouseTemperatureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) +"");
                     tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
-
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+        db.child("TemperatureSensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
     void requestWeather() {
@@ -477,7 +497,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     public void setTempRange(){
-
+        DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
         String lowTemp=lowTempEditText.getText().toString();
         String highTemp=highTempEditText.getText().toString();
 //check if the ranges are empty or not
@@ -485,7 +505,7 @@ public class TemperatureActivity extends AppCompatActivity {
  //theck if input is numerical
             if((lowTemp.matches(".*[0-999].*"))&&(highTemp.matches(".*[0-999].*"))){
   //Check if Lower limit is < upper limit
-                if (Integer.parseInt(lowTemp) < Integer.parseInt(highTemp)) {
+                if (Double.parseDouble(lowTemp) < Double.parseDouble(highTemp)) {
 
                 TempRange temperatureTempRange = new TempRange(lowTemp, highTemp);
                 databaseRange.child("Temperature").setValue(temperatureTempRange);

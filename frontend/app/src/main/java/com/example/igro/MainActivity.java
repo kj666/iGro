@@ -1,5 +1,8 @@
 package com.example.igro;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.igro.Controller.Helper;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,6 +23,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.SensorData.SensorDataValue;
+import com.example.igro.Models.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,9 +32,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.rpc.Help;
 
 import org.json.JSONObject;
 import java.text.DecimalFormat;
+import java.util.EventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,23 +56,45 @@ public class MainActivity extends AppCompatActivity {
 
     protected Button humidityTitleButton;
     protected TextView humidityNumberButton;
+    protected SharedPreferences sharedPreferences;
 
-    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+    //Greenhouse status textview
+    private TextView ghStatus;
+
+    private Helper helper;
 
     protected TextView userWelcomeMessage;
-
+    FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
 
     DecimalFormat df = new DecimalFormat("####0.00");
     private RequestQueue queue;
     private TextView cityWeatherMessage;
 
+    DatabaseReference DBrange, DBsensorData;
+
+    void intitializeDB(){
+        DBrange = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Ranges");
+        DBsensorData = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Data");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        currentUser = helper.checkAuthentication();
+//        currentUser = helper.checkAuthentication();
+//        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            // current user validated
+            helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
+//            helper.checkAuthentication();
+            currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            String currentUserID = currentUser.toString();
+
+            SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.CurrentUserFile), MODE_PRIVATE).edit();
+            editor.putString(getString(R.string.CurrentUserID), currentUserID);
+            editor.apply();
 
         //Initialize all the UI elements
         initializeUI();
@@ -75,9 +106,8 @@ public class MainActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         requestWeather();
 
+        retriveUserData();
 
-        //Retrieve data from DB
-        retrieveSensorData();
 
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,75 +116,238 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-            //opening the Temperature view when the temperature text is clicked
+        //opening the Temperature view when the temperature text is clicked
         temperatureTitleButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(TemperatureActivity.class);
             }
-            });
+        });
 
-            //opening the Temperature view when the temperature number is clicked
+        //opening the Temperature view when the temperature number is clicked
         temperatureNumberButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(TemperatureActivity.class);
             }
-            });
+        });
 
-            //opening the Uv index view  when the uvTitleButton text is clicked
+        //opening the Uv index view  when the uvTitleButton text is clicked
         uvTitleButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(UvIndexActivity.class);
             }
-            });
+        });
 
-            //opening the uvTitleButton view when the uvTitleButton number is clicked
+        //opening the uvTitleButton view when the uvTitleButton number is clicked
         uvNumberButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(UvIndexActivity.class);
             }
-            });
+        });
         humidityTitleButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(HumidityActivity.class);
             }
-            });
+        });
         humidityNumberButton.setOnClickListener(new View.OnClickListener()
 
-            {
-                @Override
-                public void onClick (View v){
+        {
+            @Override
+            public void onClick (View v){
                 helper.goToActivity(HumidityActivity.class);
             }
-            });
+        });
         moistureTitleButton.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick (View v2){
-                    helper.goToActivity(MoistureActivity.class);
-            }
-
-            });
-        moistureNumberButton.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick (View v){
+            @Override
+            public void onClick (View v2){
                 helper.goToActivity(MoistureActivity.class);
             }
-            });
+
+        });
+        moistureNumberButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick (View v){
+                helper.goToActivity(MoistureActivity.class);
+            }
+        });
+        } else {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
         }
+    }
+
+    void retriveUserData(){
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Users users = dataSnapshot.getValue(Users.class);
+//                userWelcomeMessage.setText(users.getName() +"   "+users.getGreenhouseID());
+
+                helper.setSharedPreferences(getApplicationContext());
+                helper.saveGreenHouseID(users.getGreenhouseID());
+                intitializeDB();
+                retrieveSensorData();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        db.addListenerForSingleValueEvent(eventListener);
+    }
+
+    void tempColorSet(final Double tempData){
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Double lowRange, highRange;
+                if(dataSnapshot.child("lowTempValue").getValue() != null)
+                    lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
+                else
+                    lowRange = 0.0;
+                if(dataSnapshot.child("highTempValue").getValue() != null)
+                    highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+                else
+                    highRange = 5.0;
+
+                if (!((tempData > lowRange) && (tempData < highRange)))
+                    temperatureNumberButton.setTextColor(Color.RED);
+                else
+                    temperatureNumberButton.setTextColor(Color.GREEN);
+
+             greenhouseStatus();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        DBrange.child("Temperature").addValueEventListener(eventListener);
+
+    }
+    //set the color of the humidity button
+    void humColorSet(final Double value){
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Double lowRange, highRange;
+                if(dataSnapshot.child("lowHumidityValue").getValue() != null) {
+                    lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
+                }
+                else
+                    lowRange = 0.0;
+
+                if(dataSnapshot.child("highHumidityValue").getValue() != null) {
+                    highRange = Double.parseDouble(dataSnapshot.child("highHumidityValue").getValue().toString());
+                }
+                else
+                    highRange = 5.0;
+                if (!((value > lowRange) && (value < highRange)))
+                    humidityNumberButton.setTextColor(Color.RED);
+                else
+                    humidityNumberButton.setTextColor(Color.GREEN);
+
+                greenhouseStatus();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        DBrange.child("Humidity").addValueEventListener(eventListener);
+    }
+    //set the color of the humidity button
+    void moistColorSet(final Double value){
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Double lowRange, highRange;
+                if(dataSnapshot.child("lowMoistureValue").getValue() != null)
+                   lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
+                else
+                    lowRange = 0.0;
+                if(dataSnapshot.child("highMoistureValue").getValue() != null)
+                    highRange = Double.parseDouble(dataSnapshot.child("highMoistureValue").getValue().toString());
+                else
+                    highRange = 5.0;
+                if (!((value > lowRange) && (value < highRange)))
+                    moistureNumberButton.setTextColor(Color.RED);
+                else
+                    moistureNumberButton.setTextColor(Color.GREEN);
+
+                greenhouseStatus();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        DBrange.child("Moisture").addValueEventListener(eventListener);
+    }
+
+    //set the color of the humidity button
+    void uvColorSet(final Double value){
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Double lowRange = Helper.retrieveRange("lowUvValue", dataSnapshot);
+                Double highRange = Helper.retrieveRange("highUvValue", dataSnapshot);
+
+                if (!((value > lowRange) && (value < highRange)))
+                    uvNumberButton.setTextColor(Color.RED);
+                else
+                    uvNumberButton.setTextColor(Color.GREEN);
+
+                greenhouseStatus();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        DBrange.child("UV").addValueEventListener(eventListener);
+    }
+
+    void greenhouseStatus(){
+
+           int count=0;
+           if(temperatureNumberButton.getCurrentTextColor()==(Color.RED)){ count++;}
+           if(moistureNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+           if(humidityNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+           if(uvNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+           if(count==0){ ghStatus.setText("OPTIMAL");}
+           if(count==1){ ghStatus.setText("AVERAGE");}
+           if(count==2){ghStatus.setText("POOR"); }
+           if(count==3){ghStatus.setText("CRITICAL");}
+           if(count==4){ghStatus.setText("VERY CRITICAL");}
+
+    }
 
     // TODO 2019-03-21
     // Switch the fixed value given for temperature below to sensor data when available
@@ -175,28 +368,32 @@ public class MainActivity extends AppCompatActivity {
         //Moisture view initialization
         moistureTitleButton = (Button) findViewById(R.id.moistureButton);
         moistureNumberButton = (Button) findViewById(R.id.moisturePercentView);
+
+        ghStatus=(TextView)findViewById(R.id.statusTextView);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        helper.checkAuthentication();
-        requestWeather();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        helper.checkAuthentication();
-        requestWeather();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        helper.checkAuthentication();
-        requestWeather();
-    }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        helper.checkAuthentication();
+//        requestWeather();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        helper.checkAuthentication();
+//        requestWeather();
+//    }
+//
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//        helper.checkAuthentication();
+//        requestWeather();
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -219,47 +416,53 @@ public class MainActivity extends AppCompatActivity {
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-
-                case R.id.polling_menu:
+            case R.id.polling_menu:
                 openDialog();
                 return true;
-
-
         }
         return super.onOptionsItemSelected(item);
     }
 
-
     //Retrieve data from the database and store it as Sensor Data
     void retrieveSensorData(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
 
-        ValueEventListener eventListener = new ValueEventListener() {
+        DBsensorData.child("HumiditySensor1").orderByKey().limitToLast(1).addValueEventListener(getSensorDataListener("HUMIDITY"));
+        DBsensorData.child("TemperatureSensor1").orderByKey().limitToLast(1).addValueEventListener(getSensorDataListener("TEMPERATURE"));
+        DBsensorData.child("UVSensor1").orderByKey().limitToLast(1).addValueEventListener(getSensorDataListener("UV"));
+        DBsensorData.child("SoilSensor1").orderByKey().limitToLast(1).addValueEventListener(getSensorDataListener("MOISTURE"));
+    }
+
+    public ValueEventListener getSensorDataListener(final String type){
+
+        ValueEventListener eventListener1 = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-
-                    //Temperature
-                    temperatureNumberButton.setText(df.format(sensorData.getTemperatureC())+"");
-
-                    //Humidity
-                    humidityNumberButton.setText(df.format(sensorData.getHumidity())+"");
-
-                    //UVIndex
-                    uvNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getUv())+"");
-
-                    //SoilMoisture
-                    moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorData.getSoil())+"");
+                for(DataSnapshot snap: dataSnapshot.getChildren()){
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    if(type.equals("HUMIDITY")) {
+                        humidityNumberButton.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
+                        humColorSet(sensorDataValue.getValue());
+                    }
+                    else if(type.equals("TEMPERATURE")) {
+                        temperatureNumberButton.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
+                        tempColorSet(sensorDataValue.getValue());
+                    }
+                    else if(type.equals("UV")) {
+                        uvNumberButton.setText(new DecimalFormat("####0.00").format(sensorDataValue.getValue()) + "");
+                        uvColorSet(sensorDataValue.getValue());
+                    }
+                    else if(type.equals("MOISTURE")) {
+                        moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
+                        moistColorSet(sensorDataValue.getValue());
+                    }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+        return eventListener1;
     }
 
     void requestWeather() {
@@ -323,9 +526,9 @@ public class MainActivity extends AppCompatActivity {
             return numberToBeConverted.toString();
         }
     }
+
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
-
 }

@@ -2,6 +2,7 @@ package com.example.igro;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,8 +23,8 @@ import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.SensorData;
-import com.example.igro.Models.SensorData.MoistureRange;
+import com.example.igro.Models.SensorData.Range.MoistureRange;
+import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -54,8 +55,19 @@ public class MoistureActivity extends AppCompatActivity {
     Button setRangeMoistureButton;
     Double ghMoisture;
     TextView ghMoistureTextView;
+    private FirebaseUser currentuser;
+    String currentuserID;
+    String currentuserName;
+    String currentuserEmail;
+    String getCurrentuserID;
+    String getCurrentuserName;
+    String getCurrentuserEmail;
     private FirebaseUser currentUser;
+    String currentUserID;
+    String currentUserName;
+    String currentUserEmail;
     public Boolean lastMoistureState = false;
+    Long previousIrrigationTriggerTime;
     //Get current user using the Helper class
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
@@ -63,11 +75,15 @@ public class MoistureActivity extends AppCompatActivity {
     private static final String TAG = "IrrigationIsOnTag";
 
     //create heater database reference
-    DatabaseReference moistureSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("SoilMoistureControlLog");
-    //create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+    DatabaseReference moistureSwitchEventDB, databaseRange, db, appliances, userDB;
 
-
+    public void initializeDB(String greenhouseID){
+        databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
+        moistureSwitchEventDB= FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("SoilMoistureControlLog");
+        db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+        userDB = FirebaseDatabase.getInstance().getReference().child("Users");
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
@@ -75,6 +91,21 @@ public class MoistureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_moisture);
         initializeUI();
         currentUser = helper.checkAuthentication();
+        helper.setSharedPreferences(getApplicationContext());
+        initializeDB(helper.retrieveGreenhouseID());
+
+        currentUser = helper.checkAuthentication();
+        currentuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        currentuserID = currentuser.getUid();
+        currentuserName = currentuser.getDisplayName();
+        currentuserEmail = currentUser.getEmail();
+
+        currentUserID = currentUser.getUid();
+        currentUserName = currentUser.getDisplayName();
+        currentUserEmail = currentUser.getEmail();
+
+
         retrieveSensorData();
         retrieveRange();
 
@@ -186,7 +217,7 @@ public class MoistureActivity extends AppCompatActivity {
         String highMoisture=highMoistureEditText.getText().toString();
         //check if the ranges are empty or not
         if (!TextUtils.isEmpty(lowMoisture) && !TextUtils.isEmpty(highMoisture)) {
-            if (Integer.parseInt(lowMoisture.toString()) < Integer.parseInt(highMoisture.toString())) {
+            if (Double.parseDouble(lowMoisture.toString()) < Double.parseDouble(highMoisture.toString())) {
 
                 MoistureRange moistureTempRange = new MoistureRange(lowMoisture, highMoisture);
                 databaseRange.child("Moisture").setValue(moistureTempRange);
@@ -202,22 +233,17 @@ public class MoistureActivity extends AppCompatActivity {
     }
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference moistureRange = db.child("Moisture");
+        DatabaseReference moistureRange = databaseRange.child("Moisture");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                highMoistureEditText.setText(dataSnapshot.child("highMoistureValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highMoistureValue").getValue().toString());
+                Double highRange = Helper.retrieveRange("highMoistureValue", dataSnapshot);
+                highMoistureEditText.setText(highRange.toString());
+                Double lowRange = Helper.retrieveRange("lowMoistureValue", dataSnapshot);
+                lowMoistureEditText.setText(lowRange.toString());
 
-                lowMoistureEditText.setText(dataSnapshot.child("lowMoistureValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
-
-
-                if (!((ghMoisture > lowRange)
-                        && (ghMoisture< highRange))) {
-
+                if (!((ghMoisture > lowRange) && (ghMoisture< highRange))) {
                     ghMoistureTextView.setTextColor(Color.RED);
                     Toast.makeText(MoistureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
@@ -227,36 +253,26 @@ public class MoistureActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
 
         moistureRange.addValueEventListener(eventListener);
 
     }
     void retrieveSensorData(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.0");
-                    //Moisture
-                    ghMoistureTextView.setText(df.format(sensorData.getSoil())+"");
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    ghMoistureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue())+"");
                     ghMoisture = Double.parseDouble(ghMoistureTextView.getText().toString());
-
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+        db.child("SoilSensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
     void initializeUI(){
@@ -291,6 +307,12 @@ public class MoistureActivity extends AppCompatActivity {
                 ApplianceControlEvents lastRecord = dataSnapshot.getValue(ApplianceControlEvents.class);
                 assert lastRecord != null;
                 final Boolean checkedStatus = lastRecord.getEventOnOff();
+                previousIrrigationTriggerTime = lastRecord.getEventUnixEpoch();
+
+                SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.AppliancePreviousTriggerTimesFile), MODE_PRIVATE).edit();
+                editor.putLong(getString(R.string.PreviousLightsTriggerTime), previousIrrigationTriggerTime);
+                editor.apply();
+
 
                 if(!(checkedStatus == null)){
 
@@ -355,18 +377,19 @@ public class MoistureActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String moistEventId = moistureSwitchEventDB.push().getKey();
 
-// creates a record as an object of class HeaterControlEvents, which includes id, dates in 2 formats and on/off state to be recorded
-            ApplianceControlEvents moistSwitchClickEvent = new ApplianceControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, moistSwitchState);
+            // creates a record as an object of class HeaterControlEvents, which includes id, dates in 2 formats and on/off state to be recorded
+            ApplianceControlEvents moistSwitchClickEvent = new ApplianceControlEvents(moistEventId, moistOnTimeStampFormated, moistOnOffDateUnixFormat, previousIrrigationTriggerTime, currentUserID, currentUserName, currentUserEmail,moistSwitchState);
             moistureSwitchEventDB.child(moistEventId).setValue(moistSwitchClickEvent);
 
             if(!(moistEventId == null)) {
 
-// checks the state of the switch to display message
+                // checks the state of the switch to display message
                 if (moistSwitchState) {
-
+                    appliances.child("SoilCtrl").setValue(true);
                     Log.d(TAG, "The irrigation was turned on " + moistOnTimeStampFormated);
                     Toast.makeText(this, "The irrigation was switched ON on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 } else {
+                    appliances.child("SoilCtrl").setValue(false);
                     Log.d(TAG, "The irrigation was turned off on " + moistOnTimeStampFormated);
                     Toast.makeText(this, "The irrigation was switched OFF on " + moistOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }

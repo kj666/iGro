@@ -23,6 +23,7 @@ int tempCtrl;
 int humidCtrl;
 int lightCtrl;
 int soilCtrl;
+String greenHouseID;
 
 void setup() {
   Serial.begin(9600);
@@ -43,22 +44,22 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
-
+  greenHouseID = Firebase.getString("mcuGreenhouseID")+"/";
 }
 
 
 void loop() {
 
-  tempCtrl = Firebase.getBool("Appliances/HeaterCtrl");
+  tempCtrl = Firebase.getBool(greenHouseID+"Appliances/HeaterCtrl");
   Serial.print("temp: "+ String(tempCtrl));
   delay(100);
-  humidCtrl = Firebase.getBool("Appliances/HumidCtrl");
+  humidCtrl = Firebase.getBool(greenHouseID+"Appliances/HumidCtrl");
   Serial.print(" hum: "+ String(humidCtrl));
   delay(100);
-  lightCtrl = Firebase.getBool("Appliances/LightCtrl");
+  lightCtrl = Firebase.getBool(greenHouseID+"Appliances/LightCtrl");
   Serial.print(" uv: "+ String(lightCtrl));
   delay(100);
-  soilCtrl = Firebase.getBool("Appliances/SoilCtrl");
+  soilCtrl = Firebase.getBool(greenHouseID+"Appliances/SoilCtrl");
   Serial.println(" soil: "+ String(soilCtrl));
   delay(100);
 

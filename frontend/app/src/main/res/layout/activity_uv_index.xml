@@ -50,7 +50,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="16dp"
-        android:text="VIEW LIGHT USE HISTORY"
+        android:text="VIEW ARTIFICIAL LIGHT USE HISTORY"
         app:layout_constraintBottom_toTopOf="@+id/tempRangeTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

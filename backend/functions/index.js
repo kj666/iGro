@@ -18,3 +18,12 @@ exports.addTimeStampToData = functions.database.ref('data/{id}/humidity')
 
     return snapshot.ref.parent.child('time').set(Timestamp);
 });
+
+// Add a timeStamp to incoming data created
+exports.addTimeStampTemp = functions.database.ref('/{gid}/Data/{sid}/{id}')
+.onCreate((snapshot, context) => {
+    const original = snapshot.val();
+    const Timestamp = admin.database.ServerValue.TIMESTAMP;
+
+    return snapshot.ref.child('time').set(Timestamp);
+});

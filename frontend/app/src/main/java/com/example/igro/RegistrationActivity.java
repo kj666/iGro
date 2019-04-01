@@ -22,6 +22,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -46,6 +48,8 @@ public class RegistrationActivity extends AppCompatActivity {
     protected Button signUpButton;
     protected Button cancelButton;
     FirebaseFirestore userDatabase;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,10 +203,24 @@ public class RegistrationActivity extends AppCompatActivity {
         // Figure out how to determine greenhouse ID and user role
         // so far, greenhouse ID = extra field on registration screen
         // user role = ?
+
+        /**
+         * Store in real time database
+         */
+        DatabaseReference userDB = FirebaseDatabase.getInstance().getReference("Users/"+addThisUser.getUid());
+        userDB.child("Name").setValue(userName.getText().toString());
+        userDB.child("Email").setValue(addThisUser.getEmail());
+        userDB.child("ID").setValue(addThisUser.getUid());
+        userDB.child("GreenhouseID").setValue("Greenhouse1");
+        userDB.child("UserRole").setValue("user");
+
+        /**
+         * Store in firestore
+         */
         user.put("Name", userName.getText().toString());
         user.put("Email", addThisUser.getEmail());
         user.put("ID", addThisUser.getUid());
-        user.put("Greenhouse ID#", "test");
+        user.put("Greenhouse ID#", "Greenhouse1");
         user.put("User Role", "user"); // admin or user
 
         userDatabase.collection("Users")
