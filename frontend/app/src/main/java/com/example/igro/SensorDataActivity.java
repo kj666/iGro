@@ -1,6 +1,8 @@
 package com.example.igro;
 
 import android.content.Intent;
+import android.renderscript.Sampler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -10,15 +12,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.igro.Controller.Helper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class SensorDataActivity extends AppCompatActivity {
 
+    private Helper helper = new Helper(this, FirebaseAuth.getInstance());
+    DatabaseReference dataLimitDB;
     //UI components
     TextView historicalSensorDataTextView;
     Button refreshButton;
+    EditText limitEditText;
 
     //boolean to decide if its table/graph
     boolean tableMode = false;
@@ -35,16 +49,21 @@ public class SensorDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sensor_data);
 
+        helper.setSharedPreferences(getApplicationContext());
+        dataLimitDB = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/SensorConfig/DataLimit");
         fragmentManager =  getSupportFragmentManager();
 
+        retrieveDataLimit();
+
         historicalSensorDataTextView = (TextView) findViewById(R.id.historicalSensorDataTextView);
+        limitEditText = findViewById(R.id.hsSenDataLimitEditText);
         refreshButton = findViewById(R.id.refreshActivityButton);
 
         Intent intent = getIntent();
         sensorType = intent.getStringExtra("SensorType");
         String pageTitle = "HISTORICAL " + sensorType + " SENSOR DATA";
 
-        createGraphFrag(sensorType);
+        createGraphFrag(sensorType, setDataLimit());
 
         historicalSensorDataTextView.setText(pageTitle);
 
@@ -62,23 +81,48 @@ public class SensorDataActivity extends AppCompatActivity {
             Toast.makeText(this, "ERROR: unKnown sensor type ", Toast.LENGTH_LONG ).show();
         }
 
+
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(tableMode) {
+                    setDataLimit();
                     removeTableFrag();
                     createTableFrag(sensorType);
                 }
                 else {
                     removeGraphFrag();
-                    createGraphFrag(sensorType);
+                    createGraphFrag(sensorType, setDataLimit());
                 }
             }
         });
 
     }
-    void createGraphFrag(String type){
-        sensorGraphFragment = SensorGraphFragment.newInstance(type);
+
+    void retrieveDataLimit(){
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                limitEditText.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        dataLimitDB.addValueEventListener(eventListener);
+    }
+
+    int setDataLimit(){
+        int dataLimit = Integer.parseInt(limitEditText.getText().toString());
+
+        dataLimitDB.setValue(dataLimit);
+        return  dataLimit;
+    }
+
+    void createGraphFrag(String type, int dataLimit){
+        sensorGraphFragment = SensorGraphFragment.newInstance(type, setDataLimit());
         fragmentTransaction = fragmentManager.beginTransaction().add(R.id.fragmentContainer, sensorGraphFragment);
         fragmentTransaction.addToBackStack("graph");
         fragmentTransaction.commit();
@@ -120,7 +164,7 @@ public class SensorDataActivity extends AppCompatActivity {
                     tableMode = false;
                     item.setChecked(false);
                     removeTableFrag();
-                    createGraphFrag(sensorType);
+                    createGraphFrag(sensorType, setDataLimit());
 
                 }
                 else {
@@ -138,7 +182,7 @@ public class SensorDataActivity extends AppCompatActivity {
                 }
                 else {
                     removeGraphFrag();
-                    createGraphFrag(sensorType);
+                    createGraphFrag(sensorType, setDataLimit());
                 }
                 return true;
         }

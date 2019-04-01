@@ -15,6 +15,15 @@
     <string name="LightsStatus">Lights Status </string>
     <string name="DateTime">Date and Time </string>
     <string name="ApplianceStatus">Appliance Status</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="AppliancePreviousTriggerTimesFile">AppliancePreviousTriggerTimesFile</string>
+    <string name="PreviousHeaterTriggerTime">previousHeaterTriggerTime</string>
+    <string name="CurrentUserFile">CurrentUserFile</string>
+    <string name="CurrentUserID">CurrentUserID</string>
+    <string name="CurrentUserName">CurrentUserName</string>
+    <string name="CurrentUserEmail">CurrentUserEmail</string>
+    <string name="PreviousLightsTriggerTime">PreviousLightsTriggerTime</string>
+
     <array name="Appliances">
         <item>HEATER</item>
         <item>HUMIDIFIER</item>
@@ -28,14 +37,6 @@
     </array>
     <string name="SensorType">Sensor</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="AppliancePreviousTriggerTimesFile">AppliancePreviousTriggerTimesFile</string>
-    <string name="PreviousHeaterTriggerTime">previousHeaterTriggerTime</string>
-    <string name="CurrentUserFile">CurrentUserFile</string>
-    <string name="CurrentUserID">CurrentUserID</string>
-    <string name="CurrentUserName">CurrentUserName</string>
-    <string name="CurrentUserEmail">CurrentUserEmail</string>
-    <string name="PreviousLightsTriggerTime">PreviousLightsTriggerTime</string>
+
 
 </resources>
