@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.igro.Controller.Helper;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,14 +28,15 @@ public class PollingFrequencyDialogFragment extends AppCompatDialogFragment {
     String pollingfrequency;
     int pollingfrequencyInt;
     int equivalentpollingfrequency;
-    DatabaseReference pollingDabase = FirebaseDatabase.getInstance().getReference("config");
-
+    private Helper helper = new Helper(getContext(), FirebaseAuth.getInstance());
+    DatabaseReference pollingDabase;
 
 
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
-
+        helper.setSharedPreferences(getContext());
+        pollingDabase = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/SensorConfig");
         retrievePollData();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -67,8 +70,6 @@ public class PollingFrequencyDialogFragment extends AppCompatDialogFragment {
     }
 
     public void retrievePollData() {
-
-
 
         pollingDabase.addValueEventListener(new ValueEventListener() {
             @Override
