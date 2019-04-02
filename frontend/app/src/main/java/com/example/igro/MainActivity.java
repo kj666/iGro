@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     //Greenhouse status textview
     private TextView ghStatus;
 
+    private TextView StatusDef;
+
     private Helper helper;
 
     protected TextView userWelcomeMessage;
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        StatusDef = findViewById(R.id.conditionDefination);
 //        currentUser = helper.checkAuthentication();
 //        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -99,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         //Initialize all the UI elements
         initializeUI();
 
+
         userWelcomeMessage = findViewById(R.id.welcomeMessageText);
         String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
         userWelcomeMessage.setText(welcomeMessage);
@@ -107,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
         requestWeather();
 
         retriveUserData();
+
+
 
 
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
@@ -341,13 +347,24 @@ public class MainActivity extends AppCompatActivity {
            if(moistureNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
            if(humidityNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
            if(uvNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
-           if(count==0){ ghStatus.setText("OPTIMAL");}
+          if(count==0){ ghStatus.setText("OPTIMAL");}
+
            if(count==1){ ghStatus.setText("AVERAGE");}
-           if(count==2){ghStatus.setText("POOR"); }
+
+         if(count==2){ ghStatus.setText("POOR");}
+
            if(count==3){ghStatus.setText("CRITICAL");}
+
            if(count==4){ghStatus.setText("VERY CRITICAL");}
 
+
+        if (count==0){StatusDef.setText("OPTIMAL = all the parameters are within the selected range");}
+        if (count==1){StatusDef.setText("AVERAGE = 3 parameters are within the selected range and 1 is out of the range ");}
+        if (count==2){StatusDef.setText("POOR = 2 the parameters are within the selected range and 2 are out of range");}
+        if (count==3){StatusDef.setText("CRITICAL = Only 1 parameter is within the selected range and 3 parameters are out of the range");}
+        if (count==0){StatusDef.setText("VERY CRITICAL = all the parameters are out of the selected range");}
     }
+
 
     // TODO 2019-03-21
     // Switch the fixed value given for temperature below to sensor data when available
