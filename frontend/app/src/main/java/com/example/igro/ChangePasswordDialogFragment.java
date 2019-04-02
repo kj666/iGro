@@ -1,13 +1,10 @@
 package com.example.igro;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,8 +18,6 @@ import com.example.igro.Controller.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,10 +27,10 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
 
-    EditText oldPasswordEditText;
+    EditText currentPasswordEditText;
     EditText newPasswordEditText;
     EditText confirmNewPasswordEditText;
-    String oldPassword;
+    String currentPassword;
     String newPassword;
     String confirmNewPassword;
     Button changePasswordButton;
@@ -54,7 +49,7 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
 
         builder.setView(view);
         //initialization
-        oldPasswordEditText = view.findViewById(R.id.oldPasswordEditText);
+        currentPasswordEditText = view.findViewById(R.id.currentPasswordEditText);
         newPasswordEditText = view.findViewById(R.id.newPasswordEditText);
         confirmNewPasswordEditText = view.findViewById(R.id.confirmNewPasswordEditText);
         changePasswordButton=view.findViewById(R.id.changePasswordButton);
@@ -63,32 +58,42 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                oldPassword = oldPasswordEditText.getText().toString();
+                currentPassword = currentPasswordEditText.getText().toString();
                 newPassword = newPasswordEditText.getText().toString();
-                confirmNewPassword = newPasswordEditText.getText().toString();
-                if (!TextUtils.isEmpty(oldPassword) && !TextUtils.isEmpty(newPassword)
+                confirmNewPassword = confirmNewPasswordEditText.getText().toString();
+                if (!TextUtils.isEmpty(currentPassword) && !TextUtils.isEmpty(newPassword)
                         && !TextUtils.isEmpty(confirmNewPassword)) {
-                    validateCurrentPassword(oldPassword, newPassword, confirmNewPassword);
+                    if(newPassword.equals(confirmNewPassword)) {
+                        if(!newPassword.equals(currentPassword)) {
+                            validateCurrentPassword(currentPassword, newPassword, confirmNewPassword);
+                        }
+                        else{
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "The new password is the same as the current password!!!Please Try Again!!!"
+                                    , Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                    else {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "The new password and the confirmed password are not similar!!!"
+                                , Toast.LENGTH_LONG).show();
+                    }
 
 
-                   /* helper.signout();
-                    helper.goToActivity(LoginActivity.class);*/
+
+
 
                 }
+
+
                 else{
                     Toast.makeText(getActivity().getApplicationContext(), "Please fill in all the fields!!!"
                             , Toast.LENGTH_LONG).show();
                 }
             }
         });
-        /*builder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                oldPassword = oldPasswordEditText.getText().toString();
-                newPassword = newPasswordEditText.getText().toString();
-                confirmNewPassword = confirmNewPasswordEditText.getText().toString();
-                validateCurrentPassword(oldPassword, newPassword, confirmNewPassword);
-            }
-        });*/
+
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
@@ -116,6 +121,9 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
                             user.updatePassword(confirmNewPassword);
                         Toast.makeText(getActivity().getApplicationContext(), "Password Changed Successfully"
                                 , Toast.LENGTH_LONG).show();
+                        //signout after password change
+                   /* helper.signout();
+                    helper.goToActivity(LoginActivity.class);*/
                         }
                      else {
                         //authentication failed
