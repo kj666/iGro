@@ -29,7 +29,7 @@
         android:layout_height="33dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:gravity="center_horizontal|center_vertical"
@@ -51,20 +51,60 @@
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/historicalSensorDataTextView">
+        app:layout_constraintTop_toBottomOf="@+id/hsSenDataLimitEditText">
 
     </FrameLayout>
 
     <Button
         android:id="@+id/refreshActivityButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="REFRESH"
+        app:layout_constraintBottom_toBottomOf="@+id/hsSenDataLimitEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="@+id/hsSenDataLimitEditText" />
+
+    <EditText
+        android:id="@+id/hsSenDataLimitEditText"
+        android:layout_width="36dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="number"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/historicalSensorDataTextView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Display last"
+        app:layout_constraintBottom_toBottomOf="@+id/hsSenDataLimitEditText"
+        app:layout_constraintEnd_toStartOf="@+id/hsSenDataLimitEditText"
+        app:layout_constraintTop_toTopOf="@+id/hsSenDataLimitEditText" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="records"
+        app:layout_constraintBottom_toBottomOf="@+id/hsSenDataLimitEditText"
+        app:layout_constraintStart_toEndOf="@+id/hsSenDataLimitEditText"
+        app:layout_constraintTop_toTopOf="@+id/hsSenDataLimitEditText"
+        app:layout_constraintVertical_bias="0.25" />
 
 
 </android.support.constraint.ConstraintLayout>
