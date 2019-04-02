@@ -35,10 +35,6 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
     String newPassword;
     String confirmNewPassword;
     Button changePasswordButton;
-    private Helper helper=new Helper(getContext(), FirebaseAuth.getInstance());
-    //Firebase authentication
-    FirebaseAuth firebaseAuth;
-    private FirebaseAuth mAuth; //authentication instance
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -126,13 +122,6 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
                                 , Toast.LENGTH_LONG).show();
                         //close dialog
                         dismiss();
-                        //signout after password change
-                        //Firebase authentication
-                        /*firebaseAuth.signOut();
-                        goToActivity(LoginActivity.class);*/
-
-                    /*helper.signout();
-                    helper.goToActivity(LoginActivity.class);*/
                         }
                      else {
                         //authentication failed
