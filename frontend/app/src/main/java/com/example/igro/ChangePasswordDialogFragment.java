@@ -36,7 +36,7 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
         String newPassword;
         String confirmNewPassword;
         private FirebaseAuth mAuth; //authentication instance
-
+    FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
         public Dialog onCreateDialog(Bundle savedInstanceState){
 
 
@@ -61,7 +61,7 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
                     oldPassword = oldPasswordEditText.getText().toString();
                     newPassword = newPasswordEditText.getText().toString();
                     confirmNewPassword = confirmNewPasswordEditText.getText().toString();
-                    validateCurrentPassword(newPassword);
+                    validateCurrentPassword(oldPassword,newPassword,confirmNewPassword);
                 }
             });
 
@@ -78,26 +78,25 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
         }
 
     //check if current password is valid
-    private void validateCurrentPassword(String newPassword) {
+    private void validateCurrentPassword(String oldPassword, String newPassword, final String confirmNewPassword) {
 
-       /* AuthCredential credential= EmailAuthProvider.getCredential(email,password);
-        mAuth.getCurrentUser().reauthenticate(credential).addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+        AuthCredential credential= EmailAuthProvider.getCredential(user.getEmail(),oldPassword);
+        user.reauthenticate(credential).addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
 
                 if (task.isSuccessful()) {
                     //authentication successful
-                    Log.d(TAG, "Authentication validated to change password");*/
-        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
-                user.updatePassword(newPassword);
-             /*   } else {
+                    Log.d(TAG, "Authentication validated to change password");
+                user.updatePassword(confirmNewPassword);
+                } else {
                     //authentication failed
                     Log.w(TAG, "Authentication failed in order to change password", task.getException());
                     Toast.makeText(getActivity(), "The OLD PASSWORD IS WRONG!!!",
                             Toast.LENGTH_SHORT).show();
                 }
             }
-        });*/
+        });
 
 
     }
