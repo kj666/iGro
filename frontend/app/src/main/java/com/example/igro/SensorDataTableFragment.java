@@ -30,6 +30,7 @@ public class SensorDataTableFragment extends Fragment {
     private static final String PARAM = "type";
     private Helper helper = new Helper(getContext(), FirebaseAuth.getInstance());
     private String sensorType;
+    private int dataLimit;
     ListView listView;
     private List<SensorDataValue> sensorDataList = new ArrayList<>();
 
@@ -37,11 +38,12 @@ public class SensorDataTableFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static SensorDataTableFragment newInstance(String sensorType){
+    public static SensorDataTableFragment newInstance(String sensorType, int dataLimit){
         SensorDataTableFragment fragment = new SensorDataTableFragment();
         Bundle passData = new Bundle();
         passData.putString(PARAM, sensorType);
         fragment.sensorType = sensorType;
+        fragment.dataLimit = dataLimit;
         return fragment;
     }
 
@@ -77,7 +79,6 @@ public class SensorDataTableFragment extends Fragment {
 
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
-                    Log.d("FIREBASE", sensorDataValue.getTime()+"");
                     sensorDataList.add(sensorDataValue);
                 }
                 populateTable();
@@ -88,15 +89,15 @@ public class SensorDataTableFragment extends Fragment {
             }
         };
         if(sensorType.equals("TEMPERATURE-C"))
-            db.child("TemperatureSensor1").addValueEventListener(eventListener);
+            db.child("TemperatureSensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
         else if (sensorType.equals("TEMPERATURE-F"))
-            db.child("TemperatureSensor1").addValueEventListener(eventListener);
+            db.child("TemperatureSensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
         else if(sensorType.equals("UV"))
             db.child("UVSensor1").addValueEventListener(eventListener);
         else if(sensorType.equals("HUMIDITY"))
-            db.child("HumiditySensor1").addValueEventListener(eventListener);
+            db.child("HumiditySensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
         else if(sensorType.equals("MOISTURE"))
-            db.child("SoilSensor1").addValueEventListener(eventListener);
+            db.child("SoilSensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
     }
 
     class SensorDataListAdapter extends BaseAdapter {
