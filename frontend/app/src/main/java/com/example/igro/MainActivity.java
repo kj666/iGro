@@ -42,6 +42,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.rpc.Help;
 
 import org.json.JSONObject;
@@ -114,9 +115,21 @@ public class MainActivity extends AppCompatActivity {
                     //toast
                     String msg = getString(R.string.msg_token_fmt, token);
                     Log.d(MAIN_LOG_TAG, msg);
-                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                 }
             });
+
+            FirebaseMessaging.getInstance().subscribeToTopic("Greenhouse1")
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "Subscribe to Greenhouse1";
+                            if (!task.isSuccessful()) {
+                                msg = "Failed to subscribe";
+                            }
+                            Log.d(MAIN_LOG_TAG, msg);
+                            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        }
+                    });
             // current user validated
             helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
 //            helper.checkAuthentication();

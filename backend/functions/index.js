@@ -36,12 +36,13 @@ exports.sendPushNotification = functions.database.ref('/{gid}/Data/{sid}/{id}')
     const dataNode = data.after.val()
     const dataValue = dataNode.value;
  
-    db.ref(`/${gid}/Ranges/${sid}/Low`).once('value', function(snapshotLow){
-        db.ref('/'+gid+'/Ranges/'+sid+'/High').once('value', function(snapshotHigh){
+    db.ref(`/${gid}/Ranges/${sid}/Low`).once('value', snapshotLow=>{
+        db.ref('/'+gid+'/Ranges/'+sid+'/High').once('value', snapshotHigh=>{
             const lowRangeVal = snapshotLow.val();
             const highRangeVal = snapshotHigh.val();
 
             var message;
+            let toekns =[];
 
             if(!((dataValue >lowRangeVal) && (dataValue < highRangeVal))){
                 if(!(dataValue >lowRangeVal)){
@@ -53,19 +54,36 @@ exports.sendPushNotification = functions.database.ref('/{gid}/Data/{sid}/{id}')
                     console.log("highRange", highRangeVal +" ABOVE RANGE");
                 }
 
-                db.ref("/Users/").orderByChild("GreenhouseID").equalTo(gid).on("child_added", function(snapshot){
+                const payload ={
+                    notification: {
+                        title: "Greenhouse1 condition changed ",
+                        body: message
+                    }
+                };
+                admin.messaging().sendToTopic("Greenhouse1", payload).then((response)=>{
+                   return console.log('Notification sent successfully:',response);
+               }) 
+               .catch((error)=>{
+                    console.log('Notification sent failed:',error);
+               });
+
+               /* db.ref("/Users/").orderByChild("GreenhouseID").equalTo(gid).on("child_added", snapshot=>{
                     const users = snapshot.val();
                     console.log(snapshot.key+" hi "+ users.Name +" "+users.NotificationToken);
-            
+        
+                    toekns.push(users.notification);
                     const payload ={
                         notification: {
-                            title: users.GreenhouseID +" condition changed",
-                            body: message, 
-                            tag: sid
+                            title: users.GreenhouseID +" condition changed "+ users.Name,
+                            body: message
                         }
                     };
-                    admin.messaging().sendToDevice(users.NotificationToken, payload);
-                });
+                    admin.messaging().sendToDevice(users.NotificationToken, payload).then((response)=>{
+                        return console.log("Notification sent to "+users.Name, response);
+                    }).catch((error)=>{
+                        console.log("Error: ", error);
+                    });
+                });*/
             }
             else{
                 console.log("highRange", highRangeVal +"INSIDE RANGE");
