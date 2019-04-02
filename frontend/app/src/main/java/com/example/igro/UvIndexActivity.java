@@ -23,7 +23,6 @@ import android.text.TextUtils;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.Range.UvRange;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -33,7 +32,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -241,8 +239,8 @@ public class UvIndexActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Helper.retrieveRange("lowUvValue", dataSnapshot);
-                Double highRange = Helper.retrieveRange("highUvValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
 
                 lowUvEditText.setText(lowRange.toString());
                 highUvEditText.setText(highRange.toString());
@@ -259,7 +257,7 @@ public class UvIndexActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
 
-        databaseRange.child("UV").addValueEventListener(eventListener);
+        databaseRange.child("UVSensor1").addValueEventListener(eventListener);
 
     }
 
@@ -274,8 +272,8 @@ public class UvIndexActivity extends AppCompatActivity {
  //Check if Lower limit is < upper limit
                 if (Double.parseDouble(lowUv) < Double.parseDouble(highUv)) {
 
-                    UvRange UvRange = new UvRange(lowUv, highUv);
-                    databaseRange.child("UV").setValue(UvRange);
+                    databaseRange.child("UVSensor1").child("Low").setValue(Double.parseDouble(lowUv));
+                    databaseRange.child("UVSensor1").child("High").setValue(Double.parseDouble(highUv));
                     Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
                 } else {

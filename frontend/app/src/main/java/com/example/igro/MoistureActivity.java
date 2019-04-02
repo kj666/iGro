@@ -20,10 +20,8 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.Range.MoistureRange;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,13 +31,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import static java.lang.Integer.parseInt;
 
 public class MoistureActivity extends AppCompatActivity {
 
@@ -220,10 +215,10 @@ public class MoistureActivity extends AppCompatActivity {
         String highMoisture=highMoistureEditText.getText().toString();
         //check if the ranges are empty or not
         if (!TextUtils.isEmpty(lowMoisture) && !TextUtils.isEmpty(highMoisture)) {
-            if (Double.parseDouble(lowMoisture.toString()) < Double.parseDouble(highMoisture.toString())) {
+            if (Double.parseDouble(lowMoisture) < Double.parseDouble(highMoisture)) {
 
-                MoistureRange moistureTempRange = new MoistureRange(lowMoisture, highMoisture);
-                databaseRange.child("Moisture").setValue(moistureTempRange);
+                databaseRange.child("SoilSensor1").child("Low").setValue(Double.parseDouble(lowMoisture));
+                databaseRange.child("SoilSensor1").child("High").setValue(Double.parseDouble(highMoisture));
                 Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
             } else {
@@ -236,14 +231,14 @@ public class MoistureActivity extends AppCompatActivity {
     }
 
     void retrieveRange(){
-        DatabaseReference moistureRange = databaseRange.child("Moisture");
+        DatabaseReference moistureRange = databaseRange.child("SoilSensor1");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Double highRange = Helper.retrieveRange("highMoistureValue", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
                 highMoistureEditText.setText(highRange.toString());
-                Double lowRange = Helper.retrieveRange("lowMoistureValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
                 lowMoistureEditText.setText(lowRange.toString());
 
                 if (!((ghMoisture > lowRange) && (ghMoisture< highRange))) {
