@@ -3,6 +3,7 @@ package com.example.igro;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -34,8 +35,9 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
     String newPassword;
     String confirmNewPassword;
     Button changePasswordButton;
-    private Helper helper=new Helper(getActivity(), FirebaseAuth.getInstance());
-
+    private Helper helper=new Helper(getContext(), FirebaseAuth.getInstance());
+    //Firebase authentication
+    FirebaseAuth firebaseAuth;
     private FirebaseAuth mAuth; //authentication instance
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -66,6 +68,7 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
                     if(newPassword.equals(confirmNewPassword)) {
                         if(!newPassword.equals(currentPassword)) {
                             validateCurrentPassword(currentPassword, newPassword, confirmNewPassword);
+
                         }
                         else{
                             Toast.makeText(getActivity().getApplicationContext(),
@@ -121,8 +124,14 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
                             user.updatePassword(confirmNewPassword);
                         Toast.makeText(getActivity().getApplicationContext(), "Password Changed Successfully"
                                 , Toast.LENGTH_LONG).show();
+                        //close dialog
+                        dismiss();
                         //signout after password change
-                   /* helper.signout();
+                        //Firebase authentication
+                        /*firebaseAuth.signOut();
+                        goToActivity(LoginActivity.class);*/
+
+                    /*helper.signout();
                     helper.goToActivity(LoginActivity.class);*/
                         }
                      else {
@@ -137,9 +146,13 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
 
 
     }
+    public void goToActivity(Class goTo) {
+        Intent test = new Intent(getActivity(), goTo);
+        getActivity().startActivity(test);
 
+    }
 
-}
+    }
 
 
 
