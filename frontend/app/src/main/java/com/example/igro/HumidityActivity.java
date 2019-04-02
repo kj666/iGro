@@ -153,6 +153,9 @@ public class HumidityActivity extends AppCompatActivity {
             case R.id.polling_menu:
                 openDialog();
                 return true;
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
 
 
         }
@@ -444,9 +447,16 @@ public class HumidityActivity extends AppCompatActivity {
                 });
         queue.add(humidityRequest);
     }
+    // dialog to display the polling dialog
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+    // dialog to display the change password fragment
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
 }
 

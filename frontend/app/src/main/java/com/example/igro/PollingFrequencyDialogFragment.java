@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import com.example.igro.Controller.Helper;
 import com.google.firebase.auth.FirebaseAuth;
+import com.example.igro.Controller.Helper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,18 +28,19 @@ public class PollingFrequencyDialogFragment extends AppCompatDialogFragment {
 
     EditText PollingFrequencyEditText;
 
+    private Helper helper = new Helper(getContext(), FirebaseAuth.getInstance());
     String pollingfrequency;
     int pollingfrequencyInt;
     int equivalentpollingfrequency;
-    private Helper helper = new Helper(getContext(), FirebaseAuth.getInstance());
-    DatabaseReference pollingDabase;
+    DatabaseReference pollingDB;
+
 
 
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
         helper.setSharedPreferences(getContext());
-        pollingDabase = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/SensorConfig");
+        pollingDB = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/SensorConfig/poll");
         retrievePollData();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -51,7 +55,7 @@ public class PollingFrequencyDialogFragment extends AppCompatDialogFragment {
                 pollingfrequency = PollingFrequencyEditText.getText().toString();
                 pollingfrequencyInt = Integer.parseInt(pollingfrequency);
                 equivalentpollingfrequency = pollingfrequencyInt * 1000;
-                pollingDabase.child("poll").setValue(equivalentpollingfrequency);
+                pollingDB.setValue(equivalentpollingfrequency);
 
                 //listener.applyPollingFrequency(pollingfrequency);
             }
@@ -71,10 +75,10 @@ public class PollingFrequencyDialogFragment extends AppCompatDialogFragment {
 
     public void retrievePollData() {
 
-        pollingDabase.addValueEventListener(new ValueEventListener() {
+        pollingDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String lastpollfrequencyMs = dataSnapshot.child("poll").getValue().toString();
+                String lastpollfrequencyMs = dataSnapshot.getValue().toString();
                 int lastpollfrequencyInt = Integer.parseInt(lastpollfrequencyMs);
                 int lastpollfrequencySec = lastpollfrequencyInt/1000;
                 String lastpollfrequency = String.valueOf(lastpollfrequencySec);
@@ -88,6 +92,7 @@ public class PollingFrequencyDialogFragment extends AppCompatDialogFragment {
             }
         });
     }
+
 
 
 
