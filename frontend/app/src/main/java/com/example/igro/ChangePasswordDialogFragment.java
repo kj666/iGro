@@ -39,7 +39,7 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
     String newPassword;
     String confirmNewPassword;
     Button changePasswordButton;
-    private Helper helper;
+    private Helper helper=new Helper(getActivity(), FirebaseAuth.getInstance());
 
     private FirebaseAuth mAuth; //authentication instance
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -58,21 +58,21 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
         newPasswordEditText = view.findViewById(R.id.newPasswordEditText);
         confirmNewPasswordEditText = view.findViewById(R.id.confirmNewPasswordEditText);
         changePasswordButton=view.findViewById(R.id.changePasswordButton);
-        oldPassword = oldPasswordEditText.getText().toString();
-        newPassword = newPasswordEditText.getText().toString();
-        confirmNewPassword = newPasswordEditText.getText().toString();
+
         builder.setTitle("Change Password");
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                oldPassword = oldPasswordEditText.getText().toString();
+                newPassword = newPasswordEditText.getText().toString();
+                confirmNewPassword = newPasswordEditText.getText().toString();
                 if (!TextUtils.isEmpty(oldPassword) && !TextUtils.isEmpty(newPassword)
                         && !TextUtils.isEmpty(confirmNewPassword)) {
-
                     validateCurrentPassword(oldPassword, newPassword, confirmNewPassword);
-                     Toast.makeText(getActivity().getApplicationContext(), "Password Changed Successfully"
-                            , Toast.LENGTH_LONG).show();
-                    helper.signout();
-                    helper.goToActivity(LoginActivity.class);
+
+
+                   /* helper.signout();
+                    helper.goToActivity(LoginActivity.class);*/
 
                 }
                 else{
@@ -114,7 +114,8 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
                         Log.d(TAG, "Authentication validated to change password");
 
                             user.updatePassword(confirmNewPassword);
-
+                        Toast.makeText(getActivity().getApplicationContext(), "Password Changed Successfully"
+                                , Toast.LENGTH_LONG).show();
                         }
                      else {
                         //authentication failed
