@@ -217,10 +217,10 @@ public class MoistureActivity extends AppCompatActivity {
         String highMoisture=highMoistureEditText.getText().toString();
         //check if the ranges are empty or not
         if (!TextUtils.isEmpty(lowMoisture) && !TextUtils.isEmpty(highMoisture)) {
-            if (Double.parseDouble(lowMoisture.toString()) < Double.parseDouble(highMoisture.toString())) {
+            if (Double.parseDouble(lowMoisture) < Double.parseDouble(highMoisture)) {
 
-                MoistureRange moistureTempRange = new MoistureRange(lowMoisture, highMoisture);
-                databaseRange.child("Moisture").setValue(moistureTempRange);
+                databaseRange.child("SoilSensor1").child("Low").setValue(Double.parseDouble(lowMoisture));
+                databaseRange.child("SoilSensor1").child("High").setValue(Double.parseDouble(highMoisture));
                 Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
             } else {
@@ -233,14 +233,14 @@ public class MoistureActivity extends AppCompatActivity {
     }
 
     void retrieveRange(){
-        DatabaseReference moistureRange = databaseRange.child("Moisture");
+        DatabaseReference moistureRange = databaseRange.child("SoilSensor1");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Double highRange = Helper.retrieveRange("highMoistureValue", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
                 highMoistureEditText.setText(highRange.toString());
-                Double lowRange = Helper.retrieveRange("lowMoistureValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
                 lowMoistureEditText.setText(lowRange.toString());
 
                 if (!((ghMoisture > lowRange) && (ghMoisture< highRange))) {

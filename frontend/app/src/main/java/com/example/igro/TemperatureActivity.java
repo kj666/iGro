@@ -279,14 +279,14 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference tempRange = databaseRange.child("Temperature");
+        DatabaseReference tempRange = databaseRange.child("TemperatureSensor1");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Helper.retrieveRange("lowTempValue", dataSnapshot);
-                Double highRange = Helper.retrieveRange("highTempValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
 
                 lowTempEditText.setText(lowRange.toString());
                 highTempEditText.setText(highRange.toString());
@@ -498,18 +498,20 @@ public class TemperatureActivity extends AppCompatActivity {
 
     public void setTempRange(){
         DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
-        String lowTemp=lowTempEditText.getText().toString();
-        String highTemp=highTempEditText.getText().toString();
-//check if the ranges are empty or not
-        if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
- //theck if input is numerical
-            if((lowTemp.matches(".*[0-999].*"))&&(highTemp.matches(".*[0-999].*"))){
-  //Check if Lower limit is < upper limit
-                if (Double.parseDouble(lowTemp) < Double.parseDouble(highTemp)) {
 
-                TempRange temperatureTempRange = new TempRange(lowTemp, highTemp);
-                databaseRange.child("Temperature").setValue(temperatureTempRange);
-                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+        String lowTemp = lowTempEditText.getText().toString();
+        String highTemp = highTempEditText.getText().toString();
+
+        //check if the ranges are empty or not
+        if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
+
+            //theck if input is numerical
+            if((lowTemp.matches(".*[0-999].*"))&&(highTemp.matches(".*[0-999].*"))){
+                //Check if Lower limit is < upper limit
+                if (Double.parseDouble(lowTemp) < Double.parseDouble(highTemp)) {
+                    databaseRange.child("TemperatureSensor1").child("Low").setValue(Double.parseDouble(lowTemp));
+                    databaseRange.child("TemperatureSensor1").child("High").setValue(Double.parseDouble(highTemp));
+                    Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "", Toast.LENGTH_LONG).show();
                 }

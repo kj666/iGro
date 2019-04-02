@@ -32,6 +32,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.example.igro.Models.Users;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +41,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.rpc.Help;
 
 import org.json.JSONObject;
@@ -48,7 +52,6 @@ import java.util.EventListener;
 public class MainActivity extends AppCompatActivity {
 
     private static final String MAIN_LOG_TAG = "MAIN_ACTIVITY_LOG_TAG";
-
     //Temperature layout item
     private Button temperatureTitleButton;
     private Button temperatureNumberButton;
@@ -94,9 +97,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
 //        currentUser = helper.checkAuthentication();
 //        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            //get token
+            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                @Override
+                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                    if(!task.isSuccessful()){
+                        Log.w(MAIN_LOG_TAG, "getInstanceId failed", task.getException());
+                        return;
+                    }
+                    //Get new instance ID token
+                    String token = task.getResult().getToken();
+
+                    //toast
+                    String msg = getString(R.string.msg_token_fmt, token);
+                    Log.d(MAIN_LOG_TAG, msg);
+                    Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                }
+            });
             // current user validated
             helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
 //            helper.checkAuthentication();
@@ -236,12 +257,12 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 Double lowRange, highRange;
-                if(dataSnapshot.child("lowTempValue").getValue() != null)
-                    lowRange = Double.parseDouble(dataSnapshot.child("lowTempValue").getValue().toString());
+                if(dataSnapshot.child("Low").getValue() != null)
+                    lowRange = Double.parseDouble(dataSnapshot.child("Low").getValue().toString());
                 else
                     lowRange = 0.0;
-                if(dataSnapshot.child("highTempValue").getValue() != null)
-                    highRange = Double.parseDouble(dataSnapshot.child("highTempValue").getValue().toString());
+                if(dataSnapshot.child("High").getValue() != null)
+                    highRange = Double.parseDouble(dataSnapshot.child("High").getValue().toString());
                 else
                     highRange = 5.0;
 
@@ -259,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        DBrange.child("Temperature").addValueEventListener(eventListener);
+        DBrange.child("TemperatureSensor1").addValueEventListener(eventListener);
 
     }
     //set the color of the humidity button
@@ -268,14 +289,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Double lowRange, highRange;
-                if(dataSnapshot.child("lowHumidityValue").getValue() != null) {
-                    lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
+                if(dataSnapshot.child("Low").getValue() != null) {
+                    lowRange = Double.parseDouble(dataSnapshot.child("Low").getValue().toString());
                 }
                 else
                     lowRange = 0.0;
 
-                if(dataSnapshot.child("highHumidityValue").getValue() != null) {
-                    highRange = Double.parseDouble(dataSnapshot.child("highHumidityValue").getValue().toString());
+                if(dataSnapshot.child("High").getValue() != null) {
+                    highRange = Double.parseDouble(dataSnapshot.child("High").getValue().toString());
                 }
                 else
                     highRange = 5.0;
@@ -294,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        DBrange.child("Humidity").addValueEventListener(eventListener);
+        DBrange.child("HumiditySensor1").addValueEventListener(eventListener);
     }
     //set the color of the humidity button
     void moistColorSet(final Double value){
@@ -302,12 +323,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Double lowRange, highRange;
-                if(dataSnapshot.child("lowMoistureValue").getValue() != null)
-                   lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
+                if(dataSnapshot.child("Low").getValue() != null)
+                   lowRange = Double.parseDouble(dataSnapshot.child("Low").getValue().toString());
                 else
                     lowRange = 0.0;
-                if(dataSnapshot.child("highMoistureValue").getValue() != null)
-                    highRange = Double.parseDouble(dataSnapshot.child("highMoistureValue").getValue().toString());
+                if(dataSnapshot.child("High").getValue() != null)
+                    highRange = Double.parseDouble(dataSnapshot.child("High").getValue().toString());
                 else
                     highRange = 5.0;
                 if (!((value > lowRange) && (value < highRange)))
@@ -324,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        DBrange.child("Moisture").addValueEventListener(eventListener);
+        DBrange.child("SoilSensor1").addValueEventListener(eventListener);
     }
 
     //set the color of the humidity button
@@ -333,8 +354,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Helper.retrieveRange("lowUvValue", dataSnapshot);
-                Double highRange = Helper.retrieveRange("highUvValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
 
                 if (!((value > lowRange) && (value < highRange)))
                     uvNumberButton.setTextColor(Color.RED);
@@ -349,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        DBrange.child("UV").addValueEventListener(eventListener);
+        DBrange.child("UVSensor1").addValueEventListener(eventListener);
     }
 
     void greenhouseStatus(){

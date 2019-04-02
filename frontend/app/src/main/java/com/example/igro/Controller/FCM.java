@@ -11,8 +11,12 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.igro.HumidityActivity;
 import com.example.igro.MainActivity;
+import com.example.igro.MoistureActivity;
 import com.example.igro.R;
+import com.example.igro.TemperatureActivity;
+import com.example.igro.UvIndexActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -44,7 +48,7 @@ public class FCM extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTag());
         }
     }
 
@@ -67,18 +71,35 @@ public class FCM extends FirebaseMessagingService {
         Log.d(TAG, "Long lived task is done.");
     }
 
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+    private void sendNotification(String notifTitle, String messageBody, String activity) {
+
+        Intent intent = null;
+        if(activity.equals("HumiditySensor1")) {
+            intent = new Intent(this, HumidityActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        else if(activity.equals("SoilSensor1")) {
+            intent = new Intent(this, MoistureActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        else if(activity.equals("TemperatureSensor1")) {
+            intent = new Intent(this, TemperatureActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        else if(activity.equals("UVSensor1")) {
+            intent = new Intent(this, UvIndexActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
+
 
         String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.igro_logo)
-                        .setContentTitle(getString(R.string.fcm_message))
+                        .setContentTitle(notifTitle)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)

@@ -241,8 +241,8 @@ public class UvIndexActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Helper.retrieveRange("lowUvValue", dataSnapshot);
-                Double highRange = Helper.retrieveRange("highUvValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
 
                 lowUvEditText.setText(lowRange.toString());
                 highUvEditText.setText(highRange.toString());
@@ -259,7 +259,7 @@ public class UvIndexActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
 
-        databaseRange.child("UV").addValueEventListener(eventListener);
+        databaseRange.child("UVSensor1").addValueEventListener(eventListener);
 
     }
 
@@ -274,8 +274,8 @@ public class UvIndexActivity extends AppCompatActivity {
  //Check if Lower limit is < upper limit
                 if (Double.parseDouble(lowUv) < Double.parseDouble(highUv)) {
 
-                    UvRange UvRange = new UvRange(lowUv, highUv);
-                    databaseRange.child("UV").setValue(UvRange);
+                    databaseRange.child("UVSensor1").child("Low").setValue(Double.parseDouble(lowUv));
+                    databaseRange.child("UVSensor1").child("High").setValue(Double.parseDouble(highUv));
                     Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
                 } else {
