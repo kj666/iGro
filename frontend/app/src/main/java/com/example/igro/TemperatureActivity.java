@@ -29,9 +29,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.Range.TempRange;
 import com.example.igro.Models.SensorData.SensorDataValue;
-import com.example.igro.Models.Users;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -174,6 +172,9 @@ public class TemperatureActivity extends AppCompatActivity {
             case R.id.polling_menu:
                 openDialog();
                 return true;
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -279,14 +280,14 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference tempRange = databaseRange.child("Temperature");
+        DatabaseReference tempRange = databaseRange.child("TemperatureSensor1");
 
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Helper.retrieveRange("lowTempValue", dataSnapshot);
-                Double highRange = Helper.retrieveRange("highTempValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
 
                 lowTempEditText.setText(lowRange.toString());
                 highTempEditText.setText(highRange.toString());
@@ -499,18 +500,20 @@ public class TemperatureActivity extends AppCompatActivity {
 
     public void setTempRange(){
         DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
-        String lowTemp=lowTempEditText.getText().toString();
-        String highTemp=highTempEditText.getText().toString();
-//check if the ranges are empty or not
-        if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
- //theck if input is numerical
-            if((lowTemp.matches(".*[0-999].*"))&&(highTemp.matches(".*[0-999].*"))){
-  //Check if Lower limit is < upper limit
-                if (Double.parseDouble(lowTemp) < Double.parseDouble(highTemp)) {
 
-                TempRange temperatureTempRange = new TempRange(lowTemp, highTemp);
-                databaseRange.child("Temperature").setValue(temperatureTempRange);
-                Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+        String lowTemp = lowTempEditText.getText().toString();
+        String highTemp = highTempEditText.getText().toString();
+
+        //check if the ranges are empty or not
+        if (!TextUtils.isEmpty(lowTemp) && !TextUtils.isEmpty(highTemp)) {
+
+            //theck if input is numerical
+            if((lowTemp.matches(".*[0-999].*"))&&(highTemp.matches(".*[0-999].*"))){
+                //Check if Lower limit is < upper limit
+                if (Double.parseDouble(lowTemp) < Double.parseDouble(highTemp)) {
+                    databaseRange.child("TemperatureSensor1").child("Low").setValue(Double.parseDouble(lowTemp));
+                    databaseRange.child("TemperatureSensor1").child("High").setValue(Double.parseDouble(highTemp));
+                    Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "", Toast.LENGTH_LONG).show();
                 }
@@ -556,9 +559,16 @@ public class TemperatureActivity extends AppCompatActivity {
             return numberToBeConverted.toString();
         }
     }
+    // dialog to display the polling dialog
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+    // dialog to display the change password fragment
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
 }
 

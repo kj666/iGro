@@ -29,7 +29,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.Range.HumidityRange;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -154,6 +153,9 @@ public class HumidityActivity extends AppCompatActivity {
             case R.id.polling_menu:
                 openDialog();
                 return true;
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
 
 
         }
@@ -249,10 +251,10 @@ public class HumidityActivity extends AppCompatActivity {
         //check if the ranges are empty or not
         if (!TextUtils.isEmpty(lowHumidity) && !TextUtils.isEmpty(highHumidity)) {
 
-            if (Double.parseDouble(lowHumidity.toString()) < Double.parseDouble(highHumidity.toString())) {
+            if (Double.parseDouble(lowHumidity) < Double.parseDouble(highHumidity)) {
 
-                    HumidityRange humidityRange = new HumidityRange(lowHumidity, highHumidity);
-                    databaseRange.child("Humidity").setValue(humidityRange);
+                    databaseRange.child("HumiditySensor1").child("Low").setValue(Double.parseDouble(lowHumidity));
+                    databaseRange.child("HumiditySensor1").child("High").setValue( Double.parseDouble(highHumidity));
                     Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
                 } else {
@@ -283,13 +285,13 @@ public class HumidityActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference humidityRange = databaseRange.child("Humidity");
+        DatabaseReference humidityRange = databaseRange.child("HumiditySensor1");
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Helper.retrieveRange("lowHumidityValue", dataSnapshot);
-                Double highRange = Helper.retrieveRange("highHumidityValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
                 highHumEditText.setText(highRange.toString());
                 lowHumEditText.setText(lowRange.toString());
 
@@ -308,7 +310,6 @@ public class HumidityActivity extends AppCompatActivity {
         humidityRange.addValueEventListener(eventListener);
 
     }
-
 
     private void humidSwitchStateFromRecord() {
 
@@ -446,9 +447,16 @@ public class HumidityActivity extends AppCompatActivity {
                 });
         queue.add(humidityRequest);
     }
+    // dialog to display the polling dialog
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+    // dialog to display the change password fragment
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
 }
 

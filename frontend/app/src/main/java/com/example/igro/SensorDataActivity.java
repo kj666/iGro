@@ -172,6 +172,10 @@ public class SensorDataActivity extends AppCompatActivity {
                 openDialog();
                 return true;
 
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
+
 
             case R.id.tableGraph_switch:
                 if(tableMode) {
@@ -197,9 +201,15 @@ public class SensorDataActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
 
     }
-
+    // dialog to display the polling dialog
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+    // dialog to display the change password fragment
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
 }
