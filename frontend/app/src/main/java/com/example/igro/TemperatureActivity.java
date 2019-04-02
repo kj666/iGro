@@ -60,7 +60,7 @@ public class TemperatureActivity extends AppCompatActivity {
     //initialize the layout fields
     Button tempHistoryButton;
     double tempDegree;
-
+    TextView tempLastUpdatedTextView;
     Button heaterUseHistoryButton;
     Button setRangeTempButton;
     EditText lowTempEditText;
@@ -324,6 +324,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
         outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
         greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
+        tempLastUpdatedTextView=findViewById(R.id.tempLastUpdatedTextview);
 
         queue = Volley.newRequestQueue(this);
         requestWeather();
@@ -524,8 +525,11 @@ public class TemperatureActivity extends AppCompatActivity {
 
         }
     }
+  // function to set the last time the temperature sensor was updated
+    private void setTempLastUpdatedTextView(){
+        DatabaseReference databaseLastUpdate = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data").child("TemperatureSensor1");
 
-
+    }
     /*
     * Function that will convert all necessary parameters between celsius and fahrenheit
      */

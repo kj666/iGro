@@ -336,4 +336,17 @@
         app:layout_constraintStart_toEndOf="@+id/lowTempEditText"
         app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
 
+    <TextView
+        android:id="@+id/tempLastUpdatedTextview"
+        android:layout_width="104dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/logoTopImageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
