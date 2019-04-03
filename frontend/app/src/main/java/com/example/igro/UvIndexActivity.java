@@ -215,14 +215,14 @@ public class UvIndexActivity extends AppCompatActivity {
 
     //Initialization
     void initializeUI(){
-        uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
-        uvSwitch = (Switch)findViewById(R.id.uvSwitch);
+        uvControlTextView = findViewById(R.id.uvControlTextView);
+        uvSwitch = findViewById(R.id.uvSwitch);
         uvSwitch.setClickable(true);
 
-        lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
-        highUvEditText = (EditText)findViewById(R.id.highUvEditText);
-        uvTextView = (TextView)findViewById(R.id.ghUvTextView);
-        uvLastUpdatedTextView=(TextView)findViewById(R.id.uvLastUpdatedTextview);
+        lowUvEditText = findViewById(R.id.lowUvEditText);
+        highUvEditText = findViewById(R.id.highUvEditText);
+        uvTextView = findViewById(R.id.ghUvTextView);
+        uvLastUpdatedTextView=findViewById(R.id.uvLastUpdatedTextview);
 
         outdoorUVTextView = findViewById(R.id.outdoorUvTextView);
         queue = Volley.newRequestQueue(this);
@@ -231,9 +231,9 @@ public class UvIndexActivity extends AppCompatActivity {
         uvHistoryButton = findViewById(R.id.uvHistoryButton);
         lightUseButton = findViewById(R.id.lightUseHistoryButton);
         //indoor uv
-        ghUvTextView = (TextView) findViewById(R.id.ghUvTextView);
+        ghUvTextView =  findViewById(R.id.ghUvTextView);
         //set range button
-        setUvRange = (Button) findViewById(R.id.setUvRange);
+        setUvRange = findViewById(R.id.setUvRange);
     }
 
 

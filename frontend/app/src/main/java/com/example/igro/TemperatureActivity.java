@@ -317,15 +317,15 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
     void initializeUI(){
-        tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
-        heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
-        tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
-        temperatureSwitch = (Switch)findViewById(R.id.tempSwitch);
+        tempHistoryButton = findViewById(R.id.tempHistoriyButton);
+        heaterUseHistoryButton = findViewById(R.id.heaterUseHistoryButton);
+        tempControlTextView = findViewById(R.id.tempControlTextView);
+        temperatureSwitch = findViewById(R.id.tempSwitch);
 
-        greenhouseTemperatureTextView=(TextView)findViewById(R.id.ghTempTextView);
+        greenhouseTemperatureTextView=findViewById(R.id.ghTempTextView);
         //Get the values from the user
-        lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
-        highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+        lowTempEditText = findViewById(R.id.lowTempEditText);
+        highTempEditText = findViewById(R.id.highTempEditText);
 
         outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
         greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
