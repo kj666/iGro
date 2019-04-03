@@ -9,10 +9,19 @@
     <TextView
         android:id="@+id/defPopUp"
         android:layout_width="283dp"
-        android:layout_height="127dp"
+        android:layout_height="294dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="TextView"
+        android:scrollHorizontally="false"
+        android:text=
+            "EXCELLENT = All the parameters are within the range.
+
+GOOD = 3 parameters are within range and 1 is out of the range.
+
+POOR = 2 parameters are within the rabge and 1 is out of the range.
+
+CRITICAL = 3 or more parameters are out of the range.
+              "
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

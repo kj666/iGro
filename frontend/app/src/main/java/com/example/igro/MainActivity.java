@@ -86,7 +86,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         GHstatus = (Button) findViewById(R.id.definationButton);
-        DefPopUp = (TextView) findViewById(R.id.defPopUp);
+
         // StatusDef = findViewById(R.id.conditionDefination);
 //        currentUser = helper.checkAuthentication();
 //        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -371,11 +371,8 @@ dialog_popup.show(getSupportFragmentManager(),"Dialog_Popup");
 
         if(count==4){GHstatus.setText("CRITICAL");}
 
-        if (count==0){DefPopUp.setText("EXCELLENT = all the parameters are within the selected range");}
-        if (count==1){DefPopUp.setText("GOOD = 3 parameters are within the selected range and 1 is out of the range ");}
-        if (count==2){DefPopUp.setText("POOR = 2 the parameters are within the selected range and 2 are out of range");}
-       if (count==3||count==4){DefPopUp.setText("CRITICAL = 3 or more than 3 parameteres are out of Range");}
-       
+
+
         //if (count==0){DefPopUp.setText(" CRITICAL = 3 or more than 3 parameteres are out of Range");}
        // if (count==0){StatusDef.setText("EXCELLENT = all the parameters are within the selected range");}
         //if (count==1){StatusDef.setText("GOOD = 3 parameters are within the selected range and 1 is out of the range ");}
