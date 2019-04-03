@@ -63,6 +63,7 @@ public class UvIndexActivity extends AppCompatActivity {
     EditText lowUvEditText;
     EditText highUvEditText;
     TextView uvControlTextView;
+    TextView uvLastUpdatedTextView;
     Switch uvSwitch;
     TextView uvTextView;
     Button uvHistoryButton;
@@ -70,6 +71,7 @@ public class UvIndexActivity extends AppCompatActivity {
     Button setUvRange;
     TextView ghUvTextView;
     Double ghUv;
+
 
     private FirebaseUser currentuser;
     String currentuserID;
@@ -213,13 +215,14 @@ public class UvIndexActivity extends AppCompatActivity {
 
     //Initialization
     void initializeUI(){
-        uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
-        uvSwitch = (Switch)findViewById(R.id.uvSwitch);
+        uvControlTextView = findViewById(R.id.uvControlTextView);
+        uvSwitch = findViewById(R.id.uvSwitch);
         uvSwitch.setClickable(true);
 
-        lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
-        highUvEditText = (EditText)findViewById(R.id.highUvEditText);
-        uvTextView = (TextView)findViewById(R.id.ghUvTextView);
+        lowUvEditText = findViewById(R.id.lowUvEditText);
+        highUvEditText = findViewById(R.id.highUvEditText);
+        uvTextView = findViewById(R.id.ghUvTextView);
+        uvLastUpdatedTextView=findViewById(R.id.uvLastUpdatedTextview);
 
         outdoorUVTextView = findViewById(R.id.outdoorUvTextView);
         queue = Volley.newRequestQueue(this);
@@ -228,9 +231,9 @@ public class UvIndexActivity extends AppCompatActivity {
         uvHistoryButton = findViewById(R.id.uvHistoryButton);
         lightUseButton = findViewById(R.id.lightUseHistoryButton);
         //indoor uv
-        ghUvTextView = (TextView) findViewById(R.id.ghUvTextView);
+        ghUvTextView =  findViewById(R.id.ghUvTextView);
         //set range button
-        setUvRange = (Button) findViewById(R.id.setUvRange);
+        setUvRange = findViewById(R.id.setUvRange);
     }
 
 
@@ -388,6 +391,9 @@ public class UvIndexActivity extends AppCompatActivity {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     uvTextView.setText(new DecimalFormat("####0.00").format(sensorDataValue.getValue())+"");
                     ghUv = Double.parseDouble(uvTextView.getText().toString());
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    uvLastUpdatedTextView.setText("Sensor Last Updated on "+readableTime);
                 }
             }
             @Override

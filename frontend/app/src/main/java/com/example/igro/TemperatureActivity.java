@@ -44,7 +44,9 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 // TODO 2019-03-20
 // change the tempswitch to something more appropriate
@@ -58,7 +60,7 @@ public class TemperatureActivity extends AppCompatActivity {
     //initialize the layout fields
     Button tempHistoryButton;
     double tempDegree;
-
+    TextView tempLastUpdatedTextView;
     Button heaterUseHistoryButton;
     Button setRangeTempButton;
     EditText lowTempEditText;
@@ -74,6 +76,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
     // create database reference for ranges
 
+    private List<SensorDataValue> tempDataList = new ArrayList<>();
     private FirebaseUser currentUser;
     String currentUserID;
     String currentUserName;
@@ -312,19 +315,21 @@ public class TemperatureActivity extends AppCompatActivity {
 
     }
 
-    void initializeUI(){
-        tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
-        heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
-        tempControlTextView = (TextView)findViewById(R.id.tempControlTextView);
-        temperatureSwitch = (Switch)findViewById(R.id.tempSwitch);
 
-        greenhouseTemperatureTextView=(TextView)findViewById(R.id.ghTempTextView);
+    void initializeUI(){
+        tempHistoryButton = findViewById(R.id.tempHistoriyButton);
+        heaterUseHistoryButton = findViewById(R.id.heaterUseHistoryButton);
+        tempControlTextView = findViewById(R.id.tempControlTextView);
+        temperatureSwitch = findViewById(R.id.tempSwitch);
+
+        greenhouseTemperatureTextView=findViewById(R.id.ghTempTextView);
         //Get the values from the user
-        lowTempEditText = (EditText)findViewById(R.id.lowTempEditText);
-        highTempEditText = (EditText)findViewById(R.id.highTempEditText);
+        lowTempEditText = findViewById(R.id.lowTempEditText);
+        highTempEditText = findViewById(R.id.highTempEditText);
 
         outdoorTemperatureTextView = findViewById(R.id.outdoorTempTextView);
         greenhouseTemperatureTextView = findViewById(R.id.ghTempTextView);
+        tempLastUpdatedTextView=findViewById(R.id.tempLastUpdatedTextview);
 
         queue = Volley.newRequestQueue(this);
         requestWeather();
@@ -450,12 +455,16 @@ public class TemperatureActivity extends AppCompatActivity {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     greenhouseTemperatureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) +"");
                     tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    tempLastUpdatedTextView.setText("Sensor last updated "+readableTime);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
+
         db.child("TemperatureSensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
@@ -527,7 +536,6 @@ public class TemperatureActivity extends AppCompatActivity {
 
         }
     }
-
 
     /*
     * Function that will convert all necessary parameters between celsius and fahrenheit
