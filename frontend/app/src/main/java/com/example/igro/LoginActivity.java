@@ -91,27 +91,6 @@ public class LoginActivity extends AppCompatActivity {
                     final FirebaseUser validUser = mAuth.getCurrentUser();
                     Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
 
-                    //get token
-                    FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                            if(!task.isSuccessful()){
-                                Log.w(TAG, "getInstanceId failed", task.getException());
-                                return;
-                            }
-                            //Get new instance ID token
-                            String token = task.getResult().getToken();
-
-                            DatabaseReference userDB = FirebaseDatabase.getInstance().getReference("Users/"+validUser.getUid());
-                            userDB.child("NotificationToken").setValue(token);
-
-                            //toast
-                            String msg = getString(R.string.msg_token_fmt, token);
-                            Log.d(TAG, msg);
-                            Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
                     //Use function in Controller.Helper to go to dashboard activity
                     helper.goToActivity(MainActivity.class);
                 } else {
