@@ -53,7 +53,8 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     List<ApplianceControlEvents> applianceList = new ArrayList<>();
     protected Integer recordNumberEntered = 20;
     protected String applianceTypePassed;
-    public Integer recordsEntered;
+    public int recordEntered=5;
+    String recordNumberEnteredStr = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,32 +92,6 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         // depending on where the intent comes from, the extra determines which appliance data to load.
         loadApplianceListByApplianceType(recordNumberEntered);
 
-        //check for number of records entered by the user
-        recordLimitEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String recordNumberEnteredStr = recordLimitEditText.getText().toString();
-
-                // check the number of records entered by the user & set to record Number Entered
-                recordNumberEntered = numberOfRecordsEntered(recordNumberEnteredStr);
-            }
-        });
-
-
-// reload when refresh button is hit
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //get the user input limit, check if the input is numerical;...
-                String recordNumberEnteredStr = recordLimitEditText.getText().toString();
-                recordNumberEntered = numberOfRecordsEntered(recordNumberEnteredStr);
-
-                // depending on where the intent comes from, the extra determines which appliance data to load.
-                //if the intent extra comes from Temperature Activity, load heater data
-                loadApplianceListByApplianceType(recordNumberEntered);
-            }
-        });
-
     }
 
 
@@ -136,31 +111,11 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         recordLimitEditText = (EditText)findViewById(R.id.recordLimitEditText);
         refreshButton = (Button)findViewById(R.id.refreshButton);
 
-        //check for number of records entered by the user
-        recordLimitEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //retreave user record limit as string
-                String recordNumberEnteredStr = recordLimitEditText.getText().toString();
-                // check the number of records entered by the user & set to record Number Entered
-                recordNumberEntered = numberOfRecordsEntered(recordNumberEnteredStr);
-            }
-        });
-
+ // set listener for number of records edti text box
+        recordNumberEditTextListener();
 
 // reload when refresh button is hit
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //get the user input limit, check if the input is numerical;...
-                String recordNumberEnteredStr = recordLimitEditText.getText().toString();
-                recordNumberEntered = numberOfRecordsEntered(recordNumberEnteredStr);
-
-                // depending on where the intent comes from, the extra determines which appliance data to load.
-                //if the intent extra comes from Temperature Activity, load heater data
-                loadApplianceListByApplianceType(recordNumberEntered);
-            }
-        });
+        refreshButtonListener();
     }
 
     @Override
@@ -183,30 +138,11 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
         loadApplianceTypeFromSharedPrefs();
 
-        //check for number of records entered by the user
-        recordLimitEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String recordNumberEnteredStr = recordLimitEditText.getText().toString();
-                numberOfRecordsEntered(recordNumberEnteredStr);
-            }
-        });
+// set listener for number of records edti text box
+        recordNumberEditTextListener();
 
-
-// reload when refresh button is hit
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //get the user input limit, check if the input is numerical;...
-                String recordNumberEnteredStr = recordLimitEditText.getText().toString();
-                recordNumberEntered = numberOfRecordsEntered(recordNumberEnteredStr);
-
-                // depending on where the intent comes from, the extra determines which appliance data to load.
-                //if the intent extra comes from Temperature Activity, load heater data
-                loadApplianceListByApplianceType(recordNumberEntered);
-            }
-        });
+// set listener for refresh button to load the new number of records
+        refreshButtonListener();
     }
 
 
@@ -244,9 +180,47 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
                 loadLightsOnOffList(records);
                 break;
             default:
-                Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG).show();
+                errorToast();
                 break;
         }
+    }
+
+    protected void recordNumberEditTextListener(){
+        //check for number of records entered by the user
+        recordLimitEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //retreave user record limit as string
+                recordNumberEnteredStr = recordLimitEditText.getEditableText().toString();
+                // check the number of records entered by the user & set to record Number Entered
+                recordNumberEntered = checkNumberOfRecordsEntered(recordNumberEnteredStr);
+                // store last entered text in shared preferences file
+                SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
+                SharedPreferences.Editor editor = applianceTypeSharedPrefs.edit();
+                editor.putString(getString(R.string.NumberOfRecordsStr), recordNumberEnteredStr);
+                editor.apply();
+                loadApplianceListByApplianceType(recordNumberEntered);
+                refreshButtonListener();
+            }
+        });
+
+    }
+
+    protected void refreshButtonListener(){
+        // reload when refresh button is hit
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //getting number of records entered from shared prefs
+                SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
+                String recordNumberFromSharedPrefs = applianceTypeSharedPrefs.getString(getString(R.string.NumberOfRecordsStr), recordNumberEntered.toString());
+
+                loadApplianceListByApplianceType(checkNumberOfRecordsEntered(recordNumberFromSharedPrefs));
+                recordNumberEditTextListener();
+            }
+        });
     }
 
     protected void loadApplianceTypeFromSharedPrefs(){
@@ -257,15 +231,17 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     }
 
     // function definition for number of records entered by the user
-    protected int numberOfRecordsEntered(String recordsEnteredStr) {
+    protected int checkNumberOfRecordsEntered(String recordsEnteredStr) {
 
+        // get the text from the Edit text firld
+        String numberEnteredStr = recordLimitEditText.getText().toString();
         //check if the input is are empty or not
         if (!TextUtils.isEmpty(recordsEnteredStr)) {
             //theck if input is numerical
             if (recordsEnteredStr.matches(".*[0-999].*")) {
                 //Check if Lower limit is < upper limit
                 if (Integer.parseInt(recordsEnteredStr) < 1000) {
-                    recordNumberEntered = Integer.parseInt(recordsEnteredStr);
+                    recordEntered = Integer.parseInt(numberEnteredStr);
 
                 } else {
                     numberOfRecordsError();
@@ -278,7 +254,8 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         } else {
             recordNumberEntered = 20;
         }
-        return recordNumberEntered;
+        recordNumberEntered = recordEntered;
+        return recordEntered;
     }
 
     // function definition for heater records
@@ -318,6 +295,11 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             }
         });
 
+// set listener for number of records edti text box
+        recordNumberEditTextListener();
+
+// reload when refresh button is hit
+        refreshButtonListener();
 
     }
 
@@ -360,6 +342,11 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             }
         });
 
+// set listener for number of records edti text box
+        recordNumberEditTextListener();
+
+// reload when refresh button is hit
+        refreshButtonListener();
 
     }
 
@@ -400,6 +387,11 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             }
         });
 
+// set listener for number of records edti text box
+        recordNumberEditTextListener();
+
+// reload when refresh button is hit
+        refreshButtonListener();
 
     }
 
@@ -441,7 +433,11 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             }
         });
 
+// set listener for number of records edti text box
+        recordNumberEditTextListener();
 
+// reload when refresh button is hit
+        refreshButtonListener();
     }
 
 // set up menu
