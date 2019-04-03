@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -38,7 +39,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.EventListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     private static final String MAIN_LOG_TAG = "MAIN_ACTIVITY_LOG_TAG";
 
@@ -59,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
     protected SharedPreferences sharedPreferences;
 
     //Greenhouse status textview
-    private TextView ghStatus;
+    public TextView DefPopUp;
+    private Button GHstatus;
+
 
     private Helper helper;
 
@@ -82,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        GHstatus = (Button) findViewById(R.id.definationButton);
 
+        // StatusDef = findViewById(R.id.conditionDefination);
 //        currentUser = helper.checkAuthentication();
 //        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -96,94 +101,103 @@ public class MainActivity extends AppCompatActivity {
             editor.putString(getString(R.string.CurrentUserID), currentUserID);
             editor.apply();
 
-        //Initialize all the UI elements
-        initializeUI();
-
-        userWelcomeMessage = findViewById(R.id.welcomeMessageText);
-        String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
-        userWelcomeMessage.setText(welcomeMessage);
-        cityWeatherMessage = findViewById(R.id.cityWeatherTextView);
-        queue = Volley.newRequestQueue(this);
-        requestWeather();
-
-        retriveUserData();
+            //Initialize all the UI elements
+            initializeUI();
 
 
-        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                celsiusFahrenheitSwitch();
-            }
-        });
+            userWelcomeMessage = findViewById(R.id.welcomeMessageText);
+            String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
+            userWelcomeMessage.setText(welcomeMessage);
+            cityWeatherMessage = findViewById(R.id.cityWeatherTextView);
+            queue = Volley.newRequestQueue(this);
+            requestWeather();
 
-        //opening the Temperature view when the temperature text is clicked
-        temperatureTitleButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick (View v){
-                helper.goToActivity(TemperatureActivity.class);
-            }
-        });
+            retriveUserData();
 
-        //opening the Temperature view when the temperature number is clicked
-        temperatureNumberButton.setOnClickListener(new View.OnClickListener()
+            GHstatus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Dialog_Popup dialog_popup = new Dialog_Popup();
+                    dialog_popup.show(getSupportFragmentManager(),"Dialog_Popup");
+                }
+            });
 
-        {
-            @Override
-            public void onClick (View v){
-                helper.goToActivity(TemperatureActivity.class);
-            }
-        });
 
-        //opening the Uv index view  when the uvTitleButton text is clicked
-        uvTitleButton.setOnClickListener(new View.OnClickListener()
+            celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    celsiusFahrenheitSwitch();
+                }
+            });
 
-        {
-            @Override
-            public void onClick (View v){
-                helper.goToActivity(UvIndexActivity.class);
-            }
-        });
+            //opening the Temperature view when the temperature text is clicked
+            temperatureTitleButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(TemperatureActivity.class);
+                }
+            });
 
-        //opening the uvTitleButton view when the uvTitleButton number is clicked
-        uvNumberButton.setOnClickListener(new View.OnClickListener()
+            //opening the Temperature view when the temperature number is clicked
+            temperatureNumberButton.setOnClickListener(new View.OnClickListener()
 
-        {
-            @Override
-            public void onClick (View v){
-                helper.goToActivity(UvIndexActivity.class);
-            }
-        });
-        humidityTitleButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(TemperatureActivity.class);
+                }
+            });
 
-        {
-            @Override
-            public void onClick (View v){
-                helper.goToActivity(HumidityActivity.class);
-            }
-        });
-        humidityNumberButton.setOnClickListener(new View.OnClickListener()
+            //opening the Uv index view  when the uvTitleButton text is clicked
+            uvTitleButton.setOnClickListener(new View.OnClickListener()
 
-        {
-            @Override
-            public void onClick (View v){
-                helper.goToActivity(HumidityActivity.class);
-            }
-        });
-        moistureTitleButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick (View v2){
-                helper.goToActivity(MoistureActivity.class);
-            }
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(UvIndexActivity.class);
+                }
+            });
 
-        });
-        moistureNumberButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick (View v){
-                helper.goToActivity(MoistureActivity.class);
-            }
-        });
+            //opening the uvTitleButton view when the uvTitleButton number is clicked
+            uvNumberButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(UvIndexActivity.class);
+                }
+            });
+            humidityTitleButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(HumidityActivity.class);
+                }
+            });
+            humidityNumberButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(HumidityActivity.class);
+                }
+            });
+            moistureTitleButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick (View v2){
+                    helper.goToActivity(MoistureActivity.class);
+                }
+
+            });
+            moistureNumberButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(MoistureActivity.class);
+                }
+            });
         } else {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
@@ -235,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     temperatureNumberButton.setTextColor(Color.GREEN);
 
-             greenhouseStatus();
+                greenhouseStatus();
             }
 
             @Override
@@ -286,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Double lowRange, highRange;
                 if(dataSnapshot.child("lowMoistureValue").getValue() != null)
-                   lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
+                    lowRange = Double.parseDouble(dataSnapshot.child("lowMoistureValue").getValue().toString());
                 else
                     lowRange = 0.0;
                 if(dataSnapshot.child("highMoistureValue").getValue() != null)
@@ -336,18 +350,37 @@ public class MainActivity extends AppCompatActivity {
 
     void greenhouseStatus(){
 
-           int count=0;
-           if(temperatureNumberButton.getCurrentTextColor()==(Color.RED)){ count++;}
-           if(moistureNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
-           if(humidityNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
-           if(uvNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
-           if(count==0){ ghStatus.setText("OPTIMAL");}
-           if(count==1){ ghStatus.setText("AVERAGE");}
-           if(count==2){ghStatus.setText("POOR"); }
-           if(count==3){ghStatus.setText("CRITICAL");}
-           if(count==4){ghStatus.setText("VERY CRITICAL");}
+        int count=0;
+        if(temperatureNumberButton.getCurrentTextColor()==(Color.RED)){ count++;}
+        if(moistureNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+        if(humidityNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+        if(uvNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
 
+        //if(count==0){ ghStatus.setText("OPTIMAL");}
+        //if(count==1){ ghStatus.setText("AVERAGE");}
+        //if(count==2){ ghStatus.setText("POOR");}
+        //if(count==3){ghStatus.setText("CRITICAL");}
+        //if(count==4){ghStatus.setText("VERY CRITICAL");}
+        if(count==0){ GHstatus.setText("EXCELLENT");}
+
+        if(count==1){ GHstatus.setText("GOOD");}
+
+        if(count==2){ GHstatus.setText("POOR");}
+
+        if(count==3){GHstatus.setText("CRITICAL");}
+
+        if(count==4){GHstatus.setText("CRITICAL");}
+
+
+
+        //if (count==0){DefPopUp.setText(" CRITICAL = 3 or more than 3 parameteres are out of Range");}
+        // if (count==0){StatusDef.setText("EXCELLENT = all the parameters are within the selected range");}
+        //if (count==1){StatusDef.setText("GOOD = 3 parameters are within the selected range and 1 is out of the range ");}
+        //if (count==2){StatusDef.setText("POOR = 2 the parameters are within the selected range and 2 are out of range");}
+        //if (count==3){StatusDef.setText("CRITICAL = 3 or more than 3 parameteres are out of Range");}
+        //if (count==0){StatusDef.setText(" CRITICAL = 3 or more than 3 parameteres are out of Range");}
     }
+
 
     // TODO 2019-03-21
     // Switch the fixed value given for temperature below to sensor data when available
@@ -356,6 +389,7 @@ public class MainActivity extends AppCompatActivity {
         temperatureTitleButton = (Button) findViewById(R.id.temp_button);
         temperatureNumberButton = (Button) findViewById(R.id.tempNumberView);
         celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
+
 
         //UV view initialization
         uvTitleButton = (Button) findViewById(R.id.uvButton);
@@ -369,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
         moistureTitleButton = (Button) findViewById(R.id.moistureButton);
         moistureNumberButton = (Button) findViewById(R.id.moisturePercentView);
 
-        ghStatus=(TextView)findViewById(R.id.statusTextView);
+        // ghStatus=(TextView)findViewById(R.id.statusTextView);
     }
 
 
