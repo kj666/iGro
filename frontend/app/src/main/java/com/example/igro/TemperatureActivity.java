@@ -44,7 +44,9 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 // TODO 2019-03-20
 // change the tempswitch to something more appropriate
@@ -74,6 +76,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
     // create database reference for ranges
 
+    private List<SensorDataValue> tempDataList = new ArrayList<>();
     private FirebaseUser currentUser;
     String currentUserID;
     String currentUserName;
@@ -184,7 +187,7 @@ public class TemperatureActivity extends AppCompatActivity {
         super.onStart();
 
         initializeUI();
-
+        setTempLastUpdatedTextView();
         //opening the HistoricalApplianceActivity view when the HeaterUseHistory button is clicked
         heaterUseHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -311,7 +314,31 @@ public class TemperatureActivity extends AppCompatActivity {
         tempRange.addValueEventListener(eventListener);
 
     }
+    // function to set the last time the temperature sensor was updated
+    private void setTempLastUpdatedTextView(){
 
+        DatabaseReference databaseLastUpdate = FirebaseDatabase.getInstance()
+                .getReference().child(helper.retrieveGreenhouseID()+"/Data").child("TemperatureSensor1").child("time");
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snap : dataSnapshot.getChildren()){
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    tempDataList.add(sensorDataValue);
+                }
+                Long unixTimeStamp=  (tempDataList.get(tempDataList.size()-1)).getTime();
+                String readableTime=Helper.convertTime(unixTimeStamp);
+                tempLastUpdatedTextView.setText(readableTime);
+
+        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+    };
+        databaseLastUpdate.addValueEventListener(eventListener);
+    }
     void initializeUI(){
         tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
@@ -528,11 +555,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
         }
     }
-  // function to set the last time the temperature sensor was updated
-    private void setTempLastUpdatedTextView(){
-        DatabaseReference databaseLastUpdate = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data").child("TemperatureSensor1");
 
-    }
     /*
     * Function that will convert all necessary parameters between celsius and fahrenheit
      */
