@@ -36,7 +36,7 @@ public class Helper {
     //Firebase user
     FirebaseUser user;
     // global settings for app uv info
-    boolean celsiusOrFahrenheit = true; // default is celsius
+    static boolean celsiusOrFahrenheit = true; // default is celsius
 
     protected SharedPreferences sharedPreferences;
 
@@ -61,10 +61,21 @@ public class Helper {
         return sharedPreferences.getString("GreenhouseID", null);
     }
 
+    public void saveTemperatureSettings(boolean temperatureMetric) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("temperatureMetric", temperatureMetric);
+        editor.commit();
+    }
+
+    public boolean retrieveTemperatureMetric() {
+        return sharedPreferences.getBoolean("temperatureMetric", true);
+    }
+
     public void resetGreenhouse(){
         saveGreenHouseID("");
     }
 
+    /*
     public boolean getCurrentTemperatureUsed() {
         return celsiusOrFahrenheit;
     }
@@ -73,7 +84,7 @@ public class Helper {
         celsiusOrFahrenheit = !celsiusOrFahrenheit;
     }
 
-
+    */
     /**
      * Go to specified activity
      * @param goTo
@@ -125,7 +136,5 @@ public class Helper {
             limitRange = 0.0;
         return limitRange;
     }
-
-
 
 }

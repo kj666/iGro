@@ -24,14 +24,14 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         helper.setSharedPreferences(getApplicationContext());
-        currentUser = helper.checkAuthentication();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         cToFSwitch = findViewById(R.id.switchTemperatureMetricCheckBox);
         currentTemperatureMetric = findViewById(R.id.currentTemperatureMetricTextView);
         currentTemperatureMetric.setText("Current Temperature Metric is: " + returnMetricUsed());
         cToFSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                helper.setCurrentTemperatureUsed();
+                helper.saveTemperatureSettings(!helper.retrieveTemperatureMetric());
                 currentTemperatureMetric.setText("Current Temperature Metric is: "
                         + returnMetricUsed());
             }
@@ -39,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private String returnMetricUsed() {
-        if (helper.getCurrentTemperatureUsed()) {
+        if (helper.retrieveTemperatureMetric()) {
             return "Celsius";
         } else {
             return "Fahrenheit";

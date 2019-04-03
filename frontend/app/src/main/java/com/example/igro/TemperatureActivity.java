@@ -109,6 +109,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
         helper.setSharedPreferences(getApplicationContext());
         greenhouseID = helper.retrieveGreenhouseID();
+        celisusOrFahrenheit = helper.retrieveTemperatureMetric();
 
         initializeDB(greenhouseID);
         initializeUI();
@@ -205,7 +206,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 Context context = TemperatureActivity.this ;
                 Intent i = new Intent(context, SensorDataActivity.class);
-                if (helper.getCurrentTemperatureUsed()) { //Celsius
+                if (celisusOrFahrenheit) { //Celsius
                     i.putExtra("SensorType", "TEMPERATURE-C");
                 } else { //Fahrenheit
                     i.putExtra("SensorType", "TEMPERATURE-F");
@@ -254,7 +255,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 Context context = TemperatureActivity.this ;
                 Intent i = new Intent(context, SensorDataActivity.class);
-                if (helper.getCurrentTemperatureUsed()) { //Celsius
+                if (celisusOrFahrenheit) { //Celsius
                     i.putExtra("SensorType", "TEMPERATURE-C");
                 } else { //Fahrenheit
                     i.putExtra("SensorType", "TEMPERATURE-F");
@@ -449,7 +450,7 @@ public class TemperatureActivity extends AppCompatActivity {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     greenhouseTemperatureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) +"");
-                    if (helper.getCurrentTemperatureUsed()) {
+                    if (celisusOrFahrenheit) {
                         //Temperature already in the correct format
                     } else { // change to fahrenheit
                         celsiusFahrenheitSwitch();
@@ -548,7 +549,7 @@ public class TemperatureActivity extends AppCompatActivity {
      */
     String celsiusFahrenheitConversion(String valueToBeConverted) {
         Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
-        if (helper.getCurrentTemperatureUsed()) { // number currently in celsius
+        if (celisusOrFahrenheit) { // number currently in celsius
             numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
             numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
             return numberToBeConverted.toString();
