@@ -141,7 +141,7 @@ public class TemperatureActivity extends AppCompatActivity {
         greenhouseTemperatureTextView.setText(fixedGreenhouseValue.toString());
         queue = Volley.newRequestQueue(this);
         requestWeather();
-
+        /*
         celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +149,7 @@ public class TemperatureActivity extends AppCompatActivity {
                 celsiusFahrenheitSwitch();
             }
         });
-
+        */
         retrieveRange();
     }
 
@@ -205,7 +205,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 Context context = TemperatureActivity.this ;
                 Intent i = new Intent(context, SensorDataActivity.class);
-                if (celisusOrFahrenheit) { //Celsius
+                if (helper.getCurrentTemperatureUsed()) { //Celsius
                     i.putExtra("SensorType", "TEMPERATURE-C");
                 } else { //Fahrenheit
                     i.putExtra("SensorType", "TEMPERATURE-F");
@@ -254,7 +254,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 Context context = TemperatureActivity.this ;
                 Intent i = new Intent(context, SensorDataActivity.class);
-                if (celisusOrFahrenheit) { //Celsius
+                if (helper.getCurrentTemperatureUsed()) { //Celsius
                     i.putExtra("SensorType", "TEMPERATURE-C");
                 } else { //Fahrenheit
                     i.putExtra("SensorType", "TEMPERATURE-F");
@@ -328,6 +328,7 @@ public class TemperatureActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         requestWeather();
 
+        /*
         celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,7 +336,7 @@ public class TemperatureActivity extends AppCompatActivity {
                 celsiusFahrenheitSwitch();
             }
         });
-
+        */
         currentUser = helper.checkAuthentication();
         setRangeTempButton=(Button)findViewById(R.id.setRangeTempButton);
     }
@@ -448,6 +449,11 @@ public class TemperatureActivity extends AppCompatActivity {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     greenhouseTemperatureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) +"");
+                    if (helper.getCurrentTemperatureUsed()) {
+                        //Temperature already in the correct format
+                    } else { // change to fahrenheit
+                        celsiusFahrenheitSwitch();
+                    }
                     tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
                 }
             }
@@ -534,7 +540,7 @@ public class TemperatureActivity extends AppCompatActivity {
                 celsiusFahrenheitConversion(outdoorTemperatureTextView.getText().toString()));
         greenhouseTemperatureTextView.setText(
                 celsiusFahrenheitConversion(greenhouseTemperatureTextView.getText().toString()));
-        celisusOrFahrenheit = !celisusOrFahrenheit;
+        //celisusOrFahrenheit = !celisusOrFahrenheit;
     }
 
     /*
@@ -542,7 +548,7 @@ public class TemperatureActivity extends AppCompatActivity {
      */
     String celsiusFahrenheitConversion(String valueToBeConverted) {
         Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
-        if (celisusOrFahrenheit) { // number currently in celsius
+        if (helper.getCurrentTemperatureUsed()) { // number currently in celsius
             numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
             numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
             return numberToBeConverted.toString();

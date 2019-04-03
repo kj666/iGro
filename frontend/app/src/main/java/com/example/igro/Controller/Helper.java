@@ -35,6 +35,8 @@ public class Helper {
     FirebaseAuth firebaseAuth;
     //Firebase user
     FirebaseUser user;
+    // global settings for app uv info
+    boolean celsiusOrFahrenheit = true; // default is celsius
 
     protected SharedPreferences sharedPreferences;
 
@@ -62,6 +64,15 @@ public class Helper {
     public void resetGreenhouse(){
         saveGreenHouseID("");
     }
+
+    public boolean getCurrentTemperatureUsed() {
+        return celsiusOrFahrenheit;
+    }
+
+    public void setCurrentTemperatureUsed() {
+        celsiusOrFahrenheit = !celsiusOrFahrenheit;
+    }
+
 
     /**
      * Go to specified activity
