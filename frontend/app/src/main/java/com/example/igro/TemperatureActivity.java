@@ -187,7 +187,7 @@ public class TemperatureActivity extends AppCompatActivity {
         super.onStart();
 
         initializeUI();
-        setTempLastUpdatedTextView();
+
         //opening the HistoricalApplianceActivity view when the HeaterUseHistory button is clicked
         heaterUseHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,31 +314,8 @@ public class TemperatureActivity extends AppCompatActivity {
         tempRange.addValueEventListener(eventListener);
 
     }
-    // function to set the last time the temperature sensor was updated
-    private void setTempLastUpdatedTextView(){
 
-        DatabaseReference databaseLastUpdate = FirebaseDatabase.getInstance()
-                .getReference().child(helper.retrieveGreenhouseID()+"/Data").child("TemperatureSensor1").child("time");
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
-                    tempDataList.add(sensorDataValue);
-                }
-                Long unixTimeStamp=  (tempDataList.get(tempDataList.size()-1)).getTime();
-                String readableTime=Helper.convertTime(unixTimeStamp);
-                tempLastUpdatedTextView.setText(readableTime);
 
-        }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-    };
-        databaseLastUpdate.addValueEventListener(eventListener);
-    }
     void initializeUI(){
         tempHistoryButton = (Button)findViewById(R.id.tempHistoriyButton);
         heaterUseHistoryButton = (Button)findViewById(R.id.heaterUseHistoryButton);
@@ -478,6 +455,9 @@ public class TemperatureActivity extends AppCompatActivity {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     greenhouseTemperatureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) +"");
                     tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    tempLastUpdatedTextView.setText(readableTime);
                 }
             }
 
