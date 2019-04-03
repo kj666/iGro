@@ -3,6 +3,7 @@
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="sign_out">Sign Out</string>
+    <string name="polling_freq">Polling Frequency</string>
     <string name="ApplianceType">Appliance Type </string>
     <string name="Heater">HEATER </string>
     <string name="Humidifier">HUMIDIFIER </string>
@@ -26,5 +27,8 @@
         <item>OnOffStatus</item>
     </array>
     <string name="SensorType">Sensor</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

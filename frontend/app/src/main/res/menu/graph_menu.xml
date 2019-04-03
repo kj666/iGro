@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/polling"
+        android:title="@string/polling_freq">
+        app:showAsAction:"never">
+    </item>
+
+
+    <item
+        android:id="@+id/tableGraph_switch"
+        android:title="Table/Graph"
+        android:checkable="true"
+         />
+    <item
+        android:id="@+id/refreshButton"
+        android:title="Refresh" />
+</menu>

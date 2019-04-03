@@ -9,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SensorDataActivity"></activity>
+        <activity android:name=".SettingsActivity" android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".AboutActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".SensorDataActivity" />
         <activity android:name=".HistoricalApplianceActivity" />
         <activity android:name=".LoginActivity" />
         <activity
