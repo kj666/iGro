@@ -89,7 +89,11 @@ public class HumidityActivity extends AppCompatActivity {
     TextView outdoorHumidityTextView; // displays the humidity in percentage
     private RequestQueue queue;
     //create database reference for ranges
-    DatabaseReference databaseRange, humidSwitchEventDB, db, appliances, userDB ;
+    DatabaseReference databaseRange, humidSwitchEventDB, db, appliances, userDB , generalDB ;
+
+    int lastpollfrequencyInt;
+    long LastUnixTime;
+
 
     public void initializeDB(String greenhouseID){
         databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
@@ -97,6 +101,7 @@ public class HumidityActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
         appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
         userDB = FirebaseDatabase.getInstance().getReference().child("Users");
+        generalDB = FirebaseDatabase.getInstance().getReference().child(greenhouseID);
     }
 
     @Override
@@ -131,6 +136,7 @@ public class HumidityActivity extends AppCompatActivity {
                 setHumidityRange();
             }
         });
+        checkHumiditySensorInactivity();
     }
 
 
@@ -463,5 +469,57 @@ public class HumidityActivity extends AppCompatActivity {
         ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
         changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
+
+    public void checkHumiditySensorInactivity(){
+
+
+        //obtain and set Last Sensor's Unix Time to a public variable
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    humTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
+                    ghHumidity = Double.parseDouble(humTextView.getText().toString());
+                    LastUnixTime = sensorDataValue.getTime()/1000;
+                    setLastUnixTime(LastUnixTime);
+
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        };
+        db.child("HumiditySensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
+
+
+        //Obtain Poll Frequency, Current Unix time and determine if sensor is inactive
+        generalDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                long CurrentunixTime = System.currentTimeMillis() / 1000L;
+
+                String lastpollfrequencyMs = dataSnapshot.child("SensorConfig/poll").getValue().toString();
+                lastpollfrequencyInt = Integer.parseInt(lastpollfrequencyMs) / 1000;
+
+                if ((CurrentunixTime-LastUnixTime) > lastpollfrequencyInt){
+                    System.out.println("Humidity Sensor is inactive!!");
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    public void setLastUnixTime(long lastTime){
+        LastUnixTime = lastTime;
+    }
+
 }
 
