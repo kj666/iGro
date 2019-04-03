@@ -61,6 +61,7 @@ public class HumidityActivity extends AppCompatActivity {
     EditText highHumEditText;
     TextView humTextView;
     TextView humControlTextView;
+    TextView humLastUpdatedTextView;
     Switch humSwitch;
     Button humidityHistoryButton;
     Button humidifierUseButton;
@@ -230,12 +231,13 @@ public class HumidityActivity extends AppCompatActivity {
     void initializeUI() {
 
         //Initialization
-        humTextView = (TextView) findViewById(R.id.ghHumTextView);
-        lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
-        highHumEditText = (EditText) findViewById(R.id.highHumEditText);
-        setHumidityRange = (Button) findViewById(R.id.setHumidityRange);
-        humControlTextView = (TextView) findViewById(R.id.humControlTextView);
-        humSwitch = (Switch) findViewById(R.id.humSwitch);
+        humTextView = findViewById(R.id.ghHumTextView);
+        lowHumEditText =  findViewById(R.id.lowHumEditText);
+        highHumEditText = findViewById(R.id.highHumEditText);
+        setHumidityRange =  findViewById(R.id.setHumidityRange);
+        humControlTextView =  findViewById(R.id.humControlTextView);
+        humLastUpdatedTextView=findViewById(R.id.humLastUpdatedTextview2);
+        humSwitch = findViewById(R.id.humSwitch);
         outdoorHumidityTextView = findViewById(R.id.outdoorHumTextView);
         humSwitch.setClickable(true);
 
@@ -275,6 +277,9 @@ public class HumidityActivity extends AppCompatActivity {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     humTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
                     ghHumidity = Double.parseDouble(humTextView.getText().toString());
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    humLastUpdatedTextView.setText("Sensor last updated "+readableTime);
                 }
             }
             @Override
