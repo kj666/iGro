@@ -8,6 +8,17 @@
     tools:context=".HumidityActivity">
 
 
+    <TextView
+        android:id="@+id/humLastUpdatedTextview2"
+        android:layout_width="153dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/humidifierUseHistoryButton"
         android:layout_width="299dp"
@@ -76,9 +87,6 @@
         android:id="@+id/ghPercentButton"
         android:layout_width="43dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
         android:text="%"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/ghHumTextView"
@@ -87,7 +95,7 @@
 
     <TextView
         android:id="@+id/ghHumTextView"
-        android:layout_width="121dp"
+        android:layout_width="102dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
@@ -95,7 +103,7 @@
         android:background="@null"
         android:ems="10"
         android:inputType="number"
-        android:text="24.00"
+        android:text="24.0"
         android:textAlignment="center"
         android:textSize="45sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -106,8 +114,6 @@
         android:layout_width="67dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:background="@null"
         android:ems="10"
         android:inputType="number"
@@ -121,7 +127,7 @@
 
     <Button
         android:id="@+id/outPercentButton"
-        android:layout_width="40dp"
+        android:layout_width="41dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"

@@ -43,6 +43,7 @@ public class MoistureActivity extends AppCompatActivity {
     EditText highMoistureEditText;
     TextView waterControlTextView;
     TextView moistureDataTextView;
+    TextView moistLastUpdatedTextView;
     Switch moistureSwitch;
     Button moistureHistoryButton;
     Button irrigationUseButton;
@@ -265,6 +266,9 @@ public class MoistureActivity extends AppCompatActivity {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     ghMoistureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue())+"");
                     ghMoisture = Double.parseDouble(ghMoistureTextView.getText().toString());
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    moistLastUpdatedTextView.setText("Sensor last updated "+readableTime);
                 }
             }
             @Override
@@ -276,11 +280,12 @@ public class MoistureActivity extends AppCompatActivity {
     void initializeUI(){
 
         //Initialization
-        ghMoistureTextView = (TextView)findViewById(R.id.numMoistureTextView);
-        lowMoistureEditText = (EditText)findViewById(R.id.lowMoistureEditText);
-        highMoistureEditText = (EditText)findViewById(R.id.highMoistureEditText);
-        setRangeMoistureButton=(Button)findViewById(R.id.setRangeMoistureButton);
-        waterControlTextView = (TextView)findViewById(R.id.waterControlTextView);
+        ghMoistureTextView = findViewById(R.id.numMoistureTextView);
+        lowMoistureEditText = findViewById(R.id.lowMoistureEditText);
+        highMoistureEditText = findViewById(R.id.highMoistureEditText);
+        setRangeMoistureButton=findViewById(R.id.setRangeMoistureButton);
+        waterControlTextView = findViewById(R.id.waterControlTextView);
+        moistLastUpdatedTextView=findViewById(R.id.moistLastUpdatedTextView) ;
         moistureSwitch = (Switch)findViewById(R.id.moistureSwitch);
         moistureSwitch.setClickable(true);
 
