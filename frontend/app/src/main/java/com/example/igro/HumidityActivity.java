@@ -145,6 +145,7 @@ public class HumidityActivity extends AppCompatActivity {
                 setHumidityRange();
             }
         });
+
         notificationManager = NotificationManagerCompat.from(this);
         checkHumiditySensorInactivity();
         createChannel();
