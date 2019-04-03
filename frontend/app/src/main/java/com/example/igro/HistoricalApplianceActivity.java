@@ -26,8 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +51,9 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     List<ApplianceControlEvents> applianceList = new ArrayList<>();
-    Integer recordNumberEntered = 20;
-    String applianceTypePassed;
+    protected Integer recordNumberEntered = 20;
+    protected String applianceTypePassed;
+    public Integer recordsEntered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +76,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 //getting intent and retrieving the extra
         Intent intent = getIntent();
         final String userName = intent.getStringExtra("UserName");
-        String applianceType = intent.getStringExtra("ApplianceType");
+        final String applianceType = intent.getStringExtra("ApplianceType");
         applianceTypePassed = applianceType;
 // setting the title based on which Appliance data will be displayed based on intent extra
         final String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
@@ -86,8 +85,11 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         // store appliancetype in shared preferences file
         SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
         SharedPreferences.Editor editor = applianceTypeSharedPrefs.edit();
-        editor.putString(getString(R.string.ApplianceTypePassed), applianceTypePassed);
+        editor.putString(getString(R.string.ApplianceTypePassed), applianceType);
         editor.apply();
+
+        // depending on where the intent comes from, the extra determines which appliance data to load.
+        loadApplianceListByApplianceType(recordNumberEntered);
 
     }
 
@@ -108,60 +110,14 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         recordLimitEditText = (EditText)findViewById(R.id.recordLimitEditText);
         refreshButton = (Button)findViewById(R.id.refreshButton);
 
-
-        // depending on where the intent comes from, the extra determines which appliance data to load.
-        //if the intent extra comes from Temperature Activity, load heater data
-        switch (applianceTypePassed) {
-            case "HEATER":
-                loadHeaterOnOffList(recordNumberEntered);
-                break;
-            case "HUMIDIFIER":
-                //retrieves the humidifier historical trigger records
-                loadHumidityOnOffList(recordNumberEntered);
-
-                break;
-            case "IRRIGATION":
-                //gets irrigation historical trigger records
-                loadIrrigationOnOffList(recordNumberEntered);
-
-                break;
-            case "LIGHTS":
-                //loads artificial lights on/off trigger records
-                loadLightsOnOffList(recordNumberEntered);
-                break;
-            default:
-                Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG).show();
-                break;
-        }
-
-
-//check for number of records entered by the user
+        //check for number of records entered by the user
         recordLimitEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String recordNumberEnteredStr = recordLimitEditText.getText().toString();
 
-                //check if the input is are empty or not
-                if (!TextUtils.isEmpty(recordNumberEnteredStr)) {
-
-                    //theck if input is numerical
-                    if (recordNumberEnteredStr.matches(".*[0-999].*")) {
-                        //Check if Lower limit is < upper limit
-                        if (Integer.parseInt(recordNumberEnteredStr) < 1000) {
-                            recordNumberEntered = Integer.parseInt(recordNumberEnteredStr);
-
-                        } else {
-                            numberOfRecordsError();
-                        }
-
-                    } else {
-                        numericalError();
-                    }
-
-                } else {
-                    recordNumberEntered = 20;
-
-                }
+                // check the number of records entered by the user & set to record Number Entered
+                recordNumberEntered = numberOfRecordsEntered(recordNumberEnteredStr);
             }
         });
 
@@ -171,36 +127,12 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
                 // depending on where the intent comes from, the extra determines which appliance data to load.
                 //if the intent extra comes from Temperature Activity, load heater data
 
-                switch (applianceTypePassed) {
-                    case "HEATER":
-                        loadHeaterOnOffList(recordNumberEntered);
-                        break;
-                    case "HUMIDIFIER":
-                        //retrieves the humidifier historical trigger records
-                        loadHumidityOnOffList(recordNumberEntered);
-
-                        break;
-                    case "IRRIGATION":
-                        //gets irrigation historical trigger records
-                        loadIrrigationOnOffList(recordNumberEntered);
-
-                        break;
-                    case "LIGHTS":
-                        //loads artificial lights on/off trigger records
-                        loadLightsOnOffList(recordNumberEntered);
-                        break;
-                    default:
-                        errorToast();
-                        break;
-                }
-
+                loadApplianceListByApplianceType(recordNumberEntered);
             }
         });
-
     }
 
     @Override
@@ -220,63 +152,15 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         refreshButton = (Button)findViewById(R.id.refreshButton);
 
 //getting recorded type of appliance from shared prefs
-        SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
-        String applianceTypeFromSharedPrefs = applianceTypeSharedPrefs.getString(getString(R.string.ApplianceTypePassed), null);
-        applianceTypePassed = applianceTypeFromSharedPrefs;
-        // depending on where the intent comes from, the extra determines which appliance data to load.
-        //if the intent extra comes from Temperature Activity, load heater data
-        assert applianceTypeFromSharedPrefs != null;
-        switch (applianceTypeFromSharedPrefs) {
-            case "HEATER":
-                loadHeaterOnOffList(recordNumberEntered);
-                break;
-            case "HUMIDIFIER":
-                //retrieves the humidifier historical trigger records
-                loadHumidityOnOffList(recordNumberEntered);
 
-                break;
-            case "IRRIGATION":
-                //gets irrigation historical trigger records
-                loadIrrigationOnOffList(recordNumberEntered);
-
-                break;
-            case "LIGHTS":
-                //loads artificial lights on/off trigger records
-                loadLightsOnOffList(recordNumberEntered);
-                break;
-            default:
-                Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG).show();
-                break;
-        }
-
+        loadApplianceTypeFromSharedPrefs();
 
         //check for number of records entered by the user
         recordLimitEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String recordNumberEnteredStr = recordLimitEditText.getText().toString();
-
-                //check if the input is are empty or not
-                if (!TextUtils.isEmpty(recordNumberEnteredStr)) {
-
-                    //theck if input is numerical
-                    if (recordNumberEnteredStr.matches(".*[0-999].*")) {
-                        //Check if Lower limit is < upper limit
-                        if (Integer.parseInt(recordNumberEnteredStr) < 1000) {
-                            recordNumberEntered = Integer.parseInt(recordNumberEnteredStr);
-
-                        } else {
-                            numberOfRecordsError();
-                        }
-
-                    } else {
-                        numericalError();
-                    }
-
-                } else {
-                    recordNumberEntered = 20;
-
-                }
+                numberOfRecordsEntered(recordNumberEnteredStr);
             }
         });
 
@@ -286,28 +170,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                switch (applianceTypePassed) {
-                    case "HEATER":
-                        loadHeaterOnOffList(recordNumberEntered);
-                        break;
-                    case "HUMIDIFIER":
-                        //retrieves the humidifier historical trigger records
-                        loadHumidityOnOffList(recordNumberEntered);
-
-                        break;
-                    case "IRRIGATION":
-                        //gets irrigation historical trigger records
-                        loadIrrigationOnOffList(recordNumberEntered);
-
-                        break;
-                    case "LIGHTS":
-                        //loads artificial lights on/off trigger records
-                        loadLightsOnOffList(recordNumberEntered);
-                        break;
-                    default:
-                       errorToast();
-                        break;
-                }
+               loadApplianceListByApplianceType(recordNumberEntered);
             }
         });
     }
@@ -325,6 +188,64 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         Toast.makeText(this, "ERROR: The record limit input must be numerical!", Toast.LENGTH_LONG).show();
     }
 
+    //load appliance list based on intent that was passed
+    protected void loadApplianceListByApplianceType(int records){
+        //if the intent extra comes from Temperature Activity, load heater data
+        switch (applianceTypePassed) {
+            case "HEATER":
+                loadHeaterOnOffList(records);
+                break;
+            case "HUMIDIFIER":
+                //retrieves the humidifier historical trigger records
+                loadHumidityOnOffList(records);
+
+                break;
+            case "IRRIGATION":
+                //gets irrigation historical trigger records
+                loadIrrigationOnOffList(records);
+
+                break;
+            case "LIGHTS":
+                //loads artificial lights on/off trigger records
+                loadLightsOnOffList(records);
+                break;
+            default:
+                Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG).show();
+                break;
+        }
+    }
+
+    protected void loadApplianceTypeFromSharedPrefs(){
+        //getting recorded type of appliance from shared prefs
+        SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
+        String applianceTypeFromSharedPrefs = applianceTypeSharedPrefs.getString(getString(R.string.ApplianceTypePassed), null);
+        loadApplianceListByApplianceType(recordNumberEntered);
+    }
+
+    // function definition for number of records entered by the user
+    protected int numberOfRecordsEntered(String recordsEnteredStr) {
+
+        //check if the input is are empty or not
+        if (!TextUtils.isEmpty(recordsEnteredStr)) {
+            //theck if input is numerical
+            if (recordsEnteredStr.matches(".*[0-999].*")) {
+                //Check if Lower limit is < upper limit
+                if (Integer.parseInt(recordsEnteredStr) < 1000) {
+                    recordNumberEntered = Integer.parseInt(recordsEnteredStr);
+
+                } else {
+                    numberOfRecordsError();
+                }
+
+            } else {
+                numericalError();
+            }
+
+        } else {
+            recordNumberEntered = 20;
+        }
+        return recordNumberEntered;
+    }
 
     // function definition for heater records
     protected void loadHeaterOnOffList(int numberOfRecords) {
