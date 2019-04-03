@@ -1,12 +1,19 @@
 package com.example.igro;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -93,6 +100,8 @@ public class HumidityActivity extends AppCompatActivity {
 
     int lastpollfrequencyInt;
     long LastUnixTime;
+    private final String Channel_ID = "channel1";
+    private NotificationManagerCompat notificationManager;
 
 
     public void initializeDB(String greenhouseID){
@@ -136,7 +145,9 @@ public class HumidityActivity extends AppCompatActivity {
                 setHumidityRange();
             }
         });
+        notificationManager = NotificationManagerCompat.from(this);
         checkHumiditySensorInactivity();
+        createChannel();
     }
 
 
@@ -504,7 +515,7 @@ public class HumidityActivity extends AppCompatActivity {
                 lastpollfrequencyInt = Integer.parseInt(lastpollfrequencyMs) / 1000;
 
                 if ((CurrentunixTime-LastUnixTime) > lastpollfrequencyInt){
-                    System.out.println("Humidity Sensor is inactive!!");
+                    sendSensorInactivityNotification ();
                 }
 
             }
@@ -519,6 +530,37 @@ public class HumidityActivity extends AppCompatActivity {
 
     public void setLastUnixTime(long lastTime){
         LastUnixTime = lastTime;
+    }
+
+    public void createChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel(Channel_ID,"Channel 1", NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("This is channel 1");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+    public void sendSensorInactivityNotification (){
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this,Channel_ID);
+        notification.setSmallIcon(R.drawable.igro_logo);
+        notification.setContentTitle("Humidity Sensor is Currently Inactive!");
+        notification.setContentText("Please Reconnect Sensor or Turn on iGRO System");
+        notification.setPriority(NotificationCompat.PRIORITY_HIGH);
+        notification.setCategory(NotificationCompat.CATEGORY_MESSAGE);
+        notification.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+
+
+        //functionality to open humidityactivity on notification click
+        Intent notifyIntent = new Intent(this, HumidityActivity.class);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        notification.setContentIntent(notifyPendingIntent);
+
+
+        notificationManager.notify(1,notification.build());
     }
 
 }
