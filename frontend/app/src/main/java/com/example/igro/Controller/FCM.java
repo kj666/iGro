@@ -48,7 +48,7 @@ public class FCM extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody(),"SoilSensor1");
+            sendNotification(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
         }
     }
 
@@ -71,22 +71,22 @@ public class FCM extends FirebaseMessagingService {
         Log.d(TAG, "Long lived task is done.");
     }
 
-    private void sendNotification(String notifTitle, String messageBody, String activity) {
+    private void sendNotification(String notifTitle, String messageBody) {
 
         Intent intent = null;
-        if(activity.equals("HumiditySensor1")) {
+        if(notifTitle.contains("HumiditySensor1")) {
             intent = new Intent(this, HumidityActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-        else if(activity.equals("SoilSensor1")) {
+        else if(notifTitle.contains("SoilSensor1")) {
             intent = new Intent(this, MoistureActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-        else if(activity.equals("TemperatureSensor1")) {
+        else if(notifTitle.contains("TemperatureSensor1")) {
             intent = new Intent(this, TemperatureActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
-        else if(activity.equals("UVSensor1")) {
+        else if(notifTitle.contains("UVSensor1")) {
             intent = new Intent(this, UvIndexActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }

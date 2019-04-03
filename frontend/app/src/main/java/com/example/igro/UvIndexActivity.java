@@ -200,14 +200,22 @@ public class UvIndexActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
+            case R.id.settings:
+                helper.goToActivity(SettingsActivity.class);
+                return true;
+            case R.id.about:
+                helper.goToActivity(AboutActivity.class);
+                return true;
             case R.id.sign_out:
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-
             case R.id.polling_menu:
                 openDialog();
                 return true;
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -441,6 +449,11 @@ public class UvIndexActivity extends AppCompatActivity {
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
 
 }

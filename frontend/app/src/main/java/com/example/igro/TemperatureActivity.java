@@ -167,11 +167,16 @@ public class TemperatureActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
+            case R.id.settings:
+                helper.goToActivity(SettingsActivity.class);
+                return true;
+            case R.id.about:
+                helper.goToActivity(AboutActivity.class);
+                return true;
             case R.id.sign_out:
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-
             case R.id.polling_menu:
                 openDialog();
                 return true;

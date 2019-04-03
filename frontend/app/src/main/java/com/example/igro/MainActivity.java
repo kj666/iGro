@@ -124,10 +124,10 @@ public class MainActivity extends AppCompatActivity {
 
         retriveUserData();
 
-        notificationManager = NotificationManagerCompat.from(this);
+        /*notificationManager = NotificationManagerCompat.from(this);
         createChannel();
             sendNotification ();
-
+*/
 
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                String msg = "Subscribe to "+users.getGreenhouseID();
+                                String msg = "Subscribed to "+users.getGreenhouseID();
                                 if (!task.isSuccessful()) {
                                     msg = "Failed to subscribe";
                                 }

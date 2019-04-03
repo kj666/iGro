@@ -45,11 +45,11 @@ exports.sendPushNotification = functions.database.ref('/{gid}/Data/{sid}/{id}')
 
             if(!((dataValue >lowRangeVal) && (dataValue < highRangeVal))){
                 if(!(dataValue >lowRangeVal)){
-                    title = sid+" is "+(lowRangeVal - dataValue) + " units UNDER threshold";
+                    title = sid+" is "+parseFloat(lowRangeVal - dataValue).toFixed(2) + " units UNDER threshold";
                     console.log(title);
                 }
                 else{
-                    title = sid+" is "+(dataValue - highRangeVal) + " units ABOVE threshold";
+                    title = sid+" is "+parseFloat(dataValue - highRangeVal).toFixed(2) + " units ABOVE threshold";
                     console.log(title);
                 }
 
