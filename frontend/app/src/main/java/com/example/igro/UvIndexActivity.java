@@ -524,7 +524,7 @@ public class UvIndexActivity extends AppCompatActivity {
     public void sendSensorInactivityNotification (){
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this,Channel_ID);
         notification.setSmallIcon(R.drawable.igro_logo);
-        notification.setContentTitle("Humidity Sensor is Currently Inactive!");
+        notification.setContentTitle("UV Sensor is Currently Inactive!");
         notification.setContentText("Please Reconnect Sensor or Turn on iGRO System");
         notification.setPriority(NotificationCompat.PRIORITY_HIGH);
         notification.setCategory(NotificationCompat.CATEGORY_MESSAGE);
