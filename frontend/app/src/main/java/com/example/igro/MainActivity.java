@@ -101,35 +101,7 @@ public class MainActivity extends AppCompatActivity {
 //        currentUser = helper.checkAuthentication();
 //        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            //get token
-            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                @Override
-                public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                    if(!task.isSuccessful()){
-                        Log.w(MAIN_LOG_TAG, "getInstanceId failed", task.getException());
-                        return;
-                    }
-                    //Get new instance ID token
-                    String token = task.getResult().getToken();
 
-                    //toast
-                    String msg = getString(R.string.msg_token_fmt, token);
-                    Log.d(MAIN_LOG_TAG, msg);
-                }
-            });
-
-            FirebaseMessaging.getInstance().subscribeToTopic("Greenhouse1")
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            String msg = "Subscribe to Greenhouse1";
-                            if (!task.isSuccessful()) {
-                                msg = "Failed to subscribe";
-                            }
-                            Log.d(MAIN_LOG_TAG, msg);
-                            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                        }
-                    });
             // current user validated
             helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
 //            helper.checkAuthentication();
@@ -144,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
         initializeUI();
 
         userWelcomeMessage = findViewById(R.id.welcomeMessageText);
-        String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
-        userWelcomeMessage.setText(welcomeMessage);
+//        String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
+//        userWelcomeMessage.setText(welcomeMessage);
         cityWeatherMessage = findViewById(R.id.cityWeatherTextView);
         queue = Volley.newRequestQueue(this);
         requestWeather();
@@ -246,7 +218,20 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 Users users = dataSnapshot.getValue(Users.class);
-//                userWelcomeMessage.setText(users.getName() +"   "+users.getGreenhouseID());
+                userWelcomeMessage.setText(users.getName() +"   "+users.getGreenhouseID());
+
+                FirebaseMessaging.getInstance().subscribeToTopic(users.getGreenhouseID())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                String msg = "Subscribe to Greenhouse1";
+                                if (!task.isSuccessful()) {
+                                    msg = "Failed to subscribe";
+                                }
+                                Log.d(MAIN_LOG_TAG, msg);
+                                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
                 helper.setSharedPreferences(getApplicationContext());
                 helper.saveGreenHouseID(users.getGreenhouseID());
