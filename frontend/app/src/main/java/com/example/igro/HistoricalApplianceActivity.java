@@ -1,9 +1,17 @@
 package com.example.igro;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +25,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +46,15 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     TextView listTimeSinceLastTriggerTitleTextView;
     TextView listOnOffTitleTextView;
     ListView applianceEventListView;
+    TextView recordLimitTitleTextView;
+    EditText recordLimitEditText;
+    Button refreshButton;
 
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     List<ApplianceControlEvents> applianceList = new ArrayList<>();
+    Integer recordNumberEntered = 20;
+    String applianceTypePassed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +67,27 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
         listDateTitleTextView = (TextView)findViewById(R.id.listItemDateTextView);
         listUserNameTitleTextView = findViewById(R.id.listItemUserNameTextView);
-        listTimeSinceLastTriggerTitleTextView = findViewById(R.id.listItemCounterTextView);
+        listTimeSinceLastTriggerTitleTextView = findViewById(R.id.listItemTimeSinceLastTriggerTextView);
         listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
+        recordLimitTitleTextView = (TextView)findViewById(R.id.recordLimitTitleTextView);
+        recordLimitEditText = (EditText)findViewById(R.id.recordLimitEditText);
+        refreshButton = (Button)findViewById(R.id.refreshButton);
 
 //getting intent and retrieving the extra
         Intent intent = getIntent();
         final String userName = intent.getStringExtra("UserName");
-        final String applianceType = intent.getStringExtra("ApplianceType");
+        String applianceType = intent.getStringExtra("ApplianceType");
+        applianceTypePassed = applianceType;
 // setting the title based on which Appliance data will be displayed based on intent extra
         final String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
         historicalApplianceTitleTextView.setText(pageTitle);
+
+        // store appliancetype in shared preferences file
+        SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
+        SharedPreferences.Editor editor = applianceTypeSharedPrefs.edit();
+        editor.putString(getString(R.string.ApplianceTypePassed), applianceTypePassed);
+        editor.apply();
 
     }
 
@@ -79,38 +104,232 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         listTimeSinceLastTriggerTitleTextView = findViewById(R.id.listItemTimeSinceLastTriggerTextView);
         listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
         applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
+        recordLimitTitleTextView = (TextView)findViewById(R.id.recordLimitTitleTextView);
+        recordLimitEditText = (EditText)findViewById(R.id.recordLimitEditText);
+        refreshButton = (Button)findViewById(R.id.refreshButton);
 
-//getting intent
-        Intent intent = getIntent();
-        String userName = intent.getStringExtra("UserName");
-        String applianceType = intent.getStringExtra("ApplianceType");
-        String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
 
-        historicalApplianceTitleTextView.setText(pageTitle);
-
-// depending on where the intent comes from, the extra determines which appliance data to load.
+        // depending on where the intent comes from, the extra determines which appliance data to load.
         //if the intent extra comes from Temperature Activity, load heater data
-        if(applianceType.equals("HEATER")){
-            loadHeaterOnOffList();
-        } else if (applianceType.equals("HUMIDIFIER")) {
-            //retrieves the humidifier historical trigger records
-            loadHumidityOnOffList();
+        switch (applianceTypePassed) {
+            case "HEATER":
+                loadHeaterOnOffList(recordNumberEntered);
+                break;
+            case "HUMIDIFIER":
+                //retrieves the humidifier historical trigger records
+                loadHumidityOnOffList(recordNumberEntered);
 
-        }else if(applianceType.equals("IRRIGATION")){
-            //gets irrigation historical trigger records
-            loadIrrigationOnOffList();
+                break;
+            case "IRRIGATION":
+                //gets irrigation historical trigger records
+                loadIrrigationOnOffList(recordNumberEntered);
 
-        }else if(applianceType.equals("LIGHTS")){
-            //loads artificial lights on/off trigger records
-            loadLightsOnOffList();
-        }else{
-            Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG ).show();
+                break;
+            case "LIGHTS":
+                //loads artificial lights on/off trigger records
+                loadLightsOnOffList(recordNumberEntered);
+                break;
+            default:
+                Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG).show();
+                break;
         }
+
+
+//check for number of records entered by the user
+        recordLimitEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String recordNumberEnteredStr = recordLimitEditText.getText().toString();
+
+                //check if the input is are empty or not
+                if (!TextUtils.isEmpty(recordNumberEnteredStr)) {
+
+                    //theck if input is numerical
+                    if (recordNumberEnteredStr.matches(".*[0-999].*")) {
+                        //Check if Lower limit is < upper limit
+                        if (Integer.parseInt(recordNumberEnteredStr) < 1000) {
+                            recordNumberEntered = Integer.parseInt(recordNumberEnteredStr);
+
+                        } else {
+                            numberOfRecordsError();
+                        }
+
+                    } else {
+                        numericalError();
+                    }
+
+                } else {
+                    recordNumberEntered = 20;
+
+                }
+            }
+        });
+
+
+// reload when refresh button is hit
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                // depending on where the intent comes from, the extra determines which appliance data to load.
+                //if the intent extra comes from Temperature Activity, load heater data
+
+                switch (applianceTypePassed) {
+                    case "HEATER":
+                        loadHeaterOnOffList(recordNumberEntered);
+                        break;
+                    case "HUMIDIFIER":
+                        //retrieves the humidifier historical trigger records
+                        loadHumidityOnOffList(recordNumberEntered);
+
+                        break;
+                    case "IRRIGATION":
+                        //gets irrigation historical trigger records
+                        loadIrrigationOnOffList(recordNumberEntered);
+
+                        break;
+                    case "LIGHTS":
+                        //loads artificial lights on/off trigger records
+                        loadLightsOnOffList(recordNumberEntered);
+                        break;
+                    default:
+                        errorToast();
+                        break;
+                }
+
+            }
+        });
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //initializations
+        historicalApplianceTitleTextView = (TextView)findViewById(R.id.historicalApplianceTitleTextView);
+        listCounterTitleTextView = (TextView)findViewById(R.id.listItemCounterTextView);
+        listDateTitleTextView = (TextView)findViewById(R.id.listItemDateTextView);
+        listUserNameTitleTextView = findViewById(R.id.listItemUserNameTextView);
+        listTimeSinceLastTriggerTitleTextView = findViewById(R.id.listItemTimeSinceLastTriggerTextView);
+        listOnOffTitleTextView = (TextView)findViewById(R.id.listItemOnOffStatusTextView);
+        applianceEventListView = (ListView)findViewById(R.id.applianceEventListView);
+        recordLimitTitleTextView = (TextView)findViewById(R.id.recordLimitTitleTextView);
+        recordLimitEditText = (EditText)findViewById(R.id.recordLimitEditText);
+        refreshButton = (Button)findViewById(R.id.refreshButton);
+
+//getting recorded type of appliance from shared prefs
+        SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
+        String applianceTypeFromSharedPrefs = applianceTypeSharedPrefs.getString(getString(R.string.ApplianceTypePassed), null);
+        applianceTypePassed = applianceTypeFromSharedPrefs;
+        // depending on where the intent comes from, the extra determines which appliance data to load.
+        //if the intent extra comes from Temperature Activity, load heater data
+        assert applianceTypeFromSharedPrefs != null;
+        switch (applianceTypeFromSharedPrefs) {
+            case "HEATER":
+                loadHeaterOnOffList(recordNumberEntered);
+                break;
+            case "HUMIDIFIER":
+                //retrieves the humidifier historical trigger records
+                loadHumidityOnOffList(recordNumberEntered);
+
+                break;
+            case "IRRIGATION":
+                //gets irrigation historical trigger records
+                loadIrrigationOnOffList(recordNumberEntered);
+
+                break;
+            case "LIGHTS":
+                //loads artificial lights on/off trigger records
+                loadLightsOnOffList(recordNumberEntered);
+                break;
+            default:
+                Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG).show();
+                break;
+        }
+
+
+        //check for number of records entered by the user
+        recordLimitEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String recordNumberEnteredStr = recordLimitEditText.getText().toString();
+
+                //check if the input is are empty or not
+                if (!TextUtils.isEmpty(recordNumberEnteredStr)) {
+
+                    //theck if input is numerical
+                    if (recordNumberEnteredStr.matches(".*[0-999].*")) {
+                        //Check if Lower limit is < upper limit
+                        if (Integer.parseInt(recordNumberEnteredStr) < 1000) {
+                            recordNumberEntered = Integer.parseInt(recordNumberEnteredStr);
+
+                        } else {
+                            numberOfRecordsError();
+                        }
+
+                    } else {
+                        numericalError();
+                    }
+
+                } else {
+                    recordNumberEntered = 20;
+
+                }
+            }
+        });
+
+
+// reload when refresh button is hit
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                switch (applianceTypePassed) {
+                    case "HEATER":
+                        loadHeaterOnOffList(recordNumberEntered);
+                        break;
+                    case "HUMIDIFIER":
+                        //retrieves the humidifier historical trigger records
+                        loadHumidityOnOffList(recordNumberEntered);
+
+                        break;
+                    case "IRRIGATION":
+                        //gets irrigation historical trigger records
+                        loadIrrigationOnOffList(recordNumberEntered);
+
+                        break;
+                    case "LIGHTS":
+                        //loads artificial lights on/off trigger records
+                        loadLightsOnOffList(recordNumberEntered);
+                        break;
+                    default:
+                       errorToast();
+                        break;
+                }
+            }
+        });
+    }
+
+
+    // calls appliance record list function definition
+
+    protected void errorToast(){
+        Toast.makeText(this, "ERROR: unKnown appliance type ", Toast.LENGTH_LONG).show();
+    }
+    protected void numberOfRecordsError(){
+        Toast.makeText(this, "ERROR: The number of records cannot be more than 1000", Toast.LENGTH_LONG).show();
+    }
+    protected void numericalError(){
+        Toast.makeText(this, "ERROR: The record limit input must be numerical!", Toast.LENGTH_LONG).show();
+    }
+
+
     // function definition for heater records
-    protected void loadHeaterOnOffList() {
+    protected void loadHeaterOnOffList(int numberOfRecords) {
 // referrence the correct DB node
         final DatabaseReference heaterSwitchEventDB = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/ApplianceControlLog").child("HeaterControlLog");
 
@@ -120,7 +339,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         final List<ApplianceControlEvents> heaterList = new ArrayList<>();
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
-        heaterSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
+        heaterSwitchEventDB.orderByKey().limitToLast(numberOfRecords).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -150,8 +369,10 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     }
 
 
+
+
     //function definition to load humidifier trigger records
-    protected void loadHumidityOnOffList() {
+    protected void loadHumidityOnOffList(int numberOfRecords) {
 
         final DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/ApplianceControlLog").child("HumidityControlLog");
 
@@ -163,7 +384,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
 
-        humidSwitchEventDB.orderByChild("eventUnixEpoch").limitToLast(20).addValueEventListener(new ValueEventListener() {
+        humidSwitchEventDB.orderByChild("eventUnixEpoch").limitToLast(numberOfRecords).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -191,7 +412,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
 
     // function definition for irrigation control records
-    protected void loadIrrigationOnOffList() {
+    protected void loadIrrigationOnOffList(int numberOfRecords) {
 
         final DatabaseReference moistSwitchEventDB = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/ApplianceControlLog").child("SoilMoistureControlLog");
 
@@ -203,7 +424,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
 
-        moistSwitchEventDB.orderByKey().limitToLast(20).addValueEventListener(new ValueEventListener() {
+        moistSwitchEventDB.orderByKey().limitToLast(numberOfRecords).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -231,7 +452,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
 
     // function definition for loading the table of lights control records
-    protected void loadLightsOnOffList() {
+    protected void loadLightsOnOffList(int numberOfRecords) {
 
         final DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference(helper.retrieveGreenhouseID()+"/ApplianceControlLog").child("UVControlLog");
 
@@ -243,7 +464,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
         //   fuction orders the db entries by key and limits to last 20 entries to display
 
-        uvSwitchEventDB.orderByChild("uvEventUnixEpoch").limitToLast(20).addValueEventListener(new ValueEventListener() {
+        uvSwitchEventDB.orderByChild("uvEventUnixEpoch").limitToLast(numberOfRecords).addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -270,5 +491,48 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
     }
 
+// set up menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater=getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.settings:
+                helper.goToActivity(SettingsActivity.class);
+                return true;
+            case R.id.about:
+                helper.goToActivity(AboutActivity.class);
+                return true;
+            case R.id.sign_out:
+                helper.signout();
+                helper.goToActivity(LoginActivity.class);
+                return true;
+            case R.id.polling_menu:
+                openDialog();
+                return true;
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // dialog to display the polling dialog
+    public void openDialog(){
+        PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
+        dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+    // dialog to display the change password fragment
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
+    }
 
 }

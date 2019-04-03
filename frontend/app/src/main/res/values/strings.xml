@@ -40,7 +40,8 @@
         <item>OnOffStatus</item>
     </array>
     <string name="SensorType">Sensor</string>
-
+    <string name="ApplianceTypeSharedPrefsFile">ApplianceTypeSharedPrefsFile</string>
+    <string name="ApplianceTypePassed">ApplianceTypePassed</string>
 
 
 </resources>
