@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
         retriveUserData();
 
         notificationManager = NotificationManagerCompat.from(this);
-        createChannel();
-            sendNotification ();
+        //createChannel();
+            // sendNotification ();
 
 
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
@@ -578,7 +578,7 @@ public class MainActivity extends AppCompatActivity {
         ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
         changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
-
+/*
     public void createChannel(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel = new NotificationChannel(Channel_ID,"Channel 1", NotificationManager.IMPORTANCE_HIGH);
@@ -609,4 +609,5 @@ public class MainActivity extends AppCompatActivity {
 
         notificationManager.notify(1,notification.build());
     }
+    */
 }
