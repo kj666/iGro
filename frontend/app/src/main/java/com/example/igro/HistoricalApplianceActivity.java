@@ -286,8 +286,6 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-
                 switch (applianceTypePassed) {
                     case "HEATER":
                         loadHeaterOnOffList(recordNumberEntered);
