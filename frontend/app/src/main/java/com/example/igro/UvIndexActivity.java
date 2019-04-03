@@ -63,6 +63,7 @@ public class UvIndexActivity extends AppCompatActivity {
     EditText lowUvEditText;
     EditText highUvEditText;
     TextView uvControlTextView;
+    TextView uvLastUpdatedTextView;
     Switch uvSwitch;
     TextView uvTextView;
     Button uvHistoryButton;
@@ -70,6 +71,7 @@ public class UvIndexActivity extends AppCompatActivity {
     Button setUvRange;
     TextView ghUvTextView;
     Double ghUv;
+
 
     private FirebaseUser currentuser;
     String currentuserID;
@@ -220,6 +222,7 @@ public class UvIndexActivity extends AppCompatActivity {
         lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
         highUvEditText = (EditText)findViewById(R.id.highUvEditText);
         uvTextView = (TextView)findViewById(R.id.ghUvTextView);
+        uvLastUpdatedTextView=(TextView)findViewById(R.id.uvLastUpdatedTextview);
 
         outdoorUVTextView = findViewById(R.id.outdoorUvTextView);
         queue = Volley.newRequestQueue(this);
@@ -388,6 +391,9 @@ public class UvIndexActivity extends AppCompatActivity {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     uvTextView.setText(new DecimalFormat("####0.00").format(sensorDataValue.getValue())+"");
                     ghUv = Double.parseDouble(uvTextView.getText().toString());
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    uvLastUpdatedTextView.setText("Sensor Last Updated on "+readableTime);
                 }
             }
             @Override

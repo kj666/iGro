@@ -457,13 +457,14 @@ public class TemperatureActivity extends AppCompatActivity {
                     tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
                     long unixTime= sensorDataValue.getTime();
                     String readableTime=Helper.convertTime(unixTime);
-                    tempLastUpdatedTextView.setText(readableTime);
+                    tempLastUpdatedTextView.setText("Sensor last updated "+readableTime);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
+
         db.child("TemperatureSensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
