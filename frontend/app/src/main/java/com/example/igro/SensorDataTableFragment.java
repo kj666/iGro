@@ -91,7 +91,7 @@ public class SensorDataTableFragment extends Fragment {
         else if (sensorType.equals("TEMPERATURE-F"))
             db.child("TemperatureSensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
         else if(sensorType.equals("UV"))
-            db.child("UVSensor1").addValueEventListener(eventListener);
+            db.child("UVSensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
         else if(sensorType.equals("HUMIDITY"))
             db.child("HumiditySensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
         else if(sensorType.equals("MOISTURE"))
@@ -129,11 +129,14 @@ public class SensorDataTableFragment extends Fragment {
             TextView sensorDate = convertView.findViewById(R.id.sensorDateTextView);
             TextView sensorData = convertView.findViewById(R.id.sensorDataTextView);
 
-            sensorDate.setText(Helper.convertTime(sensorDataList.get(position).getTime()));
+            sensorDate.setText(Helper.convertTimeLetter(sensorDataList.get(position).getTime()));
+            DecimalFormat df;
             if(!sensorType.equals("UV"))
-                sensorData.setText(new DecimalFormat("####0.0").format(sensorDataList.get(position).getValue())+"");
+                df = new DecimalFormat("####0.0");
             else
-                sensorData.setText(new DecimalFormat("####0.00").format(sensorDataList.get(position).getValue())+"");
+                df = new DecimalFormat("####0.00");
+
+            sensorData.setText(df.format(sensorDataList.get(position).getValue())+"");
 
             return convertView;
         }
