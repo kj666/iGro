@@ -1,10 +1,8 @@
 package com.example.igro;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,18 +130,10 @@ public class SensorDataTableFragment extends Fragment {
             TextView sensorData = convertView.findViewById(R.id.sensorDataTextView);
 
             sensorDate.setText(Helper.convertTime(sensorDataList.get(position).getTime()));
-            sensorData.setText(sensorDataList.get(position).getValue()+"");
-
-//            if(sensorType.equals("TEMPERATURE-C"))
-//                sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
-//            else if (sensorType.equals("TEMPERATURE-F"))
-//                sensorData.setText(sensorDataList.get(position).getTemperatureF()+"");
-//            else if(sensorType.equals("UV"))
-//                sensorData.setText(sensorDataList.get(position).getUv()+"");
-//            else if(sensorType.equals("HUMIDITY"))
-//                sensorData.setText(sensorDataList.get(position).getHumidity()+"");
-//            else if(sensorType.equals("MOISTURE"))
-//                sensorData.setText(sensorDataList.get(position).getSoil()+"");
+            if(!sensorType.equals("UV"))
+                sensorData.setText(new DecimalFormat("####0.0").format(sensorDataList.get(position).getValue())+"");
+            else
+                sensorData.setText(new DecimalFormat("####0.00").format(sensorDataList.get(position).getValue())+"");
 
             return convertView;
         }

@@ -85,7 +85,12 @@ public class SensorDataActivity extends AppCompatActivity {
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkTableGrpah();
+                if(!(Integer.parseInt(limitEditText.getText().toString()) <= 0)){
+                    checkTableGrpah();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),"Limit value should be a positive integer", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -132,6 +137,7 @@ public class SensorDataActivity extends AppCompatActivity {
         }
 
         dataLimitDB.setValue(dataLimit);
+
         return  dataLimit;
     }
 
@@ -168,15 +174,6 @@ public class SensorDataActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
 
-            case R.id.polling_menu:
-                openDialog();
-                return true;
-
-            case R.id.changePassword:
-                changePasswordDialog();
-                return  true;
-
-
             case R.id.tableGraph_switch:
                 if(tableMode) {
                     tableMode = false;
@@ -200,16 +197,5 @@ public class SensorDataActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
 
-    }
-    // dialog to display the polling dialog
-    public void openDialog(){
-        PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
-        dialog.show(getSupportFragmentManager(), "Polling dialog");
-    }
-    // dialog to display the change password fragment
-    public void changePasswordDialog(){
-
-        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
-        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
 }

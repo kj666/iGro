@@ -41,49 +41,30 @@ exports.sendPushNotification = functions.database.ref('/{gid}/Data/{sid}/{id}')
             const lowRangeVal = snapshotLow.val();
             const highRangeVal = snapshotHigh.val();
 
-            var message;
-            let toekns =[];
+            var title;
 
             if(!((dataValue >lowRangeVal) && (dataValue < highRangeVal))){
                 if(!(dataValue >lowRangeVal)){
-                    message =sid+" is reading under threshold value";
-                    console.log("highRange", highRangeVal +" UNDER RANGE");
+                    title = sid+" is "+(lowRangeVal - dataValue) + " units UNDER threshold";
+                    console.log(title);
                 }
                 else{
-                    message =sid+" is reading above threshold value";
-                    console.log("highRange", highRangeVal +" ABOVE RANGE");
+                    title = sid+" is "+(dataValue - highRangeVal) + " units ABOVE threshold";
+                    console.log(title);
                 }
 
                 const payload ={
                     notification: {
-                        title: "Greenhouse1 condition changed ",
-                        body: message
+                        title: title,
+                        body:"Tap for more information"
                     }
                 };
-                admin.messaging().sendToTopic("Greenhouse1", payload).then((response)=>{
+                admin.messaging().sendToTopic(gid, payload).then((response)=>{
                    return console.log('Notification sent successfully:',response);
                }) 
                .catch((error)=>{
                     console.log('Notification sent failed:',error);
                });
-
-               /* db.ref("/Users/").orderByChild("GreenhouseID").equalTo(gid).on("child_added", snapshot=>{
-                    const users = snapshot.val();
-                    console.log(snapshot.key+" hi "+ users.Name +" "+users.NotificationToken);
-        
-                    toekns.push(users.notification);
-                    const payload ={
-                        notification: {
-                            title: users.GreenhouseID +" condition changed "+ users.Name,
-                            body: message
-                        }
-                    };
-                    admin.messaging().sendToDevice(users.NotificationToken, payload).then((response)=>{
-                        return console.log("Notification sent to "+users.Name, response);
-                    }).catch((error)=>{
-                        console.log("Error: ", error);
-                    });
-                });*/
             }
             else{
                 console.log("highRange", highRangeVal +"INSIDE RANGE");

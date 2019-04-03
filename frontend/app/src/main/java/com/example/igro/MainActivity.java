@@ -217,14 +217,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Users users = dataSnapshot.getValue(Users.class);
+                final Users users = dataSnapshot.getValue(Users.class);
                 userWelcomeMessage.setText(users.getName() +"   "+users.getGreenhouseID());
 
                 FirebaseMessaging.getInstance().subscribeToTopic(users.getGreenhouseID())
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                String msg = "Subscribe to Greenhouse1";
+                                String msg = "Subscribe to "+users.getGreenhouseID();
                                 if (!task.isSuccessful()) {
                                     msg = "Failed to subscribe";
                                 }
