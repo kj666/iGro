@@ -111,6 +111,8 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         recordLimitEditText = (EditText)findViewById(R.id.recordLimitEditText);
         refreshButton = (Button)findViewById(R.id.refreshButton);
 
+        loadApplianceListByApplianceType(recordNumberEntered);
+
  // set listener for number of records edti text box
         recordNumberEditTextListener();
 
@@ -200,7 +202,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = applianceTypeSharedPrefs.edit();
                 editor.putString(getString(R.string.NumberOfRecordsStr), recordNumberEnteredStr);
                 editor.apply();
-                loadApplianceListByApplianceType(recordNumberEntered);
+
                 refreshButtonListener();
             }
         });
@@ -241,7 +243,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             if (recordsEnteredStr.matches(".*[0-999].*")) {
                 //Check if Lower limit is < upper limit
                 if (Integer.parseInt(recordsEnteredStr) < 1000) {
-                    recordEntered = Integer.parseInt(numberEnteredStr);
+                    recordNumberEntered = Integer.parseInt(numberEnteredStr);
 
                 } else {
                     numberOfRecordsError();
@@ -254,8 +256,8 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         } else {
             recordNumberEntered = 20;
         }
-        recordNumberEntered = recordEntered;
-        return recordEntered;
+        loadApplianceTypeFromSharedPrefs();
+        return recordNumberEntered;
     }
 
     // function definition for heater records
