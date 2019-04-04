@@ -529,6 +529,10 @@ public class MainActivity extends AppCompatActivity {
      */
     String celsiusFahrenheitConversion(String valueToBeConverted) {
         Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
+        numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
+        numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+        return numberToBeConverted.toString();
+        /*
         if (helper.retrieveTemperatureMetric()) { // number currently in celsius
             numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
             numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
@@ -537,7 +541,7 @@ public class MainActivity extends AppCompatActivity {
             numberToBeConverted = (5.0/9.0) * (numberToBeConverted - 32.0);
             numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
             return numberToBeConverted.toString();
-        }
+        } */
     }
 
     public void openDialog(){
