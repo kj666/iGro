@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/listItemOnOffStatusTextView"
         android:layout_width="32dp"
-        android:layout_height="25dp"
+        android:layout_height="22dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -24,7 +24,7 @@
     <TextView
         android:id="@+id/listItemDateTextView"
         android:layout_width="134dp"
-        android:layout_height="25dp"
+        android:layout_height="22dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
         android:layout_marginTop="9dp"
@@ -38,8 +38,8 @@
 
     <TextView
         android:id="@+id/listItemCounterTextView"
-        android:layout_width="26dp"
-        android:layout_height="25dp"
+        android:layout_width="22dp"
+        android:layout_height="26dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -47,8 +47,8 @@
         android:layout_marginStart="3dp"
         android:layout_marginLeft="3dp"
         android:layout_marginTop="9dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
         android:layout_marginBottom="31dp"
         android:layout_toStartOf="@+id/listItemDateTextView"
         android:layout_toLeftOf="@+id/listItemDateTextView"
@@ -58,7 +58,7 @@
     <TextView
         android:id="@+id/listItemUserNameTextView"
         android:layout_width="110dp"
-        android:layout_height="25dp"
+        android:layout_height="22dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
         android:layout_marginTop="9dp"
@@ -73,7 +73,7 @@
     <TextView
         android:id="@+id/listItemTimeSinceLastTriggerTextView"
         android:layout_width="74dp"
-        android:layout_height="25dp"
+        android:layout_height="22dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
         android:layout_marginTop="9dp"
