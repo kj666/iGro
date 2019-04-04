@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        GHstatus = (Button) findViewById(R.id.definationButton);
+
 //        currentUser = helper.checkAuthentication();
 //        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -127,13 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         retriveUserData();
 //open status defination popup
-            GHstatus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Dialog_Popup dialog_popup = new Dialog_Popup();
-                    dialog_popup.show(getSupportFragmentManager(),"Dialog_Popup");
-                }
-            });
+
 
         //opening the Temperature view when the temperature text is clicked
         temperatureTitleButton.setOnClickListener(new View.OnClickListener()
@@ -520,6 +514,7 @@ public class MainActivity extends AppCompatActivity {
         //Moisture view initialization
         moistureTitleButton = (Button) findViewById(R.id.moistureButton);
         moistureNumberButton = (Button) findViewById(R.id.moisturePercentView);
+        GHstatus = (Button) findViewById(R.id.definationButton);
 
 
 
@@ -615,6 +610,13 @@ public class MainActivity extends AppCompatActivity {
                         moistColorSet(sensorDataValue.getValue());
                     }
                 }
+                GHstatus.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Dialog_Popup dialog_popup = new Dialog_Popup();
+                        dialog_popup.show(getSupportFragmentManager(),"Dialog_Popup");
+                    }
+                });
             }
 
             @Override
