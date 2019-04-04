@@ -31,14 +31,6 @@
           }
         },
         {
-          "client_id": "549074537326-mdovhghlodum47khcs2hvoobg2jgeeus.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.igro",
-            "certificate_hash": "7a1c02af6cbe7353c59ddf7a5b961f367b1aeb9d"
-          }
-        },
-        {
           "client_id": "549074537326-jh6ieg4umd1jopbg7odadn1kj5e27bhd.apps.googleusercontent.com",
           "client_type": 3
         }
