@@ -130,6 +130,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
                 for(DataSnapshot heaterEventSnapshot : dataSnapshot.getChildren()){
 //retrieves each of the 20 nodes of object of HeaterControlEvents class to build the array
                     ApplianceControlEvents heaterEvent = heaterEventSnapshot.getValue(ApplianceControlEvents.class);
+
                     heaterList.add(heaterEvent);
 
                 }

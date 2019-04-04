@@ -8,47 +8,47 @@
 
     <TextView
         android:id="@+id/listItemOnOffStatusTextView"
-        android:layout_width="43dp"
-        android:layout_height="34dp"
+        android:layout_width="29dp"
+        android:layout_height="28dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginRight="3dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginRight="6dp"
         android:layout_marginBottom="31dp"
         android:gravity="start|top"
         android:textSize="12sp" />
 
     <TextView
         android:id="@+id/listItemDateTextView"
-        android:layout_width="137dp"
-        android:layout_height="34dp"
+        android:layout_width="133dp"
+        android:layout_height="28dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="31dp"
         android:layout_toStartOf="@+id/listItemUserNameTextView"
         android:layout_toLeftOf="@+id/listItemUserNameTextView"
         android:gravity="start|top"
-        android:textSize="12sp" />
+        android:textSize="11sp" />
 
     <TextView
         android:id="@+id/listItemCounterTextView"
-        android:layout_width="32dp"
-        android:layout_height="33dp"
+        android:layout_width="37dp"
+        android:layout_height="28dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="3dp"
         android:layout_marginLeft="3dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginRight="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="31dp"
         android:layout_toStartOf="@+id/listItemDateTextView"
         android:layout_toLeftOf="@+id/listItemDateTextView"
@@ -57,33 +57,33 @@
 
     <TextView
         android:id="@+id/listItemUserNameTextView"
-        android:layout_width="120dp"
-        android:layout_height="34dp"
+        android:layout_width="110dp"
+        android:layout_height="28dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginRight="9dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="31dp"
         android:layout_toStartOf="@+id/listItemTimeSinceLastTriggerTextView"
         android:layout_toLeftOf="@+id/listItemTimeSinceLastTriggerTextView"
         android:gravity="start|top"
-        android:textSize="12sp" />
+        android:textSize="11sp" />
 
     <TextView
         android:id="@+id/listItemTimeSinceLastTriggerTextView"
-        android:layout_width="41dp"
-        android:layout_height="34dp"
+        android:layout_width="74dp"
+        android:layout_height="28dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="7dp"
         android:layout_marginEnd="6dp"
         android:layout_marginRight="6dp"
         android:layout_marginBottom="31dp"
         android:layout_toStartOf="@+id/listItemOnOffStatusTextView"
         android:layout_toLeftOf="@+id/listItemOnOffStatusTextView"
         android:gravity="start|top"
-        android:textSize="12sp" />
+        android:textSize="11sp" />
 
 
 </RelativeLayout>

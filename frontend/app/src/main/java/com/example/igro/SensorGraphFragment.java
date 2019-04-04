@@ -8,11 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-
 import com.example.igro.Controller.Helper;
-import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +33,7 @@ public class SensorGraphFragment extends Fragment {
 
     private Helper helper = new Helper(getContext(), FirebaseAuth.getInstance());
     private String sensorType;
+    private int dataLimit;
     GraphView graphView;
     String xAxisTitle;
 
@@ -49,7 +47,6 @@ public class SensorGraphFragment extends Fragment {
 
             for(DataSnapshot snap : dataSnapshot.getChildren()){
                 SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
-                Log.d("FIREBASE", sensorDataValue.getTime()+"");
                 sensorDataList.add(sensorDataValue);
             }
             populateGraph();
@@ -64,11 +61,12 @@ public class SensorGraphFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static SensorGraphFragment newInstance(String sensorType){
+    public static SensorGraphFragment newInstance(String sensorType, int dataLimit){
         SensorGraphFragment fragment = new SensorGraphFragment();
         Bundle passData = new Bundle();
         passData.putString(PARAM, sensorType);
         fragment.sensorType = sensorType;
+        fragment.dataLimit = dataLimit;
         return fragment;
     }
 
@@ -137,26 +135,26 @@ public class SensorGraphFragment extends Fragment {
 
     void retrieveSensorDataFromDB(){
         if(sensorType.equals("TEMPERATURE-C")) {
-            db.child("TemperatureSensor1").orderByChild("time").addValueEventListener(eventListener);
+            db.child("TemperatureSensor1").orderByChild("time").limitToLast(dataLimit).addValueEventListener(eventListener);
             xAxisTitle = "Celcius";
         }
 
         else if (sensorType.equals("TEMPERATURE-F")) {
-            db.child("TemperatureSensor1").orderByChild("time").addValueEventListener(eventListener);
+            db.child("TemperatureSensor1").orderByChild("time").limitToLast(dataLimit).addValueEventListener(eventListener);
             xAxisTitle = "Fahrenheit";
         }
         else if(sensorType.equals("UV")){
-            db.child("UVSensor1").orderByChild("time").addValueEventListener(eventListener);
+            db.child("UVSensor1").orderByChild("time").limitToLast(dataLimit).addValueEventListener(eventListener);
             xAxisTitle = "Index";
         }
 
         else if(sensorType.equals("HUMIDITY")) {
-            db.child("HumiditySensor1").orderByChild("time").addValueEventListener(eventListener);
+            db.child("HumiditySensor1").orderByChild("time").limitToLast(dataLimit).addValueEventListener(eventListener);
             xAxisTitle = "%";
         }
 
         else if(sensorType.equals("MOISTURE")) {
-            db.child("SoilSensor1").orderByChild("time").addValueEventListener(eventListener);
+            db.child("SoilSensor1").orderByChild("time").limitToLast(dataLimit).addValueEventListener(eventListener);
             xAxisTitle = "%";
         }
     }

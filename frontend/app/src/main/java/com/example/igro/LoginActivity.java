@@ -17,6 +17,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -84,9 +88,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     //sign in succeed
                     Log.d(TAG, "signInWithEmail:success");
-                    FirebaseUser validUser = mAuth.getCurrentUser();
-                    Toast.makeText(LoginActivity.this, "Authentication Success.",
-                            Toast.LENGTH_SHORT).show();
+                    final FirebaseUser validUser = mAuth.getCurrentUser();
+                    Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
 
                     //Use function in Controller.Helper to go to dashboard activity
                     helper.goToActivity(MainActivity.class);

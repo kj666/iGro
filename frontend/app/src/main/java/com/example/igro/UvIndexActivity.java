@@ -1,11 +1,18 @@
 package com.example.igro;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +30,6 @@ import android.text.TextUtils;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.Range.UvRange;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -33,7 +39,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -65,6 +70,7 @@ public class UvIndexActivity extends AppCompatActivity {
     EditText lowUvEditText;
     EditText highUvEditText;
     TextView uvControlTextView;
+    TextView uvLastUpdatedTextView;
     Switch uvSwitch;
     TextView uvTextView;
     Button uvHistoryButton;
@@ -72,6 +78,7 @@ public class UvIndexActivity extends AppCompatActivity {
     Button setUvRange;
     TextView ghUvTextView;
     Double ghUv;
+
 
     private FirebaseUser currentuser;
     String currentuserID;
@@ -89,7 +96,13 @@ public class UvIndexActivity extends AppCompatActivity {
     private static final String TAG = "LightsAreOnTag";
 
     //create heater database reference for the correct node
-    DatabaseReference uvSwitchEventDB, databaseRange, db, appliances, userDB;
+    DatabaseReference uvSwitchEventDB, databaseRange, db, appliances, userDB, generalDB;
+
+    int lastpollfrequencyInt;
+    long LastUnixTime;
+    private final String Channel_ID = "channel1";
+    private NotificationManagerCompat notificationManager;
+
 
     public void initializeDB(String greenhouseID){
         databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
@@ -97,6 +110,7 @@ public class UvIndexActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
         appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
         userDB = FirebaseDatabase.getInstance().getReference().child("Users");
+        generalDB = FirebaseDatabase.getInstance().getReference().child(greenhouseID);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -127,6 +141,10 @@ public class UvIndexActivity extends AppCompatActivity {
                 setUvRange();
             }
         });
+
+        notificationManager = NotificationManagerCompat.from(this);
+        checkSensorInactivity();
+        createChannel();
 
     }
 
@@ -200,14 +218,22 @@ public class UvIndexActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
+            case R.id.settings:
+                helper.goToActivity(SettingsActivity.class);
+                return true;
+            case R.id.about:
+                helper.goToActivity(AboutActivity.class);
+                return true;
             case R.id.sign_out:
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-
             case R.id.polling_menu:
                 openDialog();
                 return true;
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -215,13 +241,14 @@ public class UvIndexActivity extends AppCompatActivity {
 
     //Initialization
     void initializeUI(){
-        uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
-        uvSwitch = (Switch)findViewById(R.id.uvSwitch);
+        uvControlTextView = findViewById(R.id.uvControlTextView);
+        uvSwitch = findViewById(R.id.uvSwitch);
         uvSwitch.setClickable(true);
 
-        lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
-        highUvEditText = (EditText)findViewById(R.id.highUvEditText);
-        uvTextView = (TextView)findViewById(R.id.ghUvTextView);
+        lowUvEditText = findViewById(R.id.lowUvEditText);
+        highUvEditText = findViewById(R.id.highUvEditText);
+        uvTextView = findViewById(R.id.ghUvTextView);
+        uvLastUpdatedTextView=findViewById(R.id.uvLastUpdatedTextview);
 
         outdoorUVTextView = findViewById(R.id.outdoorUvTextView);
         queue = Volley.newRequestQueue(this);
@@ -230,9 +257,9 @@ public class UvIndexActivity extends AppCompatActivity {
         uvHistoryButton = findViewById(R.id.uvHistoryButton);
         lightUseButton = findViewById(R.id.lightUseHistoryButton);
         //indoor uv
-        ghUvTextView = (TextView) findViewById(R.id.ghUvTextView);
+        ghUvTextView =  findViewById(R.id.ghUvTextView);
         //set range button
-        setUvRange = (Button) findViewById(R.id.setUvRange);
+        setUvRange = findViewById(R.id.setUvRange);
     }
 
 
@@ -241,8 +268,8 @@ public class UvIndexActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Helper.retrieveRange("lowUvValue", dataSnapshot);
-                Double highRange = Helper.retrieveRange("highUvValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
 
                 lowUvEditText.setText(lowRange.toString());
                 highUvEditText.setText(highRange.toString());
@@ -259,7 +286,7 @@ public class UvIndexActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
 
-        databaseRange.child("UV").addValueEventListener(eventListener);
+        databaseRange.child("UVSensor1").addValueEventListener(eventListener);
 
     }
 
@@ -274,8 +301,8 @@ public class UvIndexActivity extends AppCompatActivity {
  //Check if Lower limit is < upper limit
                 if (Double.parseDouble(lowUv) < Double.parseDouble(highUv)) {
 
-                    UvRange UvRange = new UvRange(lowUv, highUv);
-                    databaseRange.child("UV").setValue(UvRange);
+                    databaseRange.child("UVSensor1").child("Low").setValue(Double.parseDouble(lowUv));
+                    databaseRange.child("UVSensor1").child("High").setValue(Double.parseDouble(highUv));
                     Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
                 } else {
@@ -390,6 +417,11 @@ public class UvIndexActivity extends AppCompatActivity {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     uvTextView.setText(new DecimalFormat("####0.00").format(sensorDataValue.getValue())+"");
                     ghUv = Double.parseDouble(uvTextView.getText().toString());
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    uvLastUpdatedTextView.setText("Sensor Last Updated on "+readableTime);
+                    LastUnixTime = sensorDataValue.getTime()/1000;
+                    setLastUnixTime(LastUnixTime);
                 }
             }
             @Override
@@ -437,6 +469,72 @@ public class UvIndexActivity extends AppCompatActivity {
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
+    }
+
+    public void checkSensorInactivity(){
+
+        //Obtain Poll Frequency, Current Unix time and determine if sensor is inactive
+        generalDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                long CurrentunixTime = System.currentTimeMillis() / 1000L;
+
+                String lastpollfrequencyMs = dataSnapshot.child("SensorConfig/poll").getValue().toString();
+                lastpollfrequencyInt = Integer.parseInt(lastpollfrequencyMs) / 1000;
+
+                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+5)){
+                    sendSensorInactivityNotification ();
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    public void setLastUnixTime(long lastTime){
+        LastUnixTime = lastTime;
+    }
+
+    public void createChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel(Channel_ID,"Channel 1", NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("This is channel 1");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+    public void sendSensorInactivityNotification (){
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this,Channel_ID);
+        notification.setSmallIcon(R.drawable.igro_logo);
+        notification.setContentTitle("UV Sensor is Currently Inactive!");
+        notification.setContentText("Please Reconnect Sensor or Turn on iGRO System");
+        notification.setPriority(NotificationCompat.PRIORITY_HIGH);
+        notification.setCategory(NotificationCompat.CATEGORY_MESSAGE);
+        notification.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+
+
+        //functionality to open humidityactivity on notification click
+        Intent notifyIntent = new Intent(this, HumidityActivity.class);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        notification.setContentIntent(notifyPendingIntent);
+
+
+        notificationManager.notify(1,notification.build());
     }
 
 }

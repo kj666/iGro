@@ -24,6 +24,8 @@ import io.opencensus.common.Timestamp;
 public class ApplianceEventsListConfig extends ArrayAdapter<ApplianceControlEvents>{
 
     private int timeBeforeLastTrigger = 0;
+    private  String timeSinceStr;
+    Long timeSinceLastTriggerSeconds;
     private Activity context;
 
     private List<ApplianceControlEvents> applianceEventList;
@@ -57,14 +59,28 @@ public class ApplianceEventsListConfig extends ArrayAdapter<ApplianceControlEven
             onOffStr = "OFF";
         }
 
- /*       Long thisTrigger = applianceEvent.previousEventUnixEpoch;
+        Long thisTrigger = applianceEvent.getEventUnixEpoch();
         Long lastTrigger = applianceEvent.getPreviousEventUnixEpoch();
+        if(applianceEvent.getEventUnixEpoch()!=null){
+            if(applianceEvent.getPreviousEventUnixEpoch()!=null){
+                timeSinceLastTriggerSeconds = thisTrigger-lastTrigger;
+                timeSinceStr = timeSinceLastTriggerSeconds.toString();
+            }else{
+                lastTrigger = thisTrigger;
+                timeSinceLastTriggerSeconds = thisTrigger-lastTrigger;
+                timeSinceStr = timeSinceLastTriggerSeconds.toString();
+            }
 
-        Long timeSinceLastTriggerSeconds = thisTrigger-lastTrigger;
+        }else{
+
+            timeSinceLastTriggerSeconds = null;
+            timeSinceStr = null;
+        }
+
 
         Date timeSinceFormatted = new Date (timeSinceLastTriggerSeconds);
         SimpleDateFormat sd = new SimpleDateFormat("HH:mm:ss");
-        System.out.println(sd.format(timeSinceFormatted));
+        String timeSinceLastTriggerString = sd.format(timeSinceFormatted);
 
         Long timeSinceMinutes = timeSinceLastTriggerSeconds/60;
         Long remainderSeconds = timeSinceLastTriggerSeconds - timeSinceMinutes*60;
@@ -76,14 +92,13 @@ public class ApplianceEventsListConfig extends ArrayAdapter<ApplianceControlEven
        String timeSinceHoursStr = timeSinceHours.toString();
        String remainderSecondsStr = remainderSeconds.toString();
        String remainderMinutesStr = remainderMinutes.toString();
-
-        String timeSinceLastTriggerString = sd.format(timeSinceFormatted);
-*/
+// string time diff formated by hand
+        String timeSinceFormattedByHand = timeSinceHoursStr+"hr "+remainderMinutesStr+"m "+remainderSecondsStr+"s";
 
         listItemCounterTextView.setText(String.valueOf(position+1));
         listItemDateTextView.setText(applianceEvent.getEventDateTime());
         listItemUserNameTextView.setText(applianceEvent.getEventUserEmail());
- //       listItemTimeSinceLastTriggerTextView.setText(timeSinceLastTriggerString);
+       listItemTimeSinceLastTriggerTextView.setText(timeSinceFormattedByHand);
         listItemOnOffStatusTextView.setText(onOffStr);
 
         return listViewItem;

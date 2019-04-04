@@ -128,6 +128,12 @@ public class Helper {
         return dateReadable;
     }
 
+    public static String convertTimeLetter(long timestamp){
+
+        String dateReadable = new java.text.SimpleDateFormat("EEEE, dd MMMM yyyy, HH:mm:ss").format(new java.util.Date(timestamp));
+        return dateReadable;
+    }
+
     public static double retrieveRange(String sensorType, DataSnapshot dataSnapshot){
         double limitRange;
         if(dataSnapshot.child(sensorType).getValue() != null)
@@ -143,5 +149,6 @@ public class Helper {
         numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
         return numberToBeConverted.toString();
     }
+
 
 }

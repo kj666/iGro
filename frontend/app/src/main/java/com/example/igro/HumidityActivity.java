@@ -1,12 +1,19 @@
 package com.example.igro;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,7 +36,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.Range.HumidityRange;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,6 +68,7 @@ public class HumidityActivity extends AppCompatActivity {
     EditText highHumEditText;
     TextView humTextView;
     TextView humControlTextView;
+    TextView humLastUpdatedTextView;
     Switch humSwitch;
     Button humidityHistoryButton;
     Button humidifierUseButton;
@@ -89,7 +96,12 @@ public class HumidityActivity extends AppCompatActivity {
     TextView outdoorHumidityTextView; // displays the humidity in percentage
     private RequestQueue queue;
     //create database reference for ranges
-    DatabaseReference databaseRange, humidSwitchEventDB, db, appliances, userDB ;
+    DatabaseReference databaseRange, humidSwitchEventDB, db, appliances, userDB, generalDB ;
+
+    int lastpollfrequencyInt;
+    long LastUnixTime;
+    private final String Channel_ID = "channel1";
+    private NotificationManagerCompat notificationManager;
 
     public void initializeDB(String greenhouseID){
         databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
@@ -97,6 +109,7 @@ public class HumidityActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
         appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
         userDB = FirebaseDatabase.getInstance().getReference().child("Users");
+        generalDB = FirebaseDatabase.getInstance().getReference().child(greenhouseID);
     }
 
     @Override
@@ -131,6 +144,11 @@ public class HumidityActivity extends AppCompatActivity {
                 setHumidityRange();
             }
         });
+
+        notificationManager = NotificationManagerCompat.from(this);
+        checkSensorInactivity();
+        createChannel();
+
     }
 
 
@@ -146,15 +164,22 @@ public class HumidityActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch(item.getItemId()){
+            case R.id.settings:
+                helper.goToActivity(SettingsActivity.class);
+                return true;
+            case R.id.about:
+                helper.goToActivity(AboutActivity.class);
+                return true;
             case R.id.sign_out:
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-
             case R.id.polling_menu:
                 openDialog();
                 return true;
-
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
 
         }
         return super.onOptionsItemSelected(item);
@@ -228,12 +253,13 @@ public class HumidityActivity extends AppCompatActivity {
     void initializeUI() {
 
         //Initialization
-        humTextView = (TextView) findViewById(R.id.ghHumTextView);
-        lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
-        highHumEditText = (EditText) findViewById(R.id.highHumEditText);
-        setHumidityRange = (Button) findViewById(R.id.setHumidityRange);
-        humControlTextView = (TextView) findViewById(R.id.humControlTextView);
-        humSwitch = (Switch) findViewById(R.id.humSwitch);
+        humTextView = findViewById(R.id.ghHumTextView);
+        lowHumEditText =  findViewById(R.id.lowHumEditText);
+        highHumEditText = findViewById(R.id.highHumEditText);
+        setHumidityRange =  findViewById(R.id.setHumidityRange);
+        humControlTextView =  findViewById(R.id.humControlTextView);
+        humLastUpdatedTextView=findViewById(R.id.humLastUpdatedTextview2);
+        humSwitch = findViewById(R.id.humSwitch);
         outdoorHumidityTextView = findViewById(R.id.outdoorHumTextView);
         humSwitch.setClickable(true);
 
@@ -249,10 +275,10 @@ public class HumidityActivity extends AppCompatActivity {
         //check if the ranges are empty or not
         if (!TextUtils.isEmpty(lowHumidity) && !TextUtils.isEmpty(highHumidity)) {
 
-            if (Double.parseDouble(lowHumidity.toString()) < Double.parseDouble(highHumidity.toString())) {
+            if (Double.parseDouble(lowHumidity) < Double.parseDouble(highHumidity)) {
 
-                    HumidityRange humidityRange = new HumidityRange(lowHumidity, highHumidity);
-                    databaseRange.child("Humidity").setValue(humidityRange);
+                    databaseRange.child("HumiditySensor1").child("Low").setValue(Double.parseDouble(lowHumidity));
+                    databaseRange.child("HumiditySensor1").child("High").setValue( Double.parseDouble(highHumidity));
                     Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
                 } else {
@@ -273,6 +299,11 @@ public class HumidityActivity extends AppCompatActivity {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     humTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
                     ghHumidity = Double.parseDouble(humTextView.getText().toString());
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    humLastUpdatedTextView.setText("Sensor last updated "+readableTime);
+                    LastUnixTime = sensorDataValue.getTime()/1000;
+                    setLastUnixTime(LastUnixTime);
                 }
             }
             @Override
@@ -283,13 +314,13 @@ public class HumidityActivity extends AppCompatActivity {
 
 
     void retrieveRange(){
-        DatabaseReference humidityRange = databaseRange.child("Humidity");
+        DatabaseReference humidityRange = databaseRange.child("HumiditySensor1");
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Double lowRange = Helper.retrieveRange("lowHumidityValue", dataSnapshot);
-                Double highRange = Helper.retrieveRange("highHumidityValue", dataSnapshot);
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
                 highHumEditText.setText(highRange.toString());
                 lowHumEditText.setText(lowRange.toString());
 
@@ -308,7 +339,6 @@ public class HumidityActivity extends AppCompatActivity {
         humidityRange.addValueEventListener(eventListener);
 
     }
-
 
     private void humidSwitchStateFromRecord() {
 
@@ -446,9 +476,79 @@ public class HumidityActivity extends AppCompatActivity {
                 });
         queue.add(humidityRequest);
     }
+    // dialog to display the polling dialog
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
     }
+    // dialog to display the change password fragment
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
+    }
+
+    public void checkSensorInactivity(){
+
+
+        //Obtain Poll Frequency, Current Unix time and determine if sensor is inactive
+        generalDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                long CurrentunixTime = System.currentTimeMillis() / 1000L;
+
+                String lastpollfrequencyMs = dataSnapshot.child("SensorConfig/poll").getValue().toString();
+                lastpollfrequencyInt = Integer.parseInt(lastpollfrequencyMs) / 1000;
+
+                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+5)){
+                    sendSensorInactivityNotification ();
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    public void setLastUnixTime(long lastTime){
+        LastUnixTime = lastTime;
+    }
+
+    public void createChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel(Channel_ID,"Channel 1", NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("This is channel 1");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+    public void sendSensorInactivityNotification (){
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this,Channel_ID);
+        notification.setSmallIcon(R.drawable.igro_logo);
+        notification.setContentTitle("Humidity Sensor is Currently Inactive!");
+        notification.setContentText("Please Reconnect Sensor or Turn on iGRO System");
+        notification.setPriority(NotificationCompat.PRIORITY_HIGH);
+        notification.setCategory(NotificationCompat.CATEGORY_MESSAGE);
+        notification.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
+
+
+        //functionality to open humidityactivity on notification click
+        Intent notifyIntent = new Intent(this, HumidityActivity.class);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent notifyPendingIntent = PendingIntent.getActivity(
+                this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        );
+        notification.setContentIntent(notifyPendingIntent);
+
+
+        notificationManager.notify(1,notification.build());
+    }
+
 }
 

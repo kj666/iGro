@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".UvIndexActivity">
 
+    <TextView
+        android:id="@+id/uvLastUpdatedTextview"
+        android:layout_width="153dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/setUvRange"
         android:layout_width="wrap_content"
