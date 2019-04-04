@@ -52,7 +52,7 @@ public class ChangePasswordDialogFragment extends AppCompatDialogFragment {
         confirmNewPasswordEditText = view.findViewById(R.id.confirmNewPasswordEditText);
         changePasswordButton=view.findViewById(R.id.changePasswordButton);
 
-        builder.setTitle("Change Password");
+        builder.setTitle("");
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
