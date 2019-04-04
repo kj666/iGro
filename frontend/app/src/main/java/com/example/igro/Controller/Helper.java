@@ -35,6 +35,8 @@ public class Helper {
     FirebaseAuth firebaseAuth;
     //Firebase user
     FirebaseUser user;
+    // global settings for app uv info
+    static boolean celsiusOrFahrenheit = true; // default is celsius
 
     protected SharedPreferences sharedPreferences;
 
@@ -59,10 +61,30 @@ public class Helper {
         return sharedPreferences.getString("GreenhouseID", null);
     }
 
+    public void saveTemperatureSettings(boolean temperatureMetric) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("temperatureMetric", temperatureMetric);
+        editor.commit();
+    }
+
+    public boolean retrieveTemperatureMetric() {
+        return sharedPreferences.getBoolean("temperatureMetric", true);
+    }
+
     public void resetGreenhouse(){
         saveGreenHouseID("");
     }
 
+    /*
+    public boolean getCurrentTemperatureUsed() {
+        return celsiusOrFahrenheit;
+    }
+
+    public void setCurrentTemperatureUsed() {
+        celsiusOrFahrenheit = !celsiusOrFahrenheit;
+    }
+
+    */
     /**
      * Go to specified activity
      * @param goTo
@@ -121,7 +143,12 @@ public class Helper {
         return limitRange;
     }
 
-
+    public String celsiusFahrenheitConversion(String valueToBeConverted) {
+        Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
+        numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
+        numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+        return numberToBeConverted.toString();
+    }
 
 
 }

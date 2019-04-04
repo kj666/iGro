@@ -106,7 +106,10 @@ public class SensorGraphFragment extends Fragment {
             long t = data.getTime();
             Date time = new Date(t);
 
-            double y = data.getValue();
+            Double y = data.getValue();
+            if (helper.retrieveTemperatureMetric() == false) { //convert to fahrenheit
+                y = Double.parseDouble(helper.celsiusFahrenheitConversion(y.toString()));
+            }
             graphView.getGridLabelRenderer().setVerticalAxisTitle(xAxisTitle);
             series.appendData(new DataPoint(time.getTime(),y), true, 500);
         }

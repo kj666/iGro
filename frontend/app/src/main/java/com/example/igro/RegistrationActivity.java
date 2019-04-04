@@ -9,8 +9,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -48,6 +51,8 @@ public class RegistrationActivity extends AppCompatActivity {
     protected Button signUpButton;
     protected Button cancelButton;
     FirebaseFirestore userDatabase;
+    Spinner listOfAvailableGreenhouses;
+    String chosenGreenhouse;
 
 
 
@@ -66,6 +71,18 @@ public class RegistrationActivity extends AppCompatActivity {
         userPasswordConfirmation = findViewById(R.id.confirmUserPasswordText);
         signUpButton = findViewById(R.id.singUpButton);
         cancelButton = findViewById(R.id.cancelButton);
+        listOfAvailableGreenhouses = findViewById(R.id.listOfAvailableGreenhouses);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.greenhouse_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        listOfAvailableGreenhouses.setAdapter(adapter);
+        listOfAvailableGreenhouses.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                chosenGreenhouse = parent.getItemAtPosition(pos).toString();
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
         //Allowing entry fields to be modified
         userName.setFocusable(true);
         userEmail.setFocusable(true);
@@ -211,7 +228,7 @@ public class RegistrationActivity extends AppCompatActivity {
         userDB.child("Name").setValue(userName.getText().toString());
         userDB.child("Email").setValue(addThisUser.getEmail());
         userDB.child("ID").setValue(addThisUser.getUid());
-        userDB.child("GreenhouseID").setValue("Greenhouse1");
+        userDB.child("GreenhouseID").setValue(chosenGreenhouse);
         userDB.child("UserRole").setValue("user");
 
         /**
@@ -220,7 +237,7 @@ public class RegistrationActivity extends AppCompatActivity {
         user.put("Name", userName.getText().toString());
         user.put("Email", addThisUser.getEmail());
         user.put("ID", addThisUser.getUid());
-        user.put("Greenhouse ID#", "Greenhouse1");
+        user.put("Greenhouse ID#", chosenGreenhouse);
         user.put("User Role", "user"); // admin or user
 
         userDatabase.collection("Users")

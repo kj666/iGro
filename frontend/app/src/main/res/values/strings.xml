@@ -45,4 +45,9 @@
     <string name="NumberOfRecordsStr">NumberOfRecordsStr</string>
 
 
+    <string-array name="greenhouse_array">
+        <item>Greenhouse1</item>
+        <item>Greenhouse2</item>
+        <item>Greenhouse3</item>
+    </string-array>
 </resources>
