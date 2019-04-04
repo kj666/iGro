@@ -83,12 +83,12 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         final String pageTitle = "HISTORICAL " + applianceType + " ON/OFF EVENTS";
         historicalApplianceTitleTextView.setText(pageTitle);
 
-        // store appliancetype in shared preferences file
+ /*       // store appliancetype in shared preferences file
         SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
         SharedPreferences.Editor editor = applianceTypeSharedPrefs.edit();
         editor.putString(getString(R.string.ApplianceTypePassed), applianceType);
         editor.apply();
-
+*/
         // depending on where the intent comes from, the extra determines which appliance data to load.
         loadApplianceListByApplianceType(recordNumberEntered);
 
@@ -114,10 +114,10 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         loadApplianceListByApplianceType(recordNumberEntered);
 
  // set listener for number of records edti text box
-        recordNumberEditTextListener();
+        recordNumberEntered =  recordNumberEditTextListener();
 
 // reload when refresh button is hit
-        refreshButtonListener();
+        refreshButtonListener(recordNumberEntered);
     }
 
     @Override
@@ -135,16 +135,18 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         recordLimitTitleTextView = (TextView)findViewById(R.id.recordLimitTitleTextView);
         recordLimitEditText = (EditText)findViewById(R.id.recordLimitEditText);
         refreshButton = (Button)findViewById(R.id.refreshButton);
+// get appliance type
+ //       loadApplianceTypeFromSharedPrefs();
 
 //getting recorded type of appliance from shared prefs
 
-        loadApplianceTypeFromSharedPrefs();
+        loadApplianceListByApplianceType(recordNumberEntered);
 
 // set listener for number of records edti text box
-        recordNumberEditTextListener();
+        recordNumberEntered = recordNumberEditTextListener();
 
 // set listener for refresh button to load the new number of records
-        refreshButtonListener();
+        refreshButtonListener(recordNumberEntered);
     }
 
 
@@ -187,7 +189,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         }
     }
 
-    protected void recordNumberEditTextListener(){
+    protected int recordNumberEditTextListener(){
         //check for number of records entered by the user
         recordLimitEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,26 +199,26 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
                 recordNumberEnteredStr = recordLimitEditText.getEditableText().toString();
                 // check the number of records entered by the user & set to record Number Entered
                 recordNumberEntered = checkNumberOfRecordsEntered(recordNumberEnteredStr);
-                // store last entered text in shared preferences file
 
-                refreshButtonListener();
             }
         });
 
+        refreshButtonListener(recordNumberEntered);
+        return recordNumberEntered;
     }
 
-    protected void refreshButtonListener(){
+    protected void refreshButtonListener(final int recordNumber){
         // reload when refresh button is hit
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                loadListGetNumberOfRecordsFromSharedPrefs();
-                recordNumberEditTextListener();
+                loadApplianceListByApplianceType(recordNumber);
             }
         });
-    }
 
+    }
+/*
     protected void loadListGetNumberOfRecordsFromSharedPrefs(){
         //getting number of records entered from shared prefs
         SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
@@ -235,6 +237,14 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         loadApplianceListByApplianceType(recordNumberEntered);
     }
 
+    //Store user input number of records into shared prefs
+    protected void storeRecordsNumberInputInSharedPrefs(String recordsStr){
+        SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
+        SharedPreferences.Editor editor = applianceTypeSharedPrefs.edit();
+        editor.putString(getString(R.string.NumberOfRecordsStr), recordsStr);
+        editor.apply();
+    }
+*/
     // function definition for number of records entered by the user
     protected int checkNumberOfRecordsEntered(String recordsEnteredStr) {
 
@@ -249,10 +259,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
 
                     recordNumberEntered = Integer.parseInt(numberEnteredStr);
 
-                    SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
-                    SharedPreferences.Editor editor = applianceTypeSharedPrefs.edit();
-                    editor.putString(getString(R.string.NumberOfRecordsStr), recordNumberEntered.toString());
-                    editor.apply();
+  //                 storeRecordsNumberInputInSharedPrefs(numberEnteredStr);
 
                 } else {
                     numberOfRecordsError();
@@ -266,6 +273,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             recordNumberEntered = 20;
         }
 
+        refreshButtonListener(recordNumberEntered);
         return recordNumberEntered;
     }
 
@@ -306,11 +314,11 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             }
         });
 
-// set listener for number of records edti text box
+        // set listener for number of records edti text box
         recordNumberEditTextListener();
 
 // reload when refresh button is hit
-        refreshButtonListener();
+        refreshButtonListener(recordNumberEntered);
 
     }
 
@@ -357,7 +365,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         recordNumberEditTextListener();
 
 // reload when refresh button is hit
-        refreshButtonListener();
+        refreshButtonListener(recordNumberEntered);
 
     }
 
@@ -402,7 +410,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         recordNumberEditTextListener();
 
 // reload when refresh button is hit
-        refreshButtonListener();
+        refreshButtonListener(recordNumberEntered);
 
     }
 
@@ -448,7 +456,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         recordNumberEditTextListener();
 
 // reload when refresh button is hit
-        refreshButtonListener();
+        refreshButtonListener(recordNumberEntered);
     }
 
 // set up menu
