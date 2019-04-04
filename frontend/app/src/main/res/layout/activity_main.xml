@@ -241,10 +241,10 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/leafDashLogoView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toEndOf="@+id/conditionView"
         app:layout_constraintTop_toBottomOf="@+id/uvView"
-        app:layout_constraintVertical_bias="0.768" />
+        app:layout_constraintVertical_bias="0.51" />
 
     <ImageView
         android:id="@+id/leafDashLogoView"
@@ -281,8 +281,8 @@
 
     <Button
         android:id="@+id/definationButton"
-        android:layout_width="wrap_content"
-        android:layout_height="38dp"
+        android:layout_width="86dp"
+        android:layout_height="35dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -292,7 +292,8 @@
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/leafDashLogoView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.423"
         app:layout_constraintStart_toEndOf="@+id/conditionView"
         app:layout_constraintTop_toBottomOf="@+id/uvView"
-        app:layout_constraintVertical_bias="0.492" />
+        app:layout_constraintVertical_bias="0.487" />
 </android.support.constraint.ConstraintLayout>
