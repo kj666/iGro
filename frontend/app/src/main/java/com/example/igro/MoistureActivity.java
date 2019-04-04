@@ -289,6 +289,8 @@ public class MoistureActivity extends AppCompatActivity {
                     long unixTime= sensorDataValue.getTime();
                     String readableTime=Helper.convertTime(unixTime);
                     moistLastUpdatedTextView.setText("Sensor last updated "+readableTime);
+                    LastUnixTime = sensorDataValue.getTime()/1000;
+                    setLastUnixTime(LastUnixTime);
                 }
             }
             @Override
@@ -435,27 +437,6 @@ public class MoistureActivity extends AppCompatActivity {
     }
 
     public void checkSensorInactivity(){
-
-
-        //obtain and set Last Sensor's Unix Time to a public variable
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
-                    ghMoistureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
-                    ghMoisture = Double.parseDouble(ghMoistureTextView.getText().toString());
-                    LastUnixTime = sensorDataValue.getTime()/1000;
-                    setLastUnixTime(LastUnixTime);
-
-                }
-
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        };
-        db.child("HumiditySensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
-
 
         //Obtain Poll Frequency, Current Unix time and determine if sensor is inactive
         generalDB.addValueEventListener(new ValueEventListener() {
