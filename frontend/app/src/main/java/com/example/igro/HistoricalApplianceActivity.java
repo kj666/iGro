@@ -198,10 +198,6 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
                 // check the number of records entered by the user & set to record Number Entered
                 recordNumberEntered = checkNumberOfRecordsEntered(recordNumberEnteredStr);
                 // store last entered text in shared preferences file
-                SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
-                SharedPreferences.Editor editor = applianceTypeSharedPrefs.edit();
-                editor.putString(getString(R.string.NumberOfRecordsStr), recordNumberEnteredStr);
-                editor.apply();
 
                 refreshButtonListener();
             }
@@ -215,20 +211,27 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //getting number of records entered from shared prefs
-                SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
-                String recordNumberFromSharedPrefs = applianceTypeSharedPrefs.getString(getString(R.string.NumberOfRecordsStr), recordNumberEntered.toString());
-
-                loadApplianceListByApplianceType(checkNumberOfRecordsEntered(recordNumberFromSharedPrefs));
+                loadListGetNumberOfRecordsFromSharedPrefs();
                 recordNumberEditTextListener();
             }
         });
     }
 
+    protected void loadListGetNumberOfRecordsFromSharedPrefs(){
+        //getting number of records entered from shared prefs
+        SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
+        String recordNumberFromSharedPrefs = applianceTypeSharedPrefs.getString(getString(R.string.NumberOfRecordsStr), recordNumberEnteredStr);
+
+        assert recordNumberFromSharedPrefs != null;
+        loadApplianceListByApplianceType(Integer.parseInt(recordNumberFromSharedPrefs));
+    }
+
+
     protected void loadApplianceTypeFromSharedPrefs(){
         //getting recorded type of appliance from shared prefs
         SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
-        String applianceTypeFromSharedPrefs = applianceTypeSharedPrefs.getString(getString(R.string.ApplianceTypePassed), null);
+        applianceTypePassed = applianceTypeSharedPrefs.getString(getString(R.string.ApplianceTypePassed), null);
+
         loadApplianceListByApplianceType(recordNumberEntered);
     }
 
@@ -243,7 +246,13 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
             if (recordsEnteredStr.matches(".*[0-999].*")) {
                 //Check if Lower limit is < upper limit
                 if (Integer.parseInt(recordsEnteredStr) < 1000) {
+
                     recordNumberEntered = Integer.parseInt(numberEnteredStr);
+
+                    SharedPreferences applianceTypeSharedPrefs = getSharedPreferences(getString(R.string.ApplianceTypeSharedPrefsFile), MODE_PRIVATE);
+                    SharedPreferences.Editor editor = applianceTypeSharedPrefs.edit();
+                    editor.putString(getString(R.string.NumberOfRecordsStr), recordNumberEntered.toString());
+                    editor.apply();
 
                 } else {
                     numberOfRecordsError();
@@ -256,7 +265,7 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         } else {
             recordNumberEntered = 20;
         }
-        loadApplianceTypeFromSharedPrefs();
+
         return recordNumberEntered;
     }
 
