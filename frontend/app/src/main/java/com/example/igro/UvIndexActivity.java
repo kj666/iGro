@@ -488,7 +488,7 @@ public class UvIndexActivity extends AppCompatActivity {
                 String lastpollfrequencyMs = dataSnapshot.child("SensorConfig/poll").getValue().toString();
                 lastpollfrequencyInt = Integer.parseInt(lastpollfrequencyMs) / 1000;
 
-                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+5)){
+                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+30)){
                     sendSensorInactivityNotification ();
                 }
 
