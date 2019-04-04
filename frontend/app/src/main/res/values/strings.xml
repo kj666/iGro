@@ -24,6 +24,10 @@
     <string name="CurrentUserEmail">CurrentUserEmail</string>
     <string name="PreviousLightsTriggerTime">PreviousLightsTriggerTime</string>
 
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="default_notification_channel_name" translatable="true">Weather</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="fcm_message">FCM Message</string>
     <array name="Appliances">
         <item>HEATER</item>
         <item>HUMIDIFIER</item>
@@ -36,7 +40,14 @@
         <item>OnOffStatus</item>
     </array>
     <string name="SensorType">Sensor</string>
+    <string name="ApplianceTypeSharedPrefsFile">ApplianceTypeSharedPrefsFile</string>
+    <string name="ApplianceTypePassed">ApplianceTypePassed</string>
+    <string name="NumberOfRecordsStr">NumberOfRecordsStr</string>
 
 
-
+    <string-array name="greenhouse_array">
+        <item>Greenhouse1</item>
+        <item>Greenhouse2</item>
+        <item>Greenhouse3</item>
+    </string-array>
 </resources>

@@ -8,11 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-
 import com.example.igro.Controller.Helper;
-import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -109,7 +106,10 @@ public class SensorGraphFragment extends Fragment {
             long t = data.getTime();
             Date time = new Date(t);
 
-            double y = data.getValue();
+            Double y = data.getValue();
+            if (helper.retrieveTemperatureMetric() == false) { //convert to fahrenheit
+                y = Double.parseDouble(helper.celsiusFahrenheitConversion(y.toString()));
+            }
             graphView.getGridLabelRenderer().setVerticalAxisTitle(xAxisTitle);
             series.appendData(new DataPoint(time.getTime(),y), true, 500);
         }

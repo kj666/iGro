@@ -1,6 +1,5 @@
 package com.example.igro;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.igro.Controller.Helper;
-import com.example.igro.Models.SensorData.SensorData;
 import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +78,14 @@ public class SensorDataTableFragment extends Fragment {
 
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    Log.d("FIREBASE", sensorDataValue.getTime()+"");
+                    if (helper.retrieveTemperatureMetric()) {
+
+                    } else {
+                        double temperatureInF = Double.
+                                parseDouble(helper.celsiusFahrenheitConversion(((Double)(sensorDataValue.getValue())).toString()));
+                        sensorDataValue.setValue(temperatureInF);
+                    }
                     sensorDataList.add(sensorDataValue);
                 }
                 populateTable();
@@ -93,7 +100,7 @@ public class SensorDataTableFragment extends Fragment {
         else if (sensorType.equals("TEMPERATURE-F"))
             db.child("TemperatureSensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
         else if(sensorType.equals("UV"))
-            db.child("UVSensor1").addValueEventListener(eventListener);
+            db.child("UVSensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
         else if(sensorType.equals("HUMIDITY"))
             db.child("HumiditySensor1").limitToLast(dataLimit).addValueEventListener(eventListener);
         else if(sensorType.equals("MOISTURE"))
@@ -131,19 +138,14 @@ public class SensorDataTableFragment extends Fragment {
             TextView sensorDate = convertView.findViewById(R.id.sensorDateTextView);
             TextView sensorData = convertView.findViewById(R.id.sensorDataTextView);
 
-            sensorDate.setText(Helper.convertTime(sensorDataList.get(position).getTime()));
-            sensorData.setText(sensorDataList.get(position).getValue()+"");
+            sensorDate.setText(Helper.convertTimeLetter(sensorDataList.get(position).getTime()));
+            DecimalFormat df;
+            if(!sensorType.equals("UV"))
+                df = new DecimalFormat("####0.0");
+            else
+                df = new DecimalFormat("####0.00");
 
-//            if(sensorType.equals("TEMPERATURE-C"))
-//                sensorData.setText(sensorDataList.get(position).getTemperatureC()+"");
-//            else if (sensorType.equals("TEMPERATURE-F"))
-//                sensorData.setText(sensorDataList.get(position).getTemperatureF()+"");
-//            else if(sensorType.equals("UV"))
-//                sensorData.setText(sensorDataList.get(position).getUv()+"");
-//            else if(sensorType.equals("HUMIDITY"))
-//                sensorData.setText(sensorDataList.get(position).getHumidity()+"");
-//            else if(sensorType.equals("MOISTURE"))
-//                sensorData.setText(sensorDataList.get(position).getSoil()+"");
+            sensorData.setText(df.format(sensorDataList.get(position).getValue())+"");
 
             return convertView;
         }
