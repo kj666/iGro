@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/historicalApplianceTitleTextView"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="67dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_below="@+id/logoTopImageView2"
         android:layout_alignParentStart="true"
@@ -22,7 +22,7 @@
         android:layout_marginTop="-5dp"
         android:layout_marginEnd="13dp"
         android:layout_marginRight="13dp"
-        android:layout_marginBottom="115dp"
+        android:layout_marginBottom="57dp"
         android:gravity="center_horizontal|center_vertical"
         android:text="HISTORICAL HEATER USE"
         android:textSize="18sp" />
@@ -45,7 +45,7 @@
     <ListView
         android:id="@+id/applianceEventListView"
         android:layout_width="match_parent"
-        android:layout_height="487dp"
+        android:layout_height="517dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
@@ -55,55 +55,87 @@
         android:layout_marginLeft="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
-        android:layout_marginBottom="13dp" />
+        android:layout_marginBottom="28dp" />
 
     <TextView
         android:id="@+id/listOnOffTitleTextView"
-        android:layout_width="110dp"
-        android:layout_height="26dp"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="151dp"
-        android:layout_marginEnd="19dp"
-        android:layout_marginRight="19dp"
-        android:layout_marginBottom="19dp"
-        android:text="On/Off Status"
-        android:textSize="16sp" />
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="11dp"
+        android:text="Status"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/listDateTitleTextView"
-        android:layout_width="151dp"
-        android:layout_height="42dp"
+        android:layout_width="129dp"
+        android:layout_height="36dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="151dp"
-        android:layout_marginEnd="135dp"
-        android:layout_marginRight="135dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="10dp"
+        android:layout_toStartOf="@+id/listUserNameTitleTextView"
+        android:layout_toLeftOf="@+id/listUserNameTitleTextView"
         android:gravity="clip_vertical"
         android:text="Date and Time"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/listCounterTitleTextView"
-        android:layout_width="104dp"
-        android:layout_height="41dp"
+        android:layout_width="80dp"
+        android:layout_height="36dp"
+        android:layout_above="@+id/applianceEventListView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="9dp"
+        android:layout_toStartOf="@+id/listDateTitleTextView"
+        android:layout_toLeftOf="@+id/listDateTitleTextView"
+        android:gravity="clip_vertical"
+        android:text="No."
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/listUserNameTitleTextView"
+        android:layout_width="89dp"
+        android:layout_height="37dp"
         android:layout_above="@+id/applianceEventListView"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="151dp"
-        android:layout_marginEnd="295dp"
-        android:layout_marginRight="295dp"
-        android:layout_marginBottom="20dp"
-        android:gravity="clip_vertical"
-        android:text="Counter"
-        android:textSize="16sp" />
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="9dp"
+        android:layout_toStartOf="@+id/listTimeSinceLastTriggerTitleTextView"
+        android:layout_toLeftOf="@+id/listTimeSinceLastTriggerTitleTextView"
+        android:text="Username"
+        android:textSize="14sp" />
 
+    <TextView
+        android:id="@+id/listTimeSinceLastTriggerTitleTextView"
+        android:layout_width="88dp"
+        android:layout_height="54dp"
+        android:layout_above="@+id/applianceEventListView"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="128dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="8dp"
+        android:layout_toStartOf="@+id/listOnOffTitleTextView"
+        android:layout_toLeftOf="@+id/listOnOffTitleTextView"
+        android:text="Hours Since\nLast Trigger" />
 
 
 </RelativeLayout>

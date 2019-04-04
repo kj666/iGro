@@ -8,6 +8,17 @@
     tools:context=".MoistureActivity">
 
 
+    <TextView
+        android:id="@+id/moistLastUpdatedTextView"
+        android:layout_width="153dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/moistureHistoryButton"
         android:layout_width="320dp"
@@ -288,7 +299,7 @@
         android:foregroundGravity="bottom|center_vertical|center|center_horizontal"
         android:gravity="bottom|clip_horizontal|center|center_horizontal|center_vertical"
         android:hint="Upper Limit"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         android:saveEnabled="true"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/colorAccent"

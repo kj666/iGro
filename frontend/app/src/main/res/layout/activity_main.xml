@@ -112,6 +112,7 @@
             android:inputType="number"
             android:textAlignment="center"
             android:textSize="45sp" />
+
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView

@@ -2,6 +2,7 @@ package com.example.igro;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +23,7 @@ import android.text.TextUtils;
 
 import com.example.igro.Controller.Helper;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.UvRange;
+import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.android.volley.Request;
@@ -31,7 +32,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.igro.Models.SensorData.SensorData;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -63,6 +63,7 @@ public class UvIndexActivity extends AppCompatActivity {
     EditText lowUvEditText;
     EditText highUvEditText;
     TextView uvControlTextView;
+    TextView uvLastUpdatedTextView;
     Switch uvSwitch;
     TextView uvTextView;
     Button uvHistoryButton;
@@ -70,29 +71,54 @@ public class UvIndexActivity extends AppCompatActivity {
     Button setUvRange;
     TextView ghUvTextView;
     Double ghUv;
+
+
+    private FirebaseUser currentuser;
+    String currentuserID;
+    String currentuserName;
+    String currentuserEmail;
     private FirebaseUser currentUser;
+    String currentUserID;
+    String currentUserName;
+    String currentUserEmail;
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
-
+    //last Lights switch state and time of previous trigger to calculated how long they were on
     public Boolean lastUvState = false;
-
+    Long previousLightsTriggerTime;
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "LightsAreOnTag";
 
     //create heater database reference for the correct node
-    DatabaseReference uvSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("UVControlLog");
-    //create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+    DatabaseReference uvSwitchEventDB, databaseRange, db, appliances, userDB;
 
+    public void initializeDB(String greenhouseID){
+        databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
+        uvSwitchEventDB = FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("UVControlLog");
+        db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+        userDB = FirebaseDatabase.getInstance().getReference().child("Users");
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uv_index);
 
-
         initializeUI();
+        helper.setSharedPreferences(getApplicationContext());
+        initializeDB(helper.retrieveGreenhouseID());
 
         currentUser = helper.checkAuthentication();
+        currentuser = FirebaseAuth.getInstance().getCurrentUser();
+
+        currentuserID = currentuser.getUid();
+        currentuserName = currentuser.getDisplayName();
+        currentuserEmail = currentUser.getEmail();
+
+        currentUserID = currentUser.getUid();
+        currentUserName = currentUser.getDisplayName();
+        currentUserEmail = currentUser.getEmail();
+
         retrieveSensorData();
         retrieveRange();
         setUvRange.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +127,6 @@ public class UvIndexActivity extends AppCompatActivity {
                 setUvRange();
             }
         });
-        retrieveSensorData();
 
     }
 
@@ -175,14 +200,22 @@ public class UvIndexActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
+            case R.id.settings:
+                helper.goToActivity(SettingsActivity.class);
+                return true;
+            case R.id.about:
+                helper.goToActivity(AboutActivity.class);
+                return true;
             case R.id.sign_out:
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-
             case R.id.polling_menu:
                 openDialog();
                 return true;
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -190,13 +223,14 @@ public class UvIndexActivity extends AppCompatActivity {
 
     //Initialization
     void initializeUI(){
-        uvControlTextView = (TextView)findViewById(R.id.uvControlTextView);
-        uvSwitch = (Switch)findViewById(R.id.uvSwitch);
+        uvControlTextView = findViewById(R.id.uvControlTextView);
+        uvSwitch = findViewById(R.id.uvSwitch);
         uvSwitch.setClickable(true);
 
-        lowUvEditText = (EditText)findViewById(R.id.lowUvEditText);
-        highUvEditText = (EditText)findViewById(R.id.highUvEditText);
-        uvTextView = (TextView)findViewById(R.id.ghUvTextView);
+        lowUvEditText = findViewById(R.id.lowUvEditText);
+        highUvEditText = findViewById(R.id.highUvEditText);
+        uvTextView = findViewById(R.id.ghUvTextView);
+        uvLastUpdatedTextView=findViewById(R.id.uvLastUpdatedTextview);
 
         outdoorUVTextView = findViewById(R.id.outdoorUvTextView);
         queue = Volley.newRequestQueue(this);
@@ -205,28 +239,23 @@ public class UvIndexActivity extends AppCompatActivity {
         uvHistoryButton = findViewById(R.id.uvHistoryButton);
         lightUseButton = findViewById(R.id.lightUseHistoryButton);
         //indoor uv
-        ghUvTextView = (TextView) findViewById(R.id.ghUvTextView);
+        ghUvTextView =  findViewById(R.id.ghUvTextView);
         //set range button
-        setUvRange = (Button) findViewById(R.id.setUvRange);
+        setUvRange = findViewById(R.id.setUvRange);
     }
 
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference uvRange = db.child("UV");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                lowUvEditText.setText(dataSnapshot.child("lowUvValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowUvValue").getValue().toString());
-                highUvEditText.setText(dataSnapshot.child("highUvValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highUvValue").getValue().toString());
 
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
 
-                if (!((ghUv > lowRange)
-                        && (ghUv< highRange))) {
-
+                lowUvEditText.setText(lowRange.toString());
+                highUvEditText.setText(highRange.toString());
+                if (!((ghUv > lowRange) && (ghUv< highRange))) {
                     ghUvTextView.setTextColor(Color.RED);
                     Toast.makeText(UvIndexActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
@@ -236,12 +265,10 @@ public class UvIndexActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
 
-        uvRange.addValueEventListener(eventListener);
+        databaseRange.child("UVSensor1").addValueEventListener(eventListener);
 
     }
 
@@ -254,10 +281,10 @@ public class UvIndexActivity extends AppCompatActivity {
  //check if the ranges are empty or not
             if (!TextUtils.isEmpty(lowUv) && !TextUtils.isEmpty(highUv)) {
  //Check if Lower limit is < upper limit
-                if (Integer.parseInt(lowUv) < Integer.parseInt(highUv)) {
+                if (Double.parseDouble(lowUv) < Double.parseDouble(highUv)) {
 
-                    UvRange UvRange = new UvRange(lowUv, highUv);
-                    databaseRange.child("UV").setValue(UvRange);
+                    databaseRange.child("UVSensor1").child("Low").setValue(Double.parseDouble(lowUv));
+                    databaseRange.child("UVSensor1").child("High").setValue(Double.parseDouble(highUv));
                     Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
                 } else {
@@ -279,6 +306,11 @@ public class UvIndexActivity extends AppCompatActivity {
                 ApplianceControlEvents lastRecord = dataSnapshot.getValue(ApplianceControlEvents.class);
                 assert lastRecord != null;
                 final Boolean checkedStatus = lastRecord.getEventOnOff();
+                previousLightsTriggerTime = lastRecord.getEventUnixEpoch();
+
+                SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.AppliancePreviousTriggerTimesFile), MODE_PRIVATE).edit();
+                editor.putLong(getString(R.string.PreviousLightsTriggerTime), previousLightsTriggerTime);
+                editor.apply();
 
                 if(!(checkedStatus == null)){
                     lastUvState = checkedStatus;
@@ -322,7 +354,6 @@ public class UvIndexActivity extends AppCompatActivity {
 
     }
 
-
     private void uvSwitchEvent(boolean uvSwitchState) {
 
         //record the time of the click
@@ -340,19 +371,16 @@ public class UvIndexActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String uvEventId = uvSwitchEventDB.push().getKey();
 
-
-            ApplianceControlEvents uvSwitchClickEvent = new ApplianceControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, uvSwitchState);
+            ApplianceControlEvents uvSwitchClickEvent = new ApplianceControlEvents(uvEventId, uvOnTimeStampFormated, uvOnOffDateUnixFormat, previousLightsTriggerTime, currentUserID, currentUserName, currentUserEmail, uvSwitchState);
             uvSwitchEventDB.child(uvEventId).setValue(uvSwitchClickEvent);
 
             if(!(uvEventId == null)) {
-
-
-                if (lastUvState) {
-
+                if (!lastUvState) {
+                    appliances.child("LightCtrl").setValue(true);
                     Log.d(TAG, "The lights were turned on " + uvOnTimeStampFormated);
                     Toast.makeText(this, "The lights were switched ON on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
-
                 } else {
+                    appliances.child("LightCtrl").setValue(false);
                     Log.d(TAG, "Thelights were turned off on " + uvOnTimeStampFormated);
                     Toast.makeText(this, "The lights were switched OFF on " + uvOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }
@@ -360,35 +388,26 @@ public class UvIndexActivity extends AppCompatActivity {
                 Log.d(TAG, "ERROR: uvEventId can't be null");
 
             }
-
         }
-
-
     }
 
     void retrieveSensorData(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.0");
-
-                    //UVindex
-                    uvTextView.setText(df.format(sensorData.getUv())+"");
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    uvTextView.setText(new DecimalFormat("####0.00").format(sensorDataValue.getValue())+"");
                     ghUv = Double.parseDouble(uvTextView.getText().toString());
-
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    uvLastUpdatedTextView.setText("Sensor Last Updated on "+readableTime);
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
+        db.child("UVSensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
     void requestUVIndex() {
@@ -430,6 +449,11 @@ public class UvIndexActivity extends AppCompatActivity {
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
 
 }

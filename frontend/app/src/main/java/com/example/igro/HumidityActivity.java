@@ -2,6 +2,7 @@ package com.example.igro;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,8 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.igro.Models.ActuatorControl.ApplianceControlEvents;
-import com.example.igro.Models.SensorData.HumidityRange;
-import com.example.igro.Models.SensorData.SensorData;
+import com.example.igro.Models.SensorData.SensorDataValue;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -61,26 +61,43 @@ public class HumidityActivity extends AppCompatActivity {
     EditText highHumEditText;
     TextView humTextView;
     TextView humControlTextView;
+    TextView humLastUpdatedTextView;
     Switch humSwitch;
     Button humidityHistoryButton;
     Button humidifierUseButton;
     Button setHumidityRange;
     Double ghHumidity;
+    private FirebaseUser currentuser;
+    String currentuserID;
+    String currentuserName;
+    String currentuserEmail;
+    String getCurrentuserID;
+    String getCurrentuserName;
+    String getCurrentuserEmail;
     private FirebaseUser currentUser;
+    String currentUserID;
+    String currentUserName;
+    String currentUserEmail;
     public Boolean lastHumidState = false;
+    Long previousHumidifierTriggerTime;
     private Helper helper = new Helper(this, FirebaseAuth.getInstance());
 
     //log tag to test the on/off state on changeState event of heaterSwitch
     private static final String TAG = "HumidifierIsOnTag";
 
-    //create heater database reference
-    DatabaseReference applianceDB = FirebaseDatabase.getInstance().getReference().child("ApplianceControlLog");
-    DatabaseReference humidSwitchEventDB = FirebaseDatabase.getInstance().getReference("ApplianceControlLog").child("HumidityControlLog");
 
     TextView outdoorHumidityTextView; // displays the humidity in percentage
     private RequestQueue queue;
     //create database reference for ranges
-    DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child("Ranges");
+    DatabaseReference databaseRange, humidSwitchEventDB, db, appliances, userDB ;
+
+    public void initializeDB(String greenhouseID){
+        databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
+        humidSwitchEventDB = FirebaseDatabase.getInstance().getReference(greenhouseID+"/ApplianceControlLog").child("HumidityControlLog");
+        db = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Data");
+        appliances = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Appliances");
+        userDB = FirebaseDatabase.getInstance().getReference().child("Users");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +105,25 @@ public class HumidityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_humidity);
 
         initializeUI();
-
-        retrieveSensorData();
+        helper.setSharedPreferences(getApplicationContext());
+        initializeDB(helper.retrieveGreenhouseID());
 
         queue = Volley.newRequestQueue(this);
         requestHumidity();
 
-        initializeUI();
         currentUser = helper.checkAuthentication();
-        retrieveSensorData();
+        currentuser = FirebaseAuth.getInstance().getCurrentUser();
 
+        currentuserID = currentuser.getUid();
+        currentuserName = currentuser.getDisplayName();
+        currentuserEmail = currentUser.getEmail();
+
+        currentUserID = currentUser.getUid();
+        currentUserName = currentUser.getDisplayName();
+        currentUserEmail = currentUser.getEmail();
+
+
+        retrieveSensorData();
         retrieveRange();
         setHumidityRange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,15 +146,22 @@ public class HumidityActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch(item.getItemId()){
+            case R.id.settings:
+                helper.goToActivity(SettingsActivity.class);
+                return true;
+            case R.id.about:
+                helper.goToActivity(AboutActivity.class);
+                return true;
             case R.id.sign_out:
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-
             case R.id.polling_menu:
                 openDialog();
                 return true;
-
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
 
         }
         return super.onOptionsItemSelected(item);
@@ -202,12 +235,13 @@ public class HumidityActivity extends AppCompatActivity {
     void initializeUI() {
 
         //Initialization
-        humTextView = (TextView) findViewById(R.id.ghHumTextView);
-        lowHumEditText = (EditText) findViewById(R.id.lowHumEditText);
-        highHumEditText = (EditText) findViewById(R.id.highHumEditText);
-        setHumidityRange = (Button) findViewById(R.id.setHumidityRange);
-        humControlTextView = (TextView) findViewById(R.id.humControlTextView);
-        humSwitch = (Switch) findViewById(R.id.humSwitch);
+        humTextView = findViewById(R.id.ghHumTextView);
+        lowHumEditText =  findViewById(R.id.lowHumEditText);
+        highHumEditText = findViewById(R.id.highHumEditText);
+        setHumidityRange =  findViewById(R.id.setHumidityRange);
+        humControlTextView =  findViewById(R.id.humControlTextView);
+        humLastUpdatedTextView=findViewById(R.id.humLastUpdatedTextview2);
+        humSwitch = findViewById(R.id.humSwitch);
         outdoorHumidityTextView = findViewById(R.id.outdoorHumTextView);
         humSwitch.setClickable(true);
 
@@ -220,16 +254,13 @@ public class HumidityActivity extends AppCompatActivity {
         String lowHumidity = lowHumEditText.getText().toString();
         String highHumidity = highHumEditText.getText().toString();
 
-        int lowHum = parseInt(lowHumidity);
-        int highHum = parseInt(highHumidity);
-
         //check if the ranges are empty or not
         if (!TextUtils.isEmpty(lowHumidity) && !TextUtils.isEmpty(highHumidity)) {
 
-            if (Integer.parseInt(lowHumidity.toString()) < Integer.parseInt(highHumidity.toString())) {
+            if (Double.parseDouble(lowHumidity) < Double.parseDouble(highHumidity)) {
 
-                    HumidityRange humidityRange = new HumidityRange(lowHumidity, highHumidity);
-                    databaseRange.child("Humidity").setValue(humidityRange);
+                    databaseRange.child("HumiditySensor1").child("Low").setValue(Double.parseDouble(lowHumidity));
+                    databaseRange.child("HumiditySensor1").child("High").setValue( Double.parseDouble(highHumidity));
                     Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
 
                 } else {
@@ -242,50 +273,38 @@ public class HumidityActivity extends AppCompatActivity {
 
     }
 
-
     void retrieveSensorData() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("data");
-
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    SensorData sensorData = snap.getValue(SensorData.class);
-                    DecimalFormat df = new DecimalFormat("####0.00");
-                    //Humidity
-                    humTextView.setText(df.format(sensorData.getHumidity()) + "");
+                    SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
+                    humTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
                     ghHumidity = Double.parseDouble(humTextView.getText().toString());
-
+                    long unixTime= sensorDataValue.getTime();
+                    String readableTime=Helper.convertTime(unixTime);
+                    humLastUpdatedTextView.setText("Sensor last updated "+readableTime);
                 }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-        db.orderByKey().limitToLast(1).addValueEventListener(eventListener);
-
+        db.child("HumiditySensor1").orderByKey().limitToLast(1).addValueEventListener(eventListener);
     }
 
 
     void retrieveRange(){
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Ranges");
-        DatabaseReference humidityRange = db.child("Humidity");
-
+        DatabaseReference humidityRange = databaseRange.child("HumiditySensor1");
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                highHumEditText.setText(dataSnapshot.child("highHumidityValue").getValue().toString());
-                Double highRange = Double.parseDouble(dataSnapshot.child("highHumidityValue").getValue().toString());
 
-                lowHumEditText.setText(dataSnapshot.child("lowHumidityValue").getValue().toString());
-                Double lowRange = Double.parseDouble(dataSnapshot.child("lowHumidityValue").getValue().toString());
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
+                highHumEditText.setText(highRange.toString());
+                lowHumEditText.setText(lowRange.toString());
 
-
-                if (!((ghHumidity > lowRange)
-                        && (ghHumidity< highRange))) {
-
+                if (!((ghHumidity > lowRange) && (ghHumidity< highRange))) {
                     humTextView.setTextColor(Color.RED);
                     Toast.makeText(HumidityActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
                 }
@@ -295,15 +314,11 @@ public class HumidityActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         };
-
         humidityRange.addValueEventListener(eventListener);
 
     }
-
 
     private void humidSwitchStateFromRecord() {
 
@@ -314,6 +329,11 @@ public class HumidityActivity extends AppCompatActivity {
                 ApplianceControlEvents lastRecord = dataSnapshot.getValue(ApplianceControlEvents.class);
                 assert lastRecord != null;
                 final Boolean checkedStatus = lastRecord.getEventOnOff();
+                previousHumidifierTriggerTime = lastRecord.getEventUnixEpoch();
+
+                SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.AppliancePreviousTriggerTimesFile), MODE_PRIVATE).edit();
+                editor.putLong(getString(R.string.PreviousLightsTriggerTime), previousHumidifierTriggerTime);
+                editor.apply();
 
                 if (!(checkedStatus == null)) {
 
@@ -377,16 +397,17 @@ public class HumidityActivity extends AppCompatActivity {
             //generate unique key for each switch, create a new object of HeaterControlEvents, record on/off & date/time in firebase
             String humEventId = humidSwitchEventDB.push().getKey();
 
-            ApplianceControlEvents humSwitchClickEvent = new ApplianceControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, humSwitchState);
+            ApplianceControlEvents humSwitchClickEvent = new ApplianceControlEvents(humEventId, humOnTimeStampFormated, humOnOffDateUnixFormat, previousHumidifierTriggerTime, currentUserID, currentUserName, currentUserEmail, humSwitchState);
             humidSwitchEventDB.child(humEventId).setValue(humSwitchClickEvent);
 
             if (!(humEventId == null)) {
 
-                if (lastHumidState) {
-
+                if (!lastHumidState) {
+                    appliances.child("HumidCtrl").setValue(true);
                     Log.d(TAG, "The humidifier was turned on " + humOnTimeStampFormated);
                     Toast.makeText(this, "The humidifier was switched ON on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 } else {
+                    appliances.child("HumidCtrl").setValue(false);
                     Log.d(TAG, "The humidifier was turned off on " + humOnTimeStampFormated);
                     Toast.makeText(this, "The humidifier was switched OFF on " + humOnTimeStampFormated, Toast.LENGTH_LONG).show();
                 }
@@ -435,9 +456,16 @@ public class HumidityActivity extends AppCompatActivity {
                 });
         queue.add(humidityRequest);
     }
+    // dialog to display the polling dialog
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
+    }
+    // dialog to display the change password fragment
+    public void changePasswordDialog(){
+
+        ChangePasswordDialogFragment changePassword=new ChangePasswordDialogFragment();
+        changePassword.show(getSupportFragmentManager(),"Change Password dialog");
     }
 }
 

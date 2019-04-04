@@ -67,7 +67,7 @@
         android:background="@null"
         android:ems="10"
         android:inputType="numberSigned"
-        android:text="24"
+        android:text="24.0"
         android:textAlignment="center"
         android:textColor="@color/cardview_dark_background"
         android:textSize="45sp"
@@ -335,5 +335,16 @@
         app:layout_constraintEnd_toStartOf="@+id/highTempEditText"
         app:layout_constraintStart_toEndOf="@+id/lowTempEditText"
         app:layout_constraintTop_toBottomOf="@+id/tempRangeTextView" />
+
+    <TextView
+        android:id="@+id/tempLastUpdatedTextview"
+        android:layout_width="153dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="right"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
