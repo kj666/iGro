@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/definationButton"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -229,13 +228,36 @@
             android:textColor="@color/colorPrimaryDark" />
     </android.support.v7.widget.CardView>
 
+    <android.support.v7.widget.CardView
+        android:id="@+id/statusView"
+        android:layout_width="204dp"
+        android:layout_height="41dp"
+        android:layout_marginVertical="110dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/leafDashLogoView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/conditionView"
+        app:layout_constraintTop_toBottomOf="@+id/uvView"
+        app:layout_constraintVertical_bias="0.768" />
+
     <ImageView
         android:id="@+id/leafDashLogoView"
-        android:layout_width="114dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="122dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/igro_justleaf" />
 
@@ -258,9 +280,9 @@
         app:layout_constraintVertical_bias="0.053" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="112dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/definationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -272,5 +294,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/conditionView"
         app:layout_constraintTop_toBottomOf="@+id/uvView"
-        app:layout_constraintVertical_bias="0.475" />
+        app:layout_constraintVertical_bias="0.492" />
 </android.support.constraint.ConstraintLayout>
