@@ -6,58 +6,91 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
-    <TextView
-        android:id="@+id/settingsActivityTextView"
-        android:layout_width="283dp"
-        android:layout_height="167dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="This is the settings page. Potential things to include: Option to set Celsius or Fahrenheit from here."
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2" />
-
     <CheckBox
         android:id="@+id/switchTemperatureMetricCheckBox"
-        android:layout_width="152dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Switch Metric Unit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.033" />
-
-    <TextView
-        android:id="@+id/currentTemperatureMetricTextView"
-        android:layout_width="200dp"
+        android:layout_width="383dp"
         android:layout_height="32dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:text=" Change Temperature Format (unchecked default: *C)"
+        android:textAppearance="@style/TextAppearance.Compat.Notification"
+        app:layout_constraintBottom_toTopOf="@+id/currentTemperatureMetricTextView"
+        app:layout_constraintEnd_toEndOf="@+id/currentTemperatureMetricTextView"
+        app:layout_constraintHorizontal_bias="0.561"
+        app:layout_constraintStart_toStartOf="@+id/currentTemperatureMetricTextView"
+        app:layout_constraintTop_toBottomOf="@+id/settingsTitleTextView" />
+
+    <TextView
+        android:id="@+id/currentTemperatureMetricTextView"
+        android:layout_width="326dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="256dp"
         android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/iGroTopLogoImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingsTitleTextView"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/leafLogoImageView"
+        android:layout_width="95dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.815"
+        app:layout_constraintHorizontal_bias="0.513"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iGroTopLogoImageView"
+        app:srcCompat="@drawable/igro_justleaf" />
+
+    <TextView
+        android:id="@+id/settingsTitleTextView"
+        android:layout_width="280dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="388dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="SETTINGS"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/leafLogoImageView"
+        app:layout_constraintEnd_toEndOf="@+id/leafLogoImageView"
+        app:layout_constraintHorizontal_bias="0.551"
+        app:layout_constraintStart_toStartOf="@+id/leafLogoImageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.032" />
+        app:layout_constraintVertical_bias="0.1" />
+
+    <ImageView
+        android:id="@+id/iGroTopLogoImageView"
+        android:layout_width="103dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="558dp"
+        app:layout_constraintBottom_toTopOf="@+id/leafLogoImageView"
+        app:layout_constraintEnd_toEndOf="@+id/settingsTitleTextView"
+        app:layout_constraintStart_toStartOf="@+id/settingsTitleTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/igro_logo" />
 
 </android.support.constraint.ConstraintLayout>

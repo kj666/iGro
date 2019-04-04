@@ -7,20 +7,55 @@
     tools:context=".AboutActivity">
 
     <TextView
+        android:id="@+id/aboutTitleTextView"
+        android:layout_width="280dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="ABOUT"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/leafLogoImageView"
+        app:layout_constraintEnd_toEndOf="@+id/aboutActivityTextView"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="@+id/aboutActivityTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/leafLogoImageView"
+        android:layout_width="95dp"
+        android:layout_height="83dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/igro_justleaf" />
+
+
+    <TextView
         android:id="@+id/aboutActivityTextView"
-        android:layout_width="328dp"
-        android:layout_height="115dp"
+        android:layout_width="369dp"
+        android:layout_height="532dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:text="This is the about page, potential things to include: software version, link to read me, link to submit feedback"
+        android:text="iGRO is a greenhouse monitoring system designed to make life easier for greenhouse owners and operators.   This one of a kind product inclues 4 sensors, monitoring temperature, humidity, soil moisture and light (more options are in planning), an online database which can be accessed from any device, an android application which allows the user to monitor their sensors and remotely control 4 appliances associated with each of the sensors. \n\n All of the system is controlled through the iGro android application. The application provides a link to the online database, displays real-time sensor readins as well as historical records in a graph or a table format.The application allows the user to set the polling frequency for the sensors and the ideal range at which to maintain the greenhouse, such that if the sensor reads outside this range an alert is created to notify the user that his disired specified range has been exceeded.   \n\n To control the conditions in the greenhouse, the system also allows the user to control an appliance associated with each sensor remotely through the application. When the desired upper threshold set by the user is reached, the system creates an alert which reminds the user to turn off the appliance. \n\niGro is the only system on the market which gives the greenhouse operator complete control of their greenhouse remotely through their phone. Try iGro today and you will not remember how you ever managed without it!"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/leafLogoImageView"
+        app:layout_constraintStart_toStartOf="@+id/leafLogoImageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.061" />
+        app:layout_constraintVertical_bias="0.497" />
 </android.support.constraint.ConstraintLayout>

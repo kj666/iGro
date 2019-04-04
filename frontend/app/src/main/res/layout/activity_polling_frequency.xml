@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,38 +7,93 @@
     android:padding="16dp">
 
 
-    <EditText
-        android:id="@+id/pollingEditText"
-        android:layout_width="189dp"
-        android:layout_height="80dp"
+    <ImageView
+        android:id="@+id/iGroTopLogoImageView"
+        android:layout_width="104dp"
+        android:layout_height="94dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/igro_logo" />
+
+    <TextView
+        android:id="@+id/aboutTitleTextView"
+        android:layout_width="353dp"
+        android:layout_height="57dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="52dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="POLLING FREQUENCY CONTROL"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/iGroTopLogoImageView"
+        app:layout_constraintStart_toStartOf="@+id/iGroTopLogoImageView"
+        app:layout_constraintTop_toBottomOf="@+id/iGroTopLogoImageView" />
+
+    <EditText
+        android:id="@+id/pollingEditText"
+        android:layout_width="90dp"
+        android:layout_height="77dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="288dp"
         android:gravity="center"
         android:inputType="number"
-        android:text="Polling Frequency"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.262"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/pollingEveryTextView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/secondsTextView"
-        android:layout_width="91dp"
-        android:layout_height="62dp"
+        android:layout_width="151dp"
+        android:layout_height="74dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="288dp"
         android:gravity="center"
         android:text="Seconds"
+        android:textAppearance="@style/TextAppearance.Compat.Notification"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/pollingEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.258"
         app:layout_constraintStart_toEndOf="@+id/pollingEditText"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/pollingEditText"
+        app:layout_constraintVertical_bias="0.102" />
+
+    <TextView
+        android:id="@+id/pollingEveryTextView"
+        android:layout_width="283dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="The sensors will poll every"
+        android:textAppearance="@style/TextAppearance.Compat.Notification"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/aboutTitleTextView"
+        app:layout_constraintStart_toStartOf="@+id/aboutTitleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/aboutTitleTextView" />
 
 
 </android.support.constraint.ConstraintLayout>
