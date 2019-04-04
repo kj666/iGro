@@ -67,9 +67,11 @@ public class MainActivity extends AppCompatActivity {
     protected Button humidityTitleButton;
     protected TextView humidityNumberButton;
     protected SharedPreferences sharedPreferences;
+    //button for green house status
+    private Button GHstatus;
 
-    //Greenhouse status textview
-    private TextView ghStatus;
+
+
 
     private Helper helper;
 
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        GHstatus = (Button) findViewById(R.id.definationButton);
 //        currentUser = helper.checkAuthentication();
 //        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -123,6 +125,14 @@ public class MainActivity extends AppCompatActivity {
         requestWeather();
 
         retriveUserData();
+//open status defination popup
+            GHstatus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Dialog_Popup dialog_popup = new Dialog_Popup();
+                    dialog_popup.show(getSupportFragmentManager(),"Dialog_Popup");
+                }
+            });
 
         //opening the Temperature view when the temperature text is clicked
         temperatureTitleButton.setOnClickListener(new View.OnClickListener()
@@ -360,16 +370,23 @@ public class MainActivity extends AppCompatActivity {
 
     void greenhouseStatus(){
 
-           int count=0;
-           if(temperatureNumberButton.getCurrentTextColor()==(Color.RED)){ count++;}
-           if(moistureNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
-           if(humidityNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
-           if(uvNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
-           if(count==0){ ghStatus.setText("OPTIMAL");}
-           if(count==1){ ghStatus.setText("AVERAGE");}
-           if(count==2){ghStatus.setText("POOR"); }
-           if(count==3){ghStatus.setText("CRITICAL");}
-           if(count==4){ghStatus.setText("VERY CRITICAL");}
+        int count=0;
+        if(temperatureNumberButton.getCurrentTextColor()==(Color.RED)){ count++;}
+        if(moistureNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+        if(humidityNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+        if(uvNumberButton.getCurrentTextColor()==(Color.RED)){ count++; }
+
+
+        if(count==0){ GHstatus.setText("EXCELLENT");}
+
+        if(count==1){ GHstatus.setText("GOOD");}
+
+        if(count==2){ GHstatus.setText("POOR");}
+
+        if(count==3){GHstatus.setText("CRITICAL");}
+
+        if(count==4){GHstatus.setText("CRITICAL");}
+
 
     }
 
@@ -400,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
         moistureTitleButton = (Button) findViewById(R.id.moistureButton);
         moistureNumberButton = (Button) findViewById(R.id.moisturePercentView);
 
-        ghStatus=(TextView)findViewById(R.id.statusTextView);
+
 
 
         celsiusOrFahrenheit = helper.retrieveTemperatureMetric();
