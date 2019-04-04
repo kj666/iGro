@@ -79,9 +79,7 @@ public class SensorDataTableFragment extends Fragment {
                 for(DataSnapshot snap : dataSnapshot.getChildren()){
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     Log.d("FIREBASE", sensorDataValue.getTime()+"");
-                    if (helper.retrieveTemperatureMetric()) {
-
-                    } else {
+                    if (helper.retrieveTemperatureMetric() == false && sensorType.equals("TEMPERATURE-F")) {
                         double temperatureInF = Double.
                                 parseDouble(helper.celsiusFahrenheitConversion(((Double)(sensorDataValue.getValue())).toString()));
                         sensorDataValue.setValue(temperatureInF);

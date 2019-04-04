@@ -132,7 +132,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                         "Registration Successful", Toast.LENGTH_LONG);
                                 toast.show();
                                 FirebaseUser registeredUser = mAuth.getCurrentUser();
-                                // sendEmailVerification(registeredUser);
+                                sendEmailVerification(registeredUser);
                                 addToUserDatabase(registeredUser);
                                 finish();
                             } else {
