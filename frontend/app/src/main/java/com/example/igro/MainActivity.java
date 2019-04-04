@@ -50,7 +50,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.EventListener;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static final String MAIN_LOG_TAG = "MAIN_ACTIVITY_LOG_TAG";
     //Temperature layout item
