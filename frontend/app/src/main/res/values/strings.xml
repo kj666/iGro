@@ -40,7 +40,9 @@
         <item>OnOffStatus</item>
     </array>
     <string name="SensorType">Sensor</string>
-
+    <string name="ApplianceTypeSharedPrefsFile">ApplianceTypeSharedPrefsFile</string>
+    <string name="ApplianceTypePassed">ApplianceTypePassed</string>
+    <string name="NumberOfRecordsStr">NumberOfRecordsStr</string>
 
 
     <string-array name="greenhouse_array">
