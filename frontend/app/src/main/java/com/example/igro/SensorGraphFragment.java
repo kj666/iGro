@@ -107,7 +107,8 @@ public class SensorGraphFragment extends Fragment {
             Date time = new Date(t);
 
             Double y = data.getValue();
-            if (helper.retrieveTemperatureMetric() == false) { //convert to fahrenheit
+            if (helper.retrieveTemperatureMetric() == false &&
+                    sensorType.equals("TEMPERATURE-F")) { //convert to fahrenheit
                 y = Double.parseDouble(helper.celsiusFahrenheitConversion(y.toString()));
             }
             graphView.getGridLabelRenderer().setVerticalAxisTitle(xAxisTitle);

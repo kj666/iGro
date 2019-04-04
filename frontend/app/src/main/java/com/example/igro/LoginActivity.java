@@ -88,9 +88,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     //sign in succeed
                     Log.d(TAG, "signInWithEmail:success");
-                    final FirebaseUser validUser = mAuth.getCurrentUser();
-                    Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
-
+                    checkIfEmailVerified();
+                    //Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
                     //Use function in Controller.Helper to go to dashboard activity
                     helper.goToActivity(MainActivity.class);
                 } else {
@@ -101,5 +100,16 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void checkIfEmailVerified() {
+        FirebaseUser registeredUser = mAuth.getInstance().getCurrentUser();
+        if (registeredUser.isEmailVerified()) {
+            Toast.makeText(LoginActivity.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(LoginActivity.this, "Authentication Failure.", Toast.LENGTH_SHORT).show();
+            mAuth.getInstance().signOut();
+        }
     }
 }

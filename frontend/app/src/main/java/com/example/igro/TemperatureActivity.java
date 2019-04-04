@@ -310,9 +310,62 @@ public class TemperatureActivity extends AppCompatActivity {
         } else {
             celsiusFahrenheitSwitchButton.setText("°F" );
         }
-
+        requestWeather();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        final boolean switchState = temperatureSwitch.isChecked();
+        heaterSwitchStateFromRecord();
+
+        //Listen for changes in switch status
+        temperatureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton tempSwitch, boolean tempSwitchState){
+
+                //Call heaterSwitchEvent function
+                heaterSwitchEvent(tempSwitchState);
+            }
+        });
+
+        //opening the SensorDataActivity on history sensor data button click
+        tempHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Context context = TemperatureActivity.this ;
+                Intent i = new Intent(context, SensorDataActivity.class);
+                if (helper.retrieveTemperatureMetric()) { //Celsius
+                    i.putExtra("SensorType", "TEMPERATURE-C");
+                } else { //Fahrenheit
+                    i.putExtra("SensorType", "TEMPERATURE-F");
+                }
+                context.startActivity(i);
+            }
+        });
+
+        //opening the HistoricalApplianceActivity view when the HeaterUseHistory button is clicked
+        heaterUseHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Context context = TemperatureActivity.this ;
+                Intent i = new Intent(context, HistoricalApplianceActivity.class);
+                i.putExtra("ApplianceType", "HEATER");
+                context.startActivity(i);
+            }
+        });
+
+        celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
+        if (helper.retrieveTemperatureMetric()) {
+            celsiusFahrenheitSwitchButton.setText("°C" );
+
+        } else {
+            celsiusFahrenheitSwitchButton.setText("°F" );
+        }
+        retrieveSensorData();
+        requestWeather();
+    }
 
     void retrieveRange(){
         DatabaseReference tempRange = databaseRange.child("TemperatureSensor1");

@@ -198,6 +198,112 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        setContentView(R.layout.activity_main);
+
+
+//        currentUser = helper.checkAuthentication();
+//        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+
+            // current user validated
+            helper = new Helper(MainActivity.this, FirebaseAuth.getInstance());
+//            helper.checkAuthentication();
+            currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            String currentUserID = currentUser.toString();
+
+            SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.CurrentUserFile), MODE_PRIVATE).edit();
+            editor.putString(getString(R.string.CurrentUserID), currentUserID);
+            editor.apply();
+
+            //Initialize all the UI elements
+            initializeUI();
+
+            userWelcomeMessage = findViewById(R.id.welcomeMessageText);
+//        String welcomeMessage = currentUser != null ? "Hi " + currentUser.getEmail() : "";
+//        userWelcomeMessage.setText(welcomeMessage);
+            cityWeatherMessage = findViewById(R.id.cityWeatherTextView);
+            queue = Volley.newRequestQueue(this);
+            requestWeather();
+
+            retriveUserData();
+
+            //opening the Temperature view when the temperature text is clicked
+            temperatureTitleButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(TemperatureActivity.class);
+                }
+            });
+
+            //opening the Temperature view when the temperature number is clicked
+            temperatureNumberButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(TemperatureActivity.class);
+                }
+            });
+
+            //opening the Uv index view  when the uvTitleButton text is clicked
+            uvTitleButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(UvIndexActivity.class);
+                }
+            });
+
+            //opening the uvTitleButton view when the uvTitleButton number is clicked
+            uvNumberButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(UvIndexActivity.class);
+                }
+            });
+            humidityTitleButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(HumidityActivity.class);
+                }
+            });
+            humidityNumberButton.setOnClickListener(new View.OnClickListener()
+
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(HumidityActivity.class);
+                }
+            });
+            moistureTitleButton.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick (View v2){
+                    helper.goToActivity(MoistureActivity.class);
+                }
+
+            });
+            moistureNumberButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick (View v){
+                    helper.goToActivity(MoistureActivity.class);
+                }
+            });
+        } else {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
+    }
+
     void retriveUserData(){
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUser.getUid());
 
@@ -418,13 +524,6 @@ public class MainActivity extends AppCompatActivity {
 //    @Override
 //    protected void onResume() {
 //        super.onResume();
-//        helper.checkAuthentication();
-//        requestWeather();
-//    }
-//
-//    @Override
-//    protected void onRestart() {
-//        super.onRestart();
 //        helper.checkAuthentication();
 //        requestWeather();
 //    }
