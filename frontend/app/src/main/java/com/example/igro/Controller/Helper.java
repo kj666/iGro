@@ -137,4 +137,11 @@ public class Helper {
         return limitRange;
     }
 
+    public String celsiusFahrenheitConversion(String valueToBeConverted) {
+        Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
+        numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
+        numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
+        return numberToBeConverted.toString();
+    }
+
 }
