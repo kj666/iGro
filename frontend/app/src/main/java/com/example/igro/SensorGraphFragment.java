@@ -41,6 +41,7 @@ public class SensorGraphFragment extends Fragment {
     private List<SensorDataValue> sensorDataList = new ArrayList<>();
     DatabaseReference db;
 
+    int count;
     ValueEventListener eventListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -49,7 +50,10 @@ public class SensorGraphFragment extends Fragment {
                 SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                 sensorDataList.add(sensorDataValue);
             }
-            populateGraph();
+            count++;
+            if(count == 1) {
+                populateGraph();
+            }
         }
 
         @Override
@@ -92,6 +96,7 @@ public class SensorGraphFragment extends Fragment {
         helper.setSharedPreferences(getContext());
         db = FirebaseDatabase.getInstance().getReference().child(helper.retrieveGreenhouseID()+"/Data");
         retrieveSensorDataFromDB();
+        db.removeEventListener(eventListener);
 
         return view;
     }
@@ -102,13 +107,13 @@ public class SensorGraphFragment extends Fragment {
     void populateGraph(){
 
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
+        series.resetData(new DataPoint[] {});
         for(SensorDataValue data: sensorDataList){
             long t = data.getTime();
             Date time = new Date(t);
 
             Double y = data.getValue();
-            if (helper.retrieveTemperatureMetric() == false &&
-                    sensorType.equals("TEMPERATURE-F")) { //convert to fahrenheit
+            if (helper.retrieveTemperatureMetric() == false && sensorType.equals("TEMPERATURE-F")) { //convert to fahrenheit
                 y = Double.parseDouble(helper.celsiusFahrenheitConversion(y.toString()));
             }
             graphView.getGridLabelRenderer().setVerticalAxisTitle(xAxisTitle);
@@ -131,7 +136,7 @@ public class SensorGraphFragment extends Fragment {
         graphView.getViewport().setScalable(true);
 
         //Stop listener
-        db.removeEventListener(eventListener);
+
     }
 
     void retrieveSensorDataFromDB(){
