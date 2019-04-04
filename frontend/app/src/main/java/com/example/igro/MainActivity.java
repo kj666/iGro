@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +50,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.EventListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     private static final String MAIN_LOG_TAG = "MAIN_ACTIVITY_LOG_TAG";
     //Temperature layout item
