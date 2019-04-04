@@ -190,18 +190,6 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
     }
 
     protected int recordNumberEditTextListener(){
-        //check for number of records entered by the user
-        recordLimitEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //retreave user record limit as string
-                recordNumberEnteredStr = recordLimitEditText.getEditableText().toString();
-                // check the number of records entered by the user & set to record Number Entered
-                recordNumberEntered = checkNumberOfRecordsEntered(recordNumberEnteredStr);
-
-            }
-        });
 
         refreshButtonListener(recordNumberEntered);
         return recordNumberEntered;
@@ -212,8 +200,12 @@ public class HistoricalApplianceActivity extends AppCompatActivity {
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //retreave user record limit as string
+                recordNumberEnteredStr = recordLimitEditText.getText().toString();
+                // check the number of records entered by the user & set to record Number Entered
+                recordNumberEntered = checkNumberOfRecordsEntered(recordNumberEnteredStr);
 
-                loadApplianceListByApplianceType(recordNumber);
+                loadApplianceListByApplianceType(recordNumberEntered);
             }
         });
 
