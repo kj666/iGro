@@ -124,18 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
         retriveUserData();
 
-        /*notificationManager = NotificationManagerCompat.from(this);
-        createChannel();
-            sendNotification ();
-*/
-
-        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                celsiusFahrenheitSwitch();
-            }
-        });
-
         //opening the Temperature view when the temperature text is clicked
         temperatureTitleButton.setOnClickListener(new View.OnClickListener()
         {
@@ -389,10 +377,17 @@ public class MainActivity extends AppCompatActivity {
     // Switch the fixed value given for temperature below to sensor data when available
     protected void initializeUI(){
         //Temperature View initialization
+        helper.setSharedPreferences(getApplicationContext());
         temperatureTitleButton = (Button) findViewById(R.id.temp_button);
         temperatureNumberButton = (Button) findViewById(R.id.tempNumberView);
         celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
-
+        if (helper.retrieveTemperatureMetric()) {
+            celsiusFahrenheitSwitchButton.setText("°C" );
+        } else {
+            celsiusFahrenheitSwitchButton.setText("°F" );
+        }
+        celsiusFahrenheitSwitchButton.setClickable(false);
+        celsiusFahrenheitSwitchButton.setFocusable(false);
         //UV view initialization
         uvTitleButton = (Button) findViewById(R.id.uvButton);
         uvNumberButton = (Button)findViewById(R.id.uvNumberButton);
@@ -406,6 +401,9 @@ public class MainActivity extends AppCompatActivity {
         moistureNumberButton = (Button) findViewById(R.id.moisturePercentView);
 
         ghStatus=(TextView)findViewById(R.id.statusTextView);
+
+
+        celsiusOrFahrenheit = helper.retrieveTemperatureMetric();
     }
 
 
@@ -481,7 +479,16 @@ public class MainActivity extends AppCompatActivity {
                         humColorSet(sensorDataValue.getValue());
                     }
                     else if(type.equals("TEMPERATURE")) {
-                        temperatureNumberButton.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
+                        boolean temperatureMetric = helper.retrieveTemperatureMetric();
+                        Double temperatureValue = sensorDataValue.getValue();
+                        if (temperatureMetric) { //celsius
+                            temperatureNumberButton.setText(new DecimalFormat("####0.0").format(temperatureValue) + "");
+                        } else {
+                            temperatureValue = Double.parseDouble(helper.celsiusFahrenheitConversion(temperatureValue.toString()));
+
+                            temperatureNumberButton.setText(new DecimalFormat("####0.0").
+                                    format(temperatureValue) + "");
+                        }
                         tempColorSet(sensorDataValue.getValue());
                     }
                     else if(type.equals("UV")) {
@@ -489,7 +496,8 @@ public class MainActivity extends AppCompatActivity {
                         uvColorSet(sensorDataValue.getValue());
                     }
                     else if(type.equals("MOISTURE")) {
-                        moistureNumberButton.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
+                        moistureNumberButton.setText(new DecimalFormat("####0.0").
+                                format(sensorDataValue.getValue()) + "");
                         moistColorSet(sensorDataValue.getValue());
                     }
                 }
@@ -522,9 +530,15 @@ public class MainActivity extends AppCompatActivity {
                             //descriptionTextView.setText(description);
 
                             // Get temperature from weather response
-                            int temperature = response.getJSONObject("main").getInt("temp");
-                            cityWeatherMessage.setText("Montreal " + temperature + "°C");
-
+                            Integer temperature = response.getJSONObject("main").getInt("temp");
+                            if (helper.retrieveTemperatureMetric()) {
+                                cityWeatherMessage.setText("Montreal " + temperature + "°C");
+                            } else {
+                                Double temperatureInF = Double.parseDouble(helper.
+                                        celsiusFahrenheitConversion(temperature.toString()));
+                                int weatherInF = (int)(double) Math.round(temperatureInF);
+                                cityWeatherMessage.setText("Montreal " + weatherInF + "°F");
+                            }
                         } catch (Exception e) {
                             Log.w(MAIN_LOG_TAG, "Attempt to parse JSON Object failed");
                         }
@@ -539,31 +553,6 @@ public class MainActivity extends AppCompatActivity {
         queue.add(weatherRequest);
     }
 
-    /*
-     * Function that will convert all necessary parameters between celsius and fahrenheit
-     */
-    void celsiusFahrenheitSwitch(){
-        temperatureNumberButton.setText(
-                celsiusFahrenheitConversion(temperatureNumberButton.getText().toString()));
-        celsiusOrFahrenheit = !celsiusOrFahrenheit;
-    }
-
-    /*
-     * Function that handles the mathematical aspect of the celsius <-> fahrenheit process
-     */
-    String celsiusFahrenheitConversion(String valueToBeConverted) {
-        Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
-        if (celsiusOrFahrenheit) { // number currently in celsius
-            numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
-            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
-            return numberToBeConverted.toString();
-        } else { //number currently in fahrenheit
-            numberToBeConverted = (5.0/9.0) * (numberToBeConverted - 32.0);
-            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
-            return numberToBeConverted.toString();
-        }
-    }
-    // dialog to display the polling dialog
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
