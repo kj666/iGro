@@ -199,9 +199,6 @@ public class TemperatureActivity extends AppCompatActivity {
             case R.id.polling_menu:
                 openDialog();
                 return true;
-            case R.id.settings:
-                helper.goToActivity(SettingsActivity.class);
-                return true;
             case R.id.changePassword:
                 changePasswordDialog();
                 return  true;
