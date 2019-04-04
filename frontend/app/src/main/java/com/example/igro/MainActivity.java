@@ -559,10 +559,12 @@ public class MainActivity extends AppCompatActivity {
                 helper.signout();
                 helper.goToActivity(LoginActivity.class);
                 return true;
-                /*
             case R.id.polling_menu:
                 openDialog();
-                return true; */
+                return true;
+            case R.id.changePassword:
+                changePasswordDialog();
+                return  true;
         }
         return super.onOptionsItemSelected(item);
     }
