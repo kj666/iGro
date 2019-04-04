@@ -124,6 +124,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
         helper.setSharedPreferences(getApplicationContext());
         greenhouseID = helper.retrieveGreenhouseID();
+        celisusOrFahrenheit = helper.retrieveTemperatureMetric();
 
         initializeDB(greenhouseID);
         initializeUI();
@@ -157,14 +158,14 @@ public class TemperatureActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         requestWeather();
 
-        celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
+        /*
         celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 celsiusFahrenheitSwitch();
             }
         });
-
+        */
         retrieveRange();
 
         notificationManager = NotificationManagerCompat.from(this);
@@ -232,7 +233,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 Context context = TemperatureActivity.this ;
                 Intent i = new Intent(context, SensorDataActivity.class);
-                if (celisusOrFahrenheit) { //Celsius
+                if (helper.retrieveTemperatureMetric()) { //Celsius
                     i.putExtra("SensorType", "TEMPERATURE-C");
                 } else { //Fahrenheit
                     i.putExtra("SensorType", "TEMPERATURE-F");
@@ -281,7 +282,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
                 Context context = TemperatureActivity.this ;
                 Intent i = new Intent(context, SensorDataActivity.class);
-                if (celisusOrFahrenheit) { //Celsius
+                if (helper.retrieveTemperatureMetric()) { //Celsius
                     i.putExtra("SensorType", "TEMPERATURE-C");
                 } else { //Fahrenheit
                     i.putExtra("SensorType", "TEMPERATURE-F");
@@ -301,6 +302,13 @@ public class TemperatureActivity extends AppCompatActivity {
                 context.startActivity(i);
             }
         });
+
+        celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
+        if (helper.retrieveTemperatureMetric()) {
+            celsiusFahrenheitSwitchButton.setText("°C" );
+        } else {
+            celsiusFahrenheitSwitchButton.setText("°F" );
+        }
 
     }
 
@@ -358,13 +366,13 @@ public class TemperatureActivity extends AppCompatActivity {
         requestWeather();
 
         celsiusFahrenheitSwitchButton = findViewById(R.id.celsiusFahrenheitSwitchButton);
-        celsiusFahrenheitSwitchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                celsiusFahrenheitSwitch();
-            }
-        });
-
+        if (helper.retrieveTemperatureMetric()) {
+            celsiusFahrenheitSwitchButton.setText("°C" );
+        } else {
+            celsiusFahrenheitSwitchButton.setText("°F" );
+        }
+        celsiusFahrenheitSwitchButton.setClickable(false);
+        celsiusFahrenheitSwitchButton.setFocusable(false);
         currentUser = helper.checkAuthentication();
         setRangeTempButton=(Button)findViewById(R.id.setRangeTempButton);
     }
@@ -477,6 +485,11 @@ public class TemperatureActivity extends AppCompatActivity {
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     SensorDataValue sensorDataValue = snap.getValue(SensorDataValue.class);
                     greenhouseTemperatureTextView.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) +"");
+                    if (helper.retrieveTemperatureMetric()) {
+                        //Temperature already in the correct format
+                    } else { // change to fahrenheit
+                        celsiusFahrenheitSwitch();
+                    }
                     tempDegree = Double.parseDouble(greenhouseTemperatureTextView.getText().toString());
                     long unixTime= sensorDataValue.getTime();
                     String readableTime=Helper.convertTime(unixTime);
@@ -515,8 +528,12 @@ public class TemperatureActivity extends AppCompatActivity {
 
                             // Get temperature from weather response
                             Integer temperature = response.getJSONObject("main").getInt("temp");
-                            outdoorTemperatureTextView.setText(temperature.toString());
-
+                            if (helper.retrieveTemperatureMetric()) {
+                                outdoorTemperatureTextView.setText(temperature.toString());
+                            } else {
+                                outdoorTemperatureTextView.setText(
+                                        helper.celsiusFahrenheitConversion(temperature.toString()));
+                            }
                         } catch (Exception e) {
                             Log.w(TEMPERATURE_LOG_TAG, "Attempt to parse JSON Object failed");
                         }
@@ -568,28 +585,11 @@ public class TemperatureActivity extends AppCompatActivity {
      */
     void celsiusFahrenheitSwitch(){
         outdoorTemperatureTextView.setText(
-                celsiusFahrenheitConversion(outdoorTemperatureTextView.getText().toString()));
+                helper.celsiusFahrenheitConversion(outdoorTemperatureTextView.getText().toString()));
         greenhouseTemperatureTextView.setText(
-                celsiusFahrenheitConversion(greenhouseTemperatureTextView.getText().toString()));
-        celisusOrFahrenheit = !celisusOrFahrenheit;
+                helper.celsiusFahrenheitConversion(greenhouseTemperatureTextView.getText().toString()));
+        //celisusOrFahrenheit = !celisusOrFahrenheit;
     }
-
-    /*
-    * Function that handles the mathematical aspect of the celsius <-> fahrenheit process
-     */
-    String celsiusFahrenheitConversion(String valueToBeConverted) {
-        Double numberToBeConverted = Double.parseDouble(valueToBeConverted);
-        if (celisusOrFahrenheit) { // number currently in celsius
-            numberToBeConverted = (9.0/5.0) * numberToBeConverted + 32.0;
-            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
-            return numberToBeConverted.toString();
-        } else { //number currently in fahrenheit
-            numberToBeConverted = (5.0/9.0) * (numberToBeConverted - 32.0);
-            numberToBeConverted = Math.round(numberToBeConverted * 100.0) / 100.0;
-            return numberToBeConverted.toString();
-        }
-    }
-    // dialog to display the polling dialog
     public void openDialog(){
         PollingFrequencyDialogFragment dialog = new PollingFrequencyDialogFragment();
         dialog.show(getSupportFragmentManager(), "Polling dialog");
