@@ -367,39 +367,6 @@ public class TemperatureActivity extends AppCompatActivity {
         requestWeather();
     }
 
-    void retrieveRange(){
-        DatabaseReference tempRange = databaseRange.child("TemperatureSensor1");
-
-        ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
-                Double highRange = Helper.retrieveRange("High", dataSnapshot);
-
-                lowTempEditText.setText(lowRange.toString());
-                highTempEditText.setText(highRange.toString());
-                if (!((tempDegree > lowRange)
-                        && (tempDegree < highRange))) {
-
-                    greenhouseTemperatureTextView.setTextColor(Color.RED);
-                    Toast.makeText(TemperatureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
-                }
-                else{
-                    greenhouseTemperatureTextView.setTextColor(Color.GREEN);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
-        tempRange.addValueEventListener(eventListener);
-
-    }
-
 
     void initializeUI(){
         tempHistoryButton = findViewById(R.id.tempHistoriyButton);
@@ -603,6 +570,50 @@ public class TemperatureActivity extends AppCompatActivity {
         queue.add(weatherRequest);
     }
 
+    void retrieveRange(){
+        DatabaseReference tempRange = databaseRange.child("TemperatureSensor1");
+
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Double lowRange = Helper.retrieveRange("Low", dataSnapshot);
+                Double highRange = Helper.retrieveRange("High", dataSnapshot);
+
+                if (helper.retrieveTemperatureMetric()) {
+                    lowTempEditText.setText(lowRange.toString());
+                    highTempEditText.setText(highRange.toString());
+                } else {
+
+                    Integer lowFtoCTempRangeInput = (int)Math.round(lowRange*9/5+32);
+                    Integer highFtoCTempRangeInput =  (int)Math.round(highRange*9/5+32);
+
+                    lowTempEditText.setText(lowFtoCTempRangeInput.toString());
+                    highTempEditText.setText(highFtoCTempRangeInput.toString());
+                }
+
+                if (!((tempDegree > lowRange)
+                        && (tempDegree < highRange))) {
+
+                    greenhouseTemperatureTextView.setTextColor(Color.RED);
+                    Toast.makeText(TemperatureActivity.this,"THE SENSOR VALUE IS OUT OF THRESHOLD!!!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    greenhouseTemperatureTextView.setTextColor(Color.GREEN);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        tempRange.addValueEventListener(eventListener);
+
+    }
+
+
 
     public void setTempRange(){
         DatabaseReference databaseRange = FirebaseDatabase.getInstance().getReference().child(greenhouseID+"/Ranges");
@@ -617,9 +628,20 @@ public class TemperatureActivity extends AppCompatActivity {
             if((lowTemp.matches(".*[0-999].*"))&&(highTemp.matches(".*[0-999].*"))){
                 //Check if Lower limit is < upper limit
                 if (Double.parseDouble(lowTemp) < Double.parseDouble(highTemp)) {
-                    databaseRange.child("TemperatureSensor1").child("Low").setValue(Double.parseDouble(lowTemp));
-                    databaseRange.child("TemperatureSensor1").child("High").setValue(Double.parseDouble(highTemp));
-                    Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+                    if (helper.retrieveTemperatureMetric()) {
+                        databaseRange.child("TemperatureSensor1").child("Low").setValue(Math.round(Double.parseDouble(lowTemp)));
+                        databaseRange.child("TemperatureSensor1").child("High").setValue(Math.round(Double.parseDouble(highTemp)));
+                        Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+                    } else {
+
+                        int lowFtoCTempRangeInput = (int)(Double.parseDouble(lowTemp)-32)*5/9;
+                        int highFtoCTempRangeInput =  (int)(Double.parseDouble(highTemp)-32)*5/9;
+
+                        databaseRange.child("TemperatureSensor1").child("Low").setValue(lowFtoCTempRangeInput);
+                        databaseRange.child("TemperatureSensor1").child("High").setValue(highFtoCTempRangeInput);
+                        Toast.makeText(this, "RANGE SUCCESSFULLY SET!!!", Toast.LENGTH_LONG).show();
+                    }
+
                 } else {
                     Toast.makeText(this, "", Toast.LENGTH_LONG).show();
                 }

@@ -618,7 +618,7 @@ public class MainActivity extends AppCompatActivity {
 
                         long unixTime= sensorDataValue.getTime();
                         String readableTime=Helper.convertTime(unixTime);
-                        tempDateStampTextView.setText(""+readableTime);
+                        tempDateStampTextView.setText(" "+readableTime);
                     }
                     else if(type.equals("UV")) {
                         uvNumberButton.setText(new DecimalFormat("####0.00").format(sensorDataValue.getValue()) + "");
@@ -626,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
 
                         long unixTime= sensorDataValue.getTime();
                         String readableTime=Helper.convertTime(unixTime);
-                        uvDateStampTextView.setText(""+readableTime);
+                        uvDateStampTextView.setText(" "+readableTime);
                     }
                     else if(type.equals("MOISTURE")) {
                         moistureNumberButton.setText(new DecimalFormat("####0.0").
@@ -635,7 +635,7 @@ public class MainActivity extends AppCompatActivity {
 
                         long unixTime= sensorDataValue.getTime();
                         String readableTime=Helper.convertTime(unixTime);
-                        moistDateStampTextView.setText(""+readableTime);
+                        moistDateStampTextView.setText(" "+readableTime);
                     }
                 }
                 GHstatus.setOnClickListener(new View.OnClickListener() {
