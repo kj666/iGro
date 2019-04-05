@@ -146,7 +146,7 @@ public class HumidityActivity extends AppCompatActivity {
         });
 
         notificationManager = NotificationManagerCompat.from(this);
-        checkSensorInactivity();
+//        checkSensorInactivity();
         createChannel();
 
     }
@@ -304,6 +304,7 @@ public class HumidityActivity extends AppCompatActivity {
                     humLastUpdatedTextView.setText("Sensor last updated "+readableTime);
                     LastUnixTime = sensorDataValue.getTime()/1000;
                     setLastUnixTime(LastUnixTime);
+                    checkSensorInactivity();
                 }
             }
             @Override
@@ -501,7 +502,7 @@ public class HumidityActivity extends AppCompatActivity {
                 String lastpollfrequencyMs = dataSnapshot.child("SensorConfig/poll").getValue().toString();
                 lastpollfrequencyInt = Integer.parseInt(lastpollfrequencyMs) / 1000;
 
-                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+30)){
+                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+30) && LastUnixTime != 0){
                     sendSensorInactivityNotification ();
                 }
 
