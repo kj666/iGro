@@ -47,6 +47,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.rpc.Help;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 import java.util.EventListener;
 
@@ -64,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Button moistureNumberButton;
     private Button moistureTitleButton;
+
+    private TextView tempDateStampTextView;
+    private TextView humDateStampTextView;
+    private TextView moistDateStampTextView;
+    private TextView uvDateStampTextView;
 
     protected Button humidityTitleButton;
     protected TextView humidityNumberButton;
@@ -516,7 +523,10 @@ public class MainActivity extends AppCompatActivity {
         moistureNumberButton = (Button) findViewById(R.id.moisturePercentView);
         GHstatus = (Button) findViewById(R.id.definationButton);
 
-
+        tempDateStampTextView = (TextView)findViewById(R.id.tempDateStampTextview);
+        humDateStampTextView = (TextView)findViewById(R.id.humDateStampTextview);
+        moistDateStampTextView = (TextView)findViewById(R.id.moistDateStampTextView);
+        uvDateStampTextView = (TextView)findViewById(R.id.uvDateStampTextview);
 
 
         celsiusOrFahrenheit = helper.retrieveTemperatureMetric();
@@ -588,6 +598,10 @@ public class MainActivity extends AppCompatActivity {
                     if(type.equals("HUMIDITY")) {
                         humidityNumberButton.setText(new DecimalFormat("####0.0").format(sensorDataValue.getValue()) + "");
                         humColorSet(sensorDataValue.getValue());
+
+                        long unixTime= sensorDataValue.getTime();
+                        String readableTime=Helper.convertTime(unixTime);
+                        humDateStampTextView.setText("Sensor last updated "+readableTime);
                     }
                     else if(type.equals("TEMPERATURE")) {
                         boolean temperatureMetric = helper.retrieveTemperatureMetric();
@@ -601,15 +615,27 @@ public class MainActivity extends AppCompatActivity {
                                     format(temperatureValue) + "");
                         }
                         tempColorSet(sensorDataValue.getValue());
+
+                        long unixTime= sensorDataValue.getTime();
+                        String readableTime=Helper.convertTime(unixTime);
+                        tempDateStampTextView.setText("Sensor last updated "+readableTime);
                     }
                     else if(type.equals("UV")) {
                         uvNumberButton.setText(new DecimalFormat("####0.00").format(sensorDataValue.getValue()) + "");
                         uvColorSet(sensorDataValue.getValue());
+
+                        long unixTime= sensorDataValue.getTime();
+                        String readableTime=Helper.convertTime(unixTime);
+                        uvDateStampTextView.setText("Sensor last updated "+readableTime);
                     }
                     else if(type.equals("MOISTURE")) {
                         moistureNumberButton.setText(new DecimalFormat("####0.0").
                                 format(sensorDataValue.getValue()) + "");
                         moistColorSet(sensorDataValue.getValue());
+
+                        long unixTime= sensorDataValue.getTime();
+                        String readableTime=Helper.convertTime(unixTime);
+                        moistDateStampTextView.setText("Sensor last updated "+readableTime);
                     }
                 }
                 GHstatus.setOnClickListener(new View.OnClickListener() {
