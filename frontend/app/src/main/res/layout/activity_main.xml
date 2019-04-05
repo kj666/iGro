@@ -20,10 +20,10 @@
 
         <ImageView
             android:id="@+id/uvConditionImage"
-            android:layout_width="78dp"
-            android:layout_height="73dp"
-            android:layout_marginLeft="47dp"
-            android:layout_marginTop="90dp"
+            android:layout_width="61dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="93dp"
             app:srcCompat="@drawable/light_belowaverage" />
 
         <TextView
@@ -116,10 +116,10 @@
 
         <ImageView
             android:id="@+id/humidityConditionImage"
-            android:layout_width="75dp"
-            android:layout_height="70dp"
-            android:layout_marginLeft="47dp"
-            android:layout_marginTop="90dp"
+            android:layout_width="61dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="93dp"
             app:srcCompat="@drawable/igro_humidity_high" />
 
         <TextView
@@ -237,10 +237,10 @@
 
         <ImageView
             android:id="@+id/temperatureConditionImage"
-            android:layout_width="78dp"
-            android:layout_height="70dp"
-            android:layout_marginLeft="47dp"
-            android:layout_marginTop="90dp"
+            android:layout_width="61dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="93dp"
             app:srcCompat="@drawable/igro_temp_hot" />
 
     </android.support.v7.widget.CardView>
@@ -257,10 +257,10 @@
 
         <ImageView
             android:id="@+id/soilConditionImage"
-            android:layout_width="78dp"
-            android:layout_height="73dp"
-            android:layout_marginLeft="47dp"
-            android:layout_marginTop="90dp"
+            android:layout_width="61dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="93dp"
             app:srcCompat="@drawable/igro_moisture_optimal" />
 
         <TextView
@@ -330,6 +330,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="50dp"
+            android:layout_marginTop="5dp"
             android:gravity="center|center_horizontal|center_vertical"
             android:text="CONDITION"
             android:textAlignment="center"
