@@ -34,8 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setRangeHumidityButton"
-        app:layout_constraintVertical_bias="0.936" />
+        app:layout_constraintTop_toBottomOf="@+id/setRangeMoistureButton" />
 
     <Button
         android:id="@+id/irrigationUseHistoryButton"
@@ -231,34 +230,6 @@
         app:layout_constraintHorizontal_bias="0.938"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/igro_justleaf" />
-
-    <TextView
-        android:id="@+id/graphTextView"
-        android:layout_width="77dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="8dp"
-        android:text="GRAPH"
-        android:textAlignment="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lowMoistureEditText" />
-
-    <TextView
-        android:id="@+id/tableTextView"
-        android:layout_width="85dp"
-        android:layout_height="17dp"
-        android:layout_marginStart="200dp"
-        android:layout_marginLeft="200dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="TABLE"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/graphTextView"
-        app:layout_constraintTop_toBottomOf="@+id/highMoistureEditText" />
 
     <EditText
         android:id="@+id/lowMoistureEditText"
