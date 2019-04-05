@@ -74,10 +74,13 @@ void loop() {
   delay(100);
   tempT = Firebase.getInt(greenHouseID+"SensorConfig/TempLastID");
   tempT++;
+  delay(100);
   soilT = Firebase.getInt(greenHouseID+"SensorConfig/SoilLastID");
   soilT++;
+  delay(100);
   humT = Firebase.getInt(greenHouseID+"SensorConfig/HumLastID");
   humT++;
+  delay(100);
   uvT = Firebase.getInt(greenHouseID+"SensorConfig/UVLastID");
   uvT++;
 
@@ -90,7 +93,7 @@ void loop() {
       Serial.println(Firebase.error());  
       return;
   }
-  
+  delay(10);
   //Humidity
   Firebase.setFloat(greenHouseID+"Data/HumiditySensor1/"+String(humT)+"/value", mySensor.readFloatHumidity());
   Serial.print(" hum: "+ String(mySensor.readFloatHumidity()));
@@ -99,7 +102,7 @@ void loop() {
       Serial.println(Firebase.error());  
       return;
   }
-
+  delay(10);
   //UV index
   float UVindex = uv.readUV();
   UVindex /= 100.0;  
@@ -110,7 +113,7 @@ void loop() {
       Serial.println(Firebase.error());  
       return;
   }
-
+  delay(10);
   //Soil Moisture
   soil_value = readSoil();
   Firebase.setFloat(greenHouseID+"Data/SoilSensor1/"+String(soilT)+"/value",soil_value);
@@ -123,14 +126,33 @@ void loop() {
   
  //keep track of time ID
   Firebase.setInt(greenHouseID+"SensorConfig/TempLastID",tempT);
+  if (Firebase.failed()) {
+      Serial.print("lastId failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
+  delay(10);
   Firebase.setInt(greenHouseID+"SensorConfig/HumLastID",humT);
+  if (Firebase.failed()) {
+      Serial.print("lastId failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
+  delay(10);
   Firebase.setInt(greenHouseID+"SensorConfig/UVLastID",uvT);
+  if (Firebase.failed()) {
+      Serial.print("lastId failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
+  delay(10);
   Firebase.setInt(greenHouseID+"SensorConfig/SoilLastID",soilT);
   if (Firebase.failed()) {
       Serial.print("lastId failed:");
       Serial.println(Firebase.error());  
       return;
   }
+  delay(10);
 
 
   Serial.println("poll: " + poll);
