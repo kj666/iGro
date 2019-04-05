@@ -52,10 +52,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.574"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/igro_justleaf" />
 
@@ -84,13 +82,19 @@
     <ImageView
         android:id="@+id/iGroTopLogoImageView"
         android:layout_width="104dp"
-        android:layout_height="0dp"
+        android:layout_height="98dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginBottom="558dp"
         app:layout_constraintBottom_toTopOf="@+id/leafLogoImageView"
         app:layout_constraintEnd_toEndOf="@+id/settingsTitleTextView"
+        app:layout_constraintHorizontal_bias="0.511"
         app:layout_constraintStart_toStartOf="@+id/settingsTitleTextView"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.357"
         app:srcCompat="@drawable/igro_logo" />
 
 </android.support.constraint.ConstraintLayout>

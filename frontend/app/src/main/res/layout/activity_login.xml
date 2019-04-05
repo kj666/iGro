@@ -16,11 +16,11 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="28dp"
         android:text="Log In"
         app:layout_constraintBottom_toTopOf="@+id/registerUserButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/registerUserButton"
+        app:layout_constraintStart_toStartOf="@+id/registerUserButton" />
 
     <EditText
         android:id="@+id/userNameEditText"
@@ -31,12 +31,14 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="172dp"
         android:ems="10"
         android:hint="User Name"
         android:inputType="textWebEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintBottom_toTopOf="@+id/loginUserButton"
+        app:layout_constraintEnd_toEndOf="@+id/userPasswordEditText"
+        app:layout_constraintStart_toStartOf="@+id/userPasswordEditText"
+        app:layout_constraintTop_toBottomOf="@+id/iGroTopLogoImageView" />
 
     <EditText
         android:id="@+id/userPasswordEditText"
@@ -44,27 +46,68 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/loginUserButton"
+        app:layout_constraintStart_toStartOf="@+id/loginUserButton"
         app:layout_constraintTop_toBottomOf="@+id/userNameEditText" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="155dp"
-        android:layout_height="84dp"
+        android:id="@+id/leafLogoImageView"
+        android:layout_width="95dp"
+        android:layout_height="85dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.546"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/igro_justleaf" />
+
+    <TextView
+        android:id="@+id/loginTitleTextView"
+        android:layout_width="280dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="388dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="USER LOGIN"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/leafLogoImageView"
+        app:layout_constraintEnd_toEndOf="@+id/userNameEditText"
+        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintStart_toStartOf="@+id/userNameEditText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.236" />
+
+    <ImageView
+        android:id="@+id/iGroTopLogoImageView"
+        android:layout_width="104dp"
+        android:layout_height="98dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/loginTitleTextView"
+        app:layout_constraintEnd_toEndOf="@+id/loginTitleTextView"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/loginTitleTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/igro_logo" />
 
     <Button
         android:id="@+id/registerUserButton"
@@ -77,7 +120,8 @@
         android:layout_marginBottom="100dp"
         android:text="Register"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/leafLogoImageView"
+        app:layout_constraintHorizontal_bias="0.578"
+        app:layout_constraintStart_toStartOf="@+id/leafLogoImageView" />
 
 </android.support.constraint.ConstraintLayout>

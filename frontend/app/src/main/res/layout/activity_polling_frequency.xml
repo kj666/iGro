@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/iGroTopLogoImageView"
         android:layout_width="104dp"
-        android:layout_height="94dp"
+        android:layout_height="98dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

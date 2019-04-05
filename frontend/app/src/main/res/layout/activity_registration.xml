@@ -6,53 +6,93 @@
     android:layout_height="match_parent"
     tools:context=".RegistrationActivity">
 
+    <TextView
+        android:id="@+id/registrationTitleTextView"
+        android:layout_width="280dp"
+        android:layout_height="47dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="28dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="CREATE AN ACCOUNT"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/userNameText"
+        app:layout_constraintEnd_toEndOf="@+id/userNameText"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="@+id/userNameText" />
+
+    <ImageView
+        android:id="@+id/iGroTopLogoImageView"
+        android:layout_width="104dp"
+        android:layout_height="98dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/registrationTitleTextView"
+        app:layout_constraintEnd_toEndOf="@+id/registrationTitleTextView"
+        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintStart_toStartOf="@+id/registrationTitleTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.357"
+        app:srcCompat="@drawable/igro_logo" />
+
     <EditText
         android:id="@+id/confirmUserPasswordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="Reenter Password"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/selectGreenhouseMessage"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="@+id/selectGreenhouseMessage"
         app:layout_constraintTop_toBottomOf="@+id/userPasswordText" />
 
     <EditText
         android:id="@+id/userEmailText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/userPasswordText"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="@+id/userPasswordText"
         app:layout_constraintTop_toBottomOf="@+id/userNameText" />
 
     <EditText
         android:id="@+id/userPasswordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/confirmUserPasswordText"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="@+id/confirmUserPasswordText"
         app:layout_constraintTop_toBottomOf="@+id/userEmailText" />
 
     <EditText
         android:id="@+id/userNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="204dp"
         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         android:ems="10"
         android:hint="Name"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/userEmailText"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="@+id/userEmailText"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -66,8 +106,8 @@
         android:layout_marginBottom="8dp"
         android:text="Sign Up"
         app:layout_constraintBottom_toTopOf="@+id/cancelButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/cancelButton"
+        app:layout_constraintStart_toStartOf="@+id/cancelButton" />
 
     <Button
         android:id="@+id/cancelButton"
@@ -89,11 +129,14 @@
         android:layout_height="34dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="45dp"
+        app:layout_constraintBottom_toTopOf="@+id/singUpButton"
+        app:layout_constraintEnd_toEndOf="@+id/singUpButton"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="@+id/singUpButton"
         app:layout_constraintTop_toBottomOf="@+id/selectGreenhouseMessage" />
 
     <EditText
@@ -102,17 +145,20 @@
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:clickable="false"
         android:editable="false"
         android:ems="10"
         android:text="Select Your Greenhouse"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/singUpButton"
+        app:layout_constraintEnd_toEndOf="@+id/listOfAvailableGreenhouses"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="@+id/listOfAvailableGreenhouses"
         app:layout_constraintTop_toBottomOf="@+id/confirmUserPasswordText"
+        app:layout_constraintVertical_bias="0.0"
         tools:clickable="false" />
 
 </android.support.constraint.ConstraintLayout>
