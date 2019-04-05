@@ -49,7 +49,7 @@ public class PollingFrequencyDialogFragment extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.activity_polling_frequency,null);
 
         builder.setView(view);
-        builder.setTitle("Set Polling Frequency in Seconds");
+        builder.setTitle("");
         builder.setPositiveButton("Set", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 pollingfrequency = PollingFrequencyEditText.getText().toString();
