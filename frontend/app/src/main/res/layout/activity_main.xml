@@ -39,14 +39,14 @@
 
         <Button
             android:id="@+id/nmButton"
-            android:layout_width="53dp"
+            android:layout_width="59dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="120dp"
             android:layout_marginTop="43dp"
-            android:text="nm"
+            android:text="index"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/uvNumberButton"
@@ -76,14 +76,14 @@
 
     <ImageView
         android:id="@+id/igroLogoDashView"
-        android:layout_width="156dp"
-        android:layout_height="55dp"
+        android:layout_width="84dp"
+        android:layout_height="64dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginRight="148dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.906"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/igro_logo" />
