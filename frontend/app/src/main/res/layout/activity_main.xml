@@ -18,6 +18,14 @@
         app:layout_constraintStart_toEndOf="@+id/moistureView"
         app:layout_constraintTop_toBottomOf="@+id/humidityView">
 
+        <ImageView
+            android:id="@+id/uvConditionImage"
+            android:layout_width="78dp"
+            android:layout_height="73dp"
+            android:layout_marginLeft="47dp"
+            android:layout_marginTop="90dp"
+            app:srcCompat="@drawable/light_belowaverage" />
+
         <TextView
             android:id="@+id/uvDateStampTextview"
             android:layout_width="match_parent"
@@ -107,7 +115,7 @@
         app:layout_constraintTop_toBottomOf="@+id/welcomeMessageText">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/humidityConditionImage"
             android:layout_width="75dp"
             android:layout_height="70dp"
             android:layout_marginLeft="47dp"
@@ -228,7 +236,7 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/temperatureConditionImage"
             android:layout_width="78dp"
             android:layout_height="70dp"
             android:layout_marginLeft="47dp"
@@ -248,7 +256,7 @@
         app:layout_constraintTop_toBottomOf="@+id/temperatureView">
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/soilConditionImage"
             android:layout_width="78dp"
             android:layout_height="73dp"
             android:layout_marginLeft="47dp"
