@@ -169,7 +169,7 @@ public class TemperatureActivity extends AppCompatActivity {
         retrieveRange();
 
         notificationManager = NotificationManagerCompat.from(this);
-        checkSensorInactivity();
+//        checkSensorInactivity();
         createChannel();
     }
 
@@ -551,6 +551,7 @@ public class TemperatureActivity extends AppCompatActivity {
 
                     LastUnixTime = sensorDataValue.getTime()/1000;
                     setLastUnixTime(LastUnixTime);
+                    checkSensorInactivity();
                 }
             }
 
@@ -667,7 +668,7 @@ public class TemperatureActivity extends AppCompatActivity {
                 String lastpollfrequencyMs = dataSnapshot.child("SensorConfig/poll").getValue().toString();
                 lastpollfrequencyInt = Integer.parseInt(lastpollfrequencyMs) / 1000;
 
-                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+30)){
+                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+30) && LastUnixTime != 0){
                     sendSensorInactivityNotification ();
                 }
 
@@ -704,14 +705,13 @@ public class TemperatureActivity extends AppCompatActivity {
 
 
         //functionality to open humidityactivity on notification click
-        Intent notifyIntent = new Intent(this, HumidityActivity.class);
+        Intent notifyIntent = new Intent(this, TemperatureActivity.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(
                 this, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT
         );
         notification.setContentIntent(notifyPendingIntent);
-
 
         notificationManager.notify(1,notification.build());
     }

@@ -143,7 +143,7 @@ public class UvIndexActivity extends AppCompatActivity {
         });
 
         notificationManager = NotificationManagerCompat.from(this);
-        checkSensorInactivity();
+//        checkSensorInactivity();
         createChannel();
 
     }
@@ -422,6 +422,7 @@ public class UvIndexActivity extends AppCompatActivity {
                     uvLastUpdatedTextView.setText("Sensor Last Updated on "+readableTime);
                     LastUnixTime = sensorDataValue.getTime()/1000;
                     setLastUnixTime(LastUnixTime);
+                    checkSensorInactivity();
                 }
             }
             @Override
@@ -488,7 +489,7 @@ public class UvIndexActivity extends AppCompatActivity {
                 String lastpollfrequencyMs = dataSnapshot.child("SensorConfig/poll").getValue().toString();
                 lastpollfrequencyInt = Integer.parseInt(lastpollfrequencyMs) / 1000;
 
-                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+30)){
+                if ((CurrentunixTime-LastUnixTime) > (lastpollfrequencyInt+30) && LastUnixTime!= 0){
                     sendSensorInactivityNotification ();
                 }
 
@@ -525,7 +526,7 @@ public class UvIndexActivity extends AppCompatActivity {
 
 
         //functionality to open humidityactivity on notification click
-        Intent notifyIntent = new Intent(this, HumidityActivity.class);
+        Intent notifyIntent = new Intent(this, UvIndexActivity.class);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(
