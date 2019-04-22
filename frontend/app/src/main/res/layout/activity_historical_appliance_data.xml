@@ -22,9 +22,8 @@
         android:layout_marginRight="17dp"
         android:gravity="center_horizontal|center_vertical"
         android:text="HISTORICAL HEATER USE"
-        android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"
+        android:textColor="@color/colorPrimaryDark" />
 
     <ImageView
         android:id="@+id/logoTopImageView2"
